@@ -1,0 +1,116 @@
+.woocommerce-checkout .entry-content {
+	border: none;
+	background: #fff;
+	padding: 2rem 2.5rem 0.1rem;
+	border-radius: var(--radius);
+	box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.woocommerce-checkout h1.entry-title {
+	font-size: 2rem;
+	display: inline-block;
+	margin: 0 0 .5em;
+}
+
+.woocommerce-checkout .wp-block-woocommerce-checkout {
+	padding: 0;
+}
+
+.woocommerce-checkout .wc-block-components-sidebar-layout .wc-block-components-main {
+	width: 55%;
+}
+
+.woocommerce-checkout .wc-block-components-sidebar {
+	width: 45%;
+}
+
+.woocommerce-checkout .wc-block-checkout__contact-fields .wc-block-components-checkout-step__heading {
+	margin-top: 0;
+}
+
+.woocommerce-checkout .wc-blocks-components-select .wc-blocks-components-select__container {
+	height: 2.6em;
+}
+.woocommerce-checkout .wc-block-components-form .wc-block-components-text-input input[type],
+.woocommerce-checkout .wc-blocks-components-select .wc-blocks-components-select__select {
+	padding: .5em !important;
+	height: 2.6em !important;
+	line-height: 1em;
+	border: 1px solid #8aa0ad;
+}
+
+.wc-blocks-components-select .wc-blocks-components-select__label {
+	top: -10px !important;
+	background: #fff;
+	padding: 0 4px;
+}
+.woocommerce-checkout .wc-block-components-form .wc-block-components-text-input label, .woocommerce-checkout .wc-block-components-text-input label {
+	top: 1.3em;
+    background: #fff;
+    padding: 0 4px;
+}
+.woocommerce-checkout .wc-block-components-form .wc-block-components-text-input.is-active label {
+    transform: translateY(-9px) scale(.75);
+}
+
+.woocommerce-checkout .wc-block-checkout__terms.wc-block-checkout__terms--with-separator {
+	padding-top: 10px;
+	margin: 0;
+	font-size: 80%;
+}
+
+.wc-block-components-form .wc-block-checkout__actions, .wc-block-components-product-metadata {
+	display: none;
+}
+
+.wp-block-woocommerce-checkout-actions-block {
+	margin-top: 2rem;
+}
+
+.checkout-extra {
+	margin: auto;
+	text-align: center;
+}
+
+.checkout-extra .title{
+	margin-bottom: 20px;
+}
+
+.support .details {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	align-items: anchor-center;
+}
+
+.support .icon {
+	padding-right: 20px;
+}
+
+.security .details {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.woocommerce-checkout .entry {
+	padding: 0;
+	background: none;
+}
+
+.checkout-extra .item:not(:last-child) {
+	margin-bottom: 2rem;
+}
+
+.woocommerce-order-received .woocommerce ul.order_details {
+	margin-bottom: 2rem;
+}
+
+.upi-instructions {
+	margin-bottom: 2rem;
+}
+
+.checkout-explore {
+	justify-items: center;
+	margin: 3rem;
+}

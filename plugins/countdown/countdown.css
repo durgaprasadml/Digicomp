@@ -1,0 +1,58 @@
+.cd-active .site-header, .cd-active .site-content, .cd-active .site-footer {
+	display: none;
+}
+
+.cd-bg {
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	z-index: 101;
+	background: #BBD2C5;
+	background: -webkit-linear-gradient(to right, #536976, #BBD2C5);
+	background: linear-gradient(to right, #536976, #BBD2C5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	visibility: visible;
+	opacity: 1;
+	transition: 2s linear all;
+}
+
+#countdown {
+	display: flex;
+	text-align: center;
+}
+
+.cd-item {
+	position: relative;
+	padding: 1rem 3rem;
+}
+
+.cd-item:not(:last-child)::after {
+	content: '';
+    border-right: 1px solid var(--text);
+    position: absolute;
+    height: 100%;
+    top: 0;
+    right: 0;
+    transform: rotateZ(10deg);
+}
+
+.cd-wrap .cd-number {
+	font-size: 3rem;
+}
+
+.cd-bg.counting .cd-action, .cd-bg:not(.counting) #countdown {
+	display: none;
+}
+
+.cd-bg.admin .cd-msg, .cd-bg:not(.admin) #launch {
+	display: none;
+}
+
+body:not(.cd-active) .cd-bg {
+	visibility: hidden;
+	opacity: 0;
+}
