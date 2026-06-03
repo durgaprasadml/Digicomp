@@ -22,9 +22,7 @@ Template: greenlet
 	--bg-warning: #fff5eb;
 	--bg-error: #ffedec;
 	--button-bg: #f4f9fc;
-}
 
-:root {
 	--primary-dark: #f8fafc;
 	--primary-accent: #2563eb;
 	--text-light: #0f172a;
@@ -32,6 +30,21 @@ Template: greenlet
 	--glass-bg: rgba(255, 255, 255, 0.7);
 	--glass-hover: rgba(255, 255, 255, 0.9);
 	--header-link-color: var(--text-light);
+
+	/* Unified Global Visual Tokens */
+	--card-bg: #ffffff;
+	--border-hover-subtle: rgba(0, 0, 0, 0.1);
+	--btn-neutral-bg: #f1f1f1;
+	--btn-neutral-color: #333;
+	--img-embed-bg: #fcfcfc;
+	--quantity-bg: transparent;
+	--glass-card-bg: rgba(255, 255, 255, 0.4);
+	--shadow-card: 0 8px 32px 0 rgba(0, 0, 0, 0.03);
+	--shadow-card-hover: 0 12px 40px rgba(0, 0, 0, 0.08);
+	--shadow-premium: 0 10px 25px rgba(0, 0, 0, 0.05);
+	--primary-accent-hover: #1d4ed8;
+	--accent-hover: color-mix(in oklab, var(--accent) 85%, black);
+	--table-header-bg: rgba(0, 0, 0, 0.02);
 }
 
 [data-theme="dark"] {
@@ -46,6 +59,20 @@ Template: greenlet
 	--header-link-color: var(--text-light);
 	--button: var(--text-light);
 	--button-bg: #0f172a;
+
+	/* Unified Global Visual Tokens (Dark Mode) */
+	--card-bg: #1e293b;
+	--border-hover-subtle: rgba(255, 255, 255, 0.1);
+	--btn-neutral-bg: rgba(255, 255, 255, 0.05);
+	--btn-neutral-color: #fff;
+	--img-embed-bg: #111827;
+	--quantity-bg: rgba(255, 255, 255, 0.05);
+	--glass-card-bg: rgba(30, 41, 59, 0.4);
+	--shadow-card: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+	--shadow-card-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
+	--shadow-premium: 0 10px 25px rgba(0, 0, 0, 0.5);
+	--primary-accent-hover: #2563eb;
+	--table-header-bg: rgba(255, 255, 255, 0.02);
 }
 
 body {
@@ -56,15 +83,16 @@ body {
 /* Theme Toggle Button */
 .theme-toggle {
 	position: fixed;
-	top: 2.4rem;
 	right: 3.2rem;
+	margin-top: 4px;
 	z-index: 1001;
 	background: var(--glass-bg);
 	border: 1px solid var(--border);
 	backdrop-filter: blur(10px);
 	border-radius: 50%;
-	width: 48px;
-	height: 48px;
+	width: 40px;
+	height: 40px;
+	padding: 1rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -123,8 +151,8 @@ body {
 .button, input[type="submit"], .wp-element-button, body .woocommerce .button {
 	font-weight: 600;
 	color: #fff;
-	background-color: #23b887;
-	background-image: linear-gradient(#23b887, #23b887);
+	background-color: var(--accent);
+	background-image: linear-gradient(var(--accent), var(--accent));
 	border-color: var(--accent);
 	height: initial;
 }

@@ -5,19 +5,6 @@ HOME PAGE - Digicomp Modern Look
 */
 
 :root {
-	/* Light Theme (Default) */
-	--primary-dark: #f8fafc;
-	--primary-accent: #2563eb;
-	--primary-accent-hover: #1d4ed8;
-	--secondary-accent: #23b887;
-	--text-light: #0f172a;
-	--text-muted: #475569;
-	--card-bg: #ffffff;
-	--bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-	--glass-bg: rgba(255, 255, 255, 0.7);
-	--glass-hover: rgba(255, 255, 255, 0.9);
-	--border-color: rgba(0, 0, 0, 0.05);
-
 	/* Particle Theme Colors (Light Mode) */
 	--particle-base: rgba(15, 23, 42, 0.3);
 	/* Dark slate for contrast */
@@ -27,23 +14,11 @@ HOME PAGE - Digicomp Modern Look
 	--particle-glow-outer: rgba(234, 88, 12, 0.5);
 	/* Deeper orange glow */
 
+	--bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
 	--hero-bottom-gradient: linear-gradient(to top, rgba(15, 23, 42, 0.15) 0%, rgba(15, 23, 42, 0) 100%);
 }
 
 [data-theme="dark"] {
-	/* Dark Theme */
-	--primary-dark: #0f172a;
-	--primary-accent: #3b82f6;
-	--primary-accent-hover: #2563eb;
-	--secondary-accent: #23b887;
-	--text-light: #f8fafc;
-	--text-muted: #94a3b8;
-	--card-bg: #1e293b;
-	--bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-	--glass-bg: rgba(30, 41, 59, 0.7);
-	--glass-hover: rgba(30, 41, 59, 0.9);
-	--border-color: rgba(255, 255, 255, 0.05);
-
 	/* Particle Theme Colors (Dark Mode) */
 	--particle-base: rgba(255, 255, 255, 0.5);
 	--particle-glow-center: #fff;
@@ -51,6 +26,7 @@ HOME PAGE - Digicomp Modern Look
 	--particle-glow-outer: rgba(59, 130, 246, 0.6);
 	/* Blue glow */
 
+	--bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
 	--hero-bottom-gradient: linear-gradient(to top, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0) 100%);
 }
 
@@ -127,34 +103,7 @@ body .woocommerce .button {
 
 /* Header overrides moved to style.css */
 
-/* Theme Toggle Button */
-.theme-toggle {
-	position: fixed;
-	top: 2.4rem;
-	right: 3.2rem;
-	z-index: 1001;
-	background: var(--glass-bg);
-	border: 1px solid var(--border);
-	backdrop-filter: blur(10px);
-	border-radius: 50%;
-	width: 48px;
-	height: 48px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	color: var(--text-light);
-	transition: all 0.3s ease;
-}
 
-.theme-toggle:hover {
-	transform: scale(1.1);
-	background: var(--glass-hover);
-}
-
-.theme-toggle svg {
-	transition: transform 0.3s ease;
-}
 
 /* Hero Section */
 .hero {

@@ -81,44 +81,6 @@
 	const headers = document.querySelectorAll('.header-section')
 	if ( ( headers.length < 2 ) || ! headers[1].classList.contains( 'sticky' ) ) return
 
-	// let heightDiff = 0
-	// const logo = headers[1].querySelector('.site-logo')
-	// if ( logo ) {
-	// 	const oldTransition = logo.style.transition
-	// 	logo.style.transition = 'none'
-	// 	const heightBefore = headers[1].offsetHeight
-	// 	headers[1].classList.add('is-stuck')
-	// 	const heightAfter = headers[1].offsetHeight
-	// 	headers[1].classList.remove('is-stuck')
-	// 	headers[1].offsetHeight // Force reflow
-	// 	logo.style.transition = oldTransition
-	// 	heightDiff = heightBefore - heightAfter
-	// 	console.log(heightBefore, heightAfter)
-	// }
-
-	// let isStuck = false
-
-	// window.addEventListener('scroll', () => {
-	// 	const tp = headers[0].getBoundingClientRect().bottom
-	// 	if ( tp <= 0 ) {
-	// 		if ( ! isStuck ) {
-	// 			headers[1].classList.add('is-stuck')
-	// 			if ( heightDiff > 0 ) {
-	// 				headers[1].style.transition = 'margin-bottom 0.1s ease'
-	// 				headers[1].style.marginBottom = heightDiff + 'px'
-	// 			}
-	// 			isStuck = true
-	// 		}
-	// 	} else {
-	// 		if ( isStuck ) {
-	// 			headers[1].classList.remove('is-stuck')
-	// 			headers[1].style.transition = 'margin-bottom 0.1s ease'
-	// 			headers[1].style.marginBottom = ''
-	// 			isStuck = false
-	// 		}
-	// 	}
-	// })
-
 	let isStuck = false
 	window.addEventListener('scroll', () => {
 		const tp = headers[0].getBoundingClientRect().bottom
@@ -132,6 +94,41 @@
 				headers[1].classList.remove('is-stuck')
 				isStuck = false
 			}
+		}
+	})
+
+	/* Theme toggle button */
+	var toggleBtn = document.getElementById('theme-toggle')
+	if (!toggleBtn) return
+
+	var sunIcon = toggleBtn.querySelector('.sun-icon')
+	var moonIcon = toggleBtn.querySelector('.moon-icon')
+
+	// Check saved theme
+	var currentTheme = localStorage.getItem('theme')
+	if (currentTheme === 'dark') {
+		document.documentElement.setAttribute('data-theme', 'dark')
+		sunIcon.style.display = 'block'
+		moonIcon.style.display = 'none'
+	} else {
+		// default is light
+		document.documentElement.setAttribute('data-theme', 'light')
+		sunIcon.style.display = 'none'
+		moonIcon.style.display = 'block'
+	}
+
+	toggleBtn.addEventListener('click', function () {
+		var theme = document.documentElement.getAttribute('data-theme')
+		if (theme === 'light') {
+			document.documentElement.setAttribute('data-theme', 'dark')
+			localStorage.setItem('theme', 'dark')
+			sunIcon.style.display = 'block'
+			moonIcon.style.display = 'none'
+		} else {
+			document.documentElement.setAttribute('data-theme', 'light')
+			localStorage.setItem('theme', 'light')
+			sunIcon.style.display = 'none'
+			moonIcon.style.display = 'block'
 		}
 	})
 })();
