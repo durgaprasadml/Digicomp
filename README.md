@@ -20,6 +20,7 @@ Code repository for Digicomp Technologies websites.
 
   require_once get_theme_root( 'dc' ) . '/dc/plugins/dc-essentials/index.php';
   ```
+- Under `cd frontend/home` Run `npm run build` to build home page.
 
 ## Local development
 - Easily create local development environment with [localwp](https://localwp.com/).

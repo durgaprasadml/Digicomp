@@ -252,7 +252,7 @@ function sk_dequeue_wc_styles_on_single($enqueue_styles)
 {
 	if (function_exists('is_product') && is_product()) {
 		unset($enqueue_styles['woocommerce-general']);
-		unset($enqueue_styles['woocommerce-layout']);
+		// unset($enqueue_styles['woocommerce-layout']);
 		unset($enqueue_styles['woocommerce-smallscreen']);
 	}
 	return $enqueue_styles;
