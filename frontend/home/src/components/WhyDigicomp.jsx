@@ -141,14 +141,7 @@ export default function WhyDigicomp() {
               transition={{ duration: 0.5, delay: index * 0.15 }}
             >
               {/* Orange accent line at top */}
-              <div
-                className="absolute left-0 right-0 top-0 h-[3px]"
-                style={{
-                  background:
-                    'linear-gradient(90deg, var(--color-accent-start), var(--color-accent-end))',
-                }}
-                aria-hidden="true"
-              />
+              <div className="absolute top-0 left-0 right-0 h-4 border-t-[3px] border-transparent hover:border-transparent [background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--color-accent-start),var(--color-accent-end))_border-box]" style={{ borderRadius: '18px 18px 1px 1px' }} />
 
               {/* Icon container */}
               <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--elevated)]">

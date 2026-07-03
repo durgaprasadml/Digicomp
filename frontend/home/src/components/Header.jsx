@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
+import { useCart } from '../context/CartContext';
 
 import Logo from "../assets/digicomp.svg?react";
 
@@ -200,6 +201,7 @@ function MegaMenu() {
 /* ── Mobile Drawer ── */
 function MobileDrawer({ onClose }) {
   const { theme, toggleTheme } = useTheme();
+  const { cart } = useCart();
 
   return (
     <motion.div
@@ -268,10 +270,10 @@ function MobileDrawer({ onClose }) {
             <a id="mobile-wishlist-link" href="#wishlist" className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]">
               <HeartIcon />
             </a>
-            <a id="mobile-cart-link" href="#cart" className="relative rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]">
+            <a ref={ cartRef } id="mobile-cart-link" href={ cart.url } className="relative rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]">
               <CartIcon />
               <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-r from-[var(--color-accent-start)] to-[var(--color-accent-end)] text-[10px] font-bold text-white">
-                { window.dcSSD?.cartCount || 0 }
+                { cart.lineCount }
               </span>
             </a>
           </div>
@@ -284,6 +286,7 @@ function MobileDrawer({ onClose }) {
 /* ── Header ── */
 export default function Header() {
   const { theme, toggleTheme } = useTheme();
+  const { cart, cartRef } = useCart();
   const [scrolled, setScrolled] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -372,18 +375,21 @@ export default function Header() {
           </nav>
 
           {/* Search */}
-          <div className="relative flex w-64 items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--elevated)] px-3 py-2 xl:w-72">
-            <SearchIcon />
-            <input
-              id="header-search-input"
-              type="text"
-              placeholder="Search parts, boards, datasheets..."
-              className="w-full bg-transparent text-sm text-[var(--text)] outline-none placeholder:text-[var(--text-muted)]"
-              ref={ searchRef }
-            />
-            <kbd className="pointer-events-none hidden shrink-0 select-none rounded-md border border-[var(--border)] bg-[var(--surface)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--text-muted)] xl:inline-block">
-              ⌘K
-            </kbd>
+          <div className="group relative p-[1px] w-64 items-center gap-2 rounded-xl border xl:w-lg border-[var(--border)] hover:border-[var(--border)]/40 has-[:focus]:border-[var(--border)]/40 hover:[background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--color-accent-start),var(--color-accent-end))_border-box] has-[:focus]:[background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--color-accent-start),var(--color-accent-end))_border-box] overflow-hidden">
+            <div className="absolute top-1/2 left-1/2 h-auto w-full -translate-1/2 aspect-square opacity-0 animate-spin-slow bg-conic-180 from-[var(--color-accent-start)] via-transparent to-[var(--color-accent-start)] group-has-[:focus]:hidden" />
+            <div className="relative flex items-center gap-2 rounded-[11px] bg-[var(--surface)] px-3 py-2">
+              <SearchIcon />
+              <input
+                id="header-search-input"
+                type="text"
+                placeholder="Search parts, Ask AI..."
+                className="w-full bg-transparent text-sm text-[var(--text)] outline-none placeholder:text-[var(--text-muted)]"
+                ref={ searchRef }
+              />
+              <kbd className="pointer-events-none hidden shrink-0 select-none rounded-md border border-[var(--border)] bg-[var(--surface)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--text-muted)] xl:inline-block">
+                ⌘K
+              </kbd>
+            </div>
           </div>
         </div>
 
@@ -418,13 +424,14 @@ export default function Header() {
 
           <a
             id="cart-link"
-            href="#cart"
+            href={ cart.url }
             className="relative rounded-lg p-2 text-[var(--text-secondary)] transition-colors hover:bg-[var(--elevated)] hover:text-[var(--text)]"
             aria-label="Cart"
+            ref={ cartRef }
           >
             <CartIcon />
             <span className="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-r from-[var(--color-accent-start)] to-[var(--color-accent-end)] text-[10px] font-bold leading-none text-white">
-              { window.dcSSD?.cartCount || 0 }
+              { cart.lineCount }
             </span>
           </a>
         </div>

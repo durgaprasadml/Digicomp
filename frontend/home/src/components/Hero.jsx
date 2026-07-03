@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 // import NeonBackground from './NeonBackground';
 import DotGrid from './DotGrid';
 
-const heroImg = window.dcSSD?.hero?.img || '/wp-content/plugins/woocommerce/assets/images/placeholder.png'
+import { getHero } from '../services/api';
 
 const containerVariants = {
   hidden: {},
@@ -158,7 +158,7 @@ export default function Hero() {
           {/* Floating board image */}
           <motion.img
             id="hero-product-image"
-            src={ heroImg }
+            src={ getHero() }
             alt="ESP32-S3 Development Board by Digicomp Technologies"
             className="relative z-10 w-full max-w-md drop-shadow-2xl lg:max-w-lg"
             animate={{ y: [0, -12, 0] }}

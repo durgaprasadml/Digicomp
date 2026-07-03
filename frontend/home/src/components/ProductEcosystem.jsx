@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 
+import { getEcoSystem } from '../services/api';
+
 const container = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.15 } },
@@ -12,8 +14,7 @@ const item = {
 
 const mcuChips = ['ESP32-S3', 'RP2040', 'CH32V003', 'STM32F030', 'TI MSPM0'];
 
-const mcuImgs = window.dcSSD?.ecosystem.mcus || [];
-const fpgaImg = window.dcSSD?.ecosystem.fpga || '/wp-content/plugins/woocommerce/assets/images/placeholder.png';
+const { mcus, fpga } = getEcoSystem();
 
 const bmsSpecs = [
   {
@@ -153,7 +154,7 @@ export default function ProductEcosystem() {
 
               {/* Floating product images */}
               <div className="flex items-center justify-evenly gap-4 mb-8 py-4">
-                {mcuImgs.map((img, i) => (
+                {mcus.map((img, i) => (
                   <motion.img
                     key={img}
                     src={img}
@@ -161,7 +162,7 @@ export default function ProductEcosystem() {
                     className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 object-contain drop-shadow-2xl"
                     style={{
                       marginLeft: i > 0 ? '-16px' : '0',
-                      zIndex: mcuImgs.length - i,
+                      zIndex: mcus.length - i,
                     }}
                     animate={{ y: [0, -12, 0] }}
                     transition={{
@@ -231,7 +232,7 @@ export default function ProductEcosystem() {
 
               <div className="flex justify-center mb-5">
                 <motion.img
-                  src={ fpgaImg }
+                  src={ fpga }
                   alt="FPGA Development Board"
                   className="w-40 h-40 md:w-48 md:h-48 object-contain drop-shadow-2xl"
                   animate={{ y: [0, -10, 0] }}

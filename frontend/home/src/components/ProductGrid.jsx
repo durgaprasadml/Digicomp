@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
-const products = window.dcSSD?.featured || []
-const currency = window.dcSSD?.currency || []
+import { useCart } from '../context/CartContext';
+import { getFeatured } from '../services/api';
+
+const { products, currency } = getFeatured()
 
 const containerVariants = {
   hidden: {},
@@ -16,7 +18,7 @@ const cardVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: 'easeOut' },
+    transition: { duration: 0.3, ease: 'easeOut' },
   },
 };
 
@@ -57,10 +59,49 @@ function CartPlusIcon() {
 function ProductCard({ product, index }) {
   const [wishlisted, setWishlisted] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
+  const { addToCart, cartRef } = useCart();
+  const imgRef = useRef( null );
 
-  const handleAddToCart = () => {
+  const animate = () => {
+    const imgRect = imgRef.current.getBoundingClientRect();
+    const cartRect = cartRef.current.getBoundingClientRect();
+    const flyingImg = imgRef.current.cloneNode(true);
+
+    Object.assign(flyingImg.style, {
+      position: "fixed",
+      left: `${imgRect.left}px`,
+      top: `${imgRect.top}px`,
+      width: `${imgRect.width}px`,
+      height: `${imgRect.height}px`,
+      zIndex: 9999,
+      pointerEvents: "none",
+      opacity: 0.8,
+      transition: "transform 500ms ease-in-out, opacity 500ms",
+      transform: "translate(0,0) scale(0.9)",
+    });
+
+    document.body.appendChild(flyingImg);
+
+    requestAnimationFrame(() => {
+      const dx = cartRect.left + cartRect.width / 2 - (imgRect.left + imgRect.width / 2);
+      const dy = cartRect.top + cartRect.height / 2 - (imgRect.top + imgRect.height / 2);
+
+      flyingImg.style.transform = `translate(${dx}px, ${dy}px) scale(0.1)`;
+      flyingImg.style.opacity = "0.1";
+    });
+
+    flyingImg.addEventListener( 'transitionend', () => {
+        flyingImg.remove();
+      }, { once: true }
+    );
+  };
+
+  const handleAddToCart = async () => {
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 1500);
+    animate();
+    const d = await addToCart( product.id )
+    console.log( d )
   };
 
   return (
@@ -68,11 +109,12 @@ function ProductCard({ product, index }) {
       id={`product-card-${product.id}`}
       variants={cardVariants}
       whileHover={{ y: -6 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-      className="group relative flex flex-col rounded-2xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden transition-colors duration-300 hover:border-[var(--color-accent-start)]/40"
+      transition={{ type: 'spring', stiffness: 500, damping: 22 }}
+      className="group relative flex flex-col rounded-2xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden transition-colors duration-300 hover:border-transparent hover:[background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--color-accent-start),var(--color-accent-end))_border-box]"
     >
+      <a href={`#product-link-${product.id}`} className="absolute rounded-2xl inset-0"></a>
       {/* Image area */}
-      <div className="relative flex items-center justify-center px-4 pt-6 pb-2 h-52 bg-[var(--elevated)]/30">
+      <div className="flex items-center justify-center px-4 pt-6 pb-2 h-52 bg-[var(--elevated)]/30">
         {/* Tag */}
         {product.badge && (
           <span className={`absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${ badgeColor( product.badge ) }`}>
@@ -92,9 +134,10 @@ function ProductCard({ product, index }) {
 
         {/* Product image */}
         <motion.img
+          ref={imgRef}
           src={product.image}
           alt={product.name}
-          className="h-36 w-auto max-w-full object-contain drop-shadow-lg transition-transform duration-500 group-hover:scale-105"
+          className="h-36 w-auto max-w-full object-contain drop-shadow-lg transition-transform duration-500 group-hover:scale-105 pointer-events-none"
           loading="lazy"
         />
       </div>
@@ -121,10 +164,10 @@ function ProductCard({ product, index }) {
         {/* Add to cart */}
         <button
           id={`add-to-cart-${product.id}`}
-          onClick={handleAddToCart}
-          className={`mt-4 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-300 ${
+          onClick={ handleAddToCart }
+          className={`relative mt-4 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-300 cursor-pointer ${
             addedToCart
-              ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+              ? 'bg-green-500/20 text-green-600 border border-green-500/30'
               : 'bg-[var(--elevated)] text-[var(--text-secondary)] border border-[var(--border)] hover:border-[var(--color-accent-start)] hover:text-[var(--text)] hover:bg-[var(--color-accent-glow)]'
           }`}
         >
@@ -145,7 +188,7 @@ function ProductCard({ product, index }) {
       </div>
 
       {/* Subtle bottom accent on hover */}
-      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[var(--color-accent-start)] to-[var(--color-accent-end)] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute bottom-0 left-0 right-0 h-4 border-b-[3px] border-transparent hover:border-transparent group-hover:[background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--color-accent-start),var(--color-accent-end))_border-box]" style={{ borderRadius: '1px 1px 18px 18px' }} />
     </motion.div>
   );
 }

@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 
+import { getSticky } from '../services/api';
+
 const container = {
   hidden: {},
   visible: {
@@ -69,7 +71,7 @@ const ArrowIcon = () => (
   </svg>
 );
 
-const articles = window.dcSSD?.posts || []
+const articles = getSticky()
 
 function CardImage({ article }) {
   if ( article.img ) {
