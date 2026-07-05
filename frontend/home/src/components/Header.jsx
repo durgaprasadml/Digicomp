@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 import { useCart } from '../context/CartContext';
+import SearchBox from './SearchBox';
+import { createPortal } from 'react-dom';
 
 import Logo from "../assets/digicomp.svg?react";
 
@@ -92,12 +94,6 @@ const megaColumns = [
 ];
 
 /* ── Icon Components ── */
-const SearchIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="11" cy="11" r="8" />
-    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-  </svg>
-);
 
 const SunIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -201,9 +197,9 @@ function MegaMenu() {
 /* ── Mobile Drawer ── */
 function MobileDrawer({ onClose }) {
   const { theme, toggleTheme } = useTheme();
-  const { cart } = useCart();
+  const { cart, cartRef } = useCart();
 
-  return (
+  const drawerContent = (
     <motion.div
       id="mobile-drawer-overlay"
       initial={{ opacity: 0 }}
@@ -224,7 +220,7 @@ function MobileDrawer({ onClose }) {
         {/* Close */}
         <div className="flex items-center justify-between border-b border-[var(--border)] px-5 py-4">
           <span className="sr-only">Digicomp Technologies</span>
-          <logo className="h-7" />
+          <Logo className="h-7" />
           <button id="mobile-drawer-close" onClick={onClose} className="text-[var(--text-secondary)] hover:text-[var(--text)]">
             <CloseIcon />
           </button>
@@ -232,15 +228,7 @@ function MobileDrawer({ onClose }) {
 
         {/* Search */}
         <div className="px-5 py-4">
-          <div className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--elevated)] px-3 py-2.5">
-            <SearchIcon />
-            <input
-              id="mobile-search-input"
-              type="text"
-              placeholder="Search parts, boards, datasheets..."
-              className="w-full bg-transparent text-sm text-[var(--text)] outline-none placeholder:text-[var(--text-muted)]"
-            />
-          </div>
+          <SearchBox id="mobile-search-input" isMobile={true} />
         </div>
 
         {/* Nav links */}
@@ -281,6 +269,8 @@ function MobileDrawer({ onClose }) {
       </motion.aside>
     </motion.div>
   );
+
+  return typeof document !== 'undefined' ? createPortal(drawerContent, document.body) : drawerContent;
 }
 
 /* ── Header ── */
@@ -291,7 +281,6 @@ export default function Header() {
   const [megaOpen, setMegaOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const megaRef = useRef(null);
-  const searchRef = useRef( null );
 
   /* Scroll detection */
   useEffect(() => {
@@ -317,27 +306,10 @@ export default function Header() {
     return () => { document.body.style.overflow = ''; };
   }, [drawerOpen]);
 
-  useEffect(() => {
-    const handleGlobalKey = (event) => {
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
-        searchRef.current.focus();
-        searchRef.current.select();
-      }
-    };
-
-    window.addEventListener('keydown', handleGlobalKey);
-
-    return () => { window.removeEventListener('keydown', handleGlobalKey) };
-  }, []);
-
   return (
     <header
       id="site-header"
-      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-        scrolled
-          ? 'border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-xl'
-          : 'border-b border-transparent bg-transparent backdrop-blur-xl'
-      }`}
+      className={`sticky top-0 z-50 w-full transition-all duration-300 backdrop-blur-xl bg-[var(--surface)]/80 border-b ${ scrolled ? 'border-[var(--border)]' : 'border-transparent' }`}
     >
       <div className="section-container flex h-16 items-center justify-between gap-4 border-none">
         {/* ── Left: Brand ── */}
@@ -375,22 +347,7 @@ export default function Header() {
           </nav>
 
           {/* Search */}
-          <div className="group relative p-[1px] w-64 items-center gap-2 rounded-xl border xl:w-lg border-[var(--border)] hover:border-[var(--border)]/40 has-[:focus]:border-[var(--border)]/40 hover:[background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--color-accent-start),var(--color-accent-end))_border-box] has-[:focus]:[background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--color-accent-start),var(--color-accent-end))_border-box] overflow-hidden">
-            <div className="absolute top-1/2 left-1/2 h-auto w-full -translate-1/2 aspect-square opacity-0 animate-spin-slow bg-conic-180 from-[var(--color-accent-start)] via-transparent to-[var(--color-accent-start)] group-has-[:focus]:hidden" />
-            <div className="relative flex items-center gap-2 rounded-[11px] bg-[var(--surface)] px-3 py-2">
-              <SearchIcon />
-              <input
-                id="header-search-input"
-                type="text"
-                placeholder="Search parts, Ask AI..."
-                className="w-full bg-transparent text-sm text-[var(--text)] outline-none placeholder:text-[var(--text-muted)]"
-                ref={ searchRef }
-              />
-              <kbd className="pointer-events-none hidden shrink-0 select-none rounded-md border border-[var(--border)] bg-[var(--surface)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--text-muted)] xl:inline-block">
-                ⌘K
-              </kbd>
-            </div>
-          </div>
+          <SearchBox id="header-search-input" />
         </div>
 
         {/* ── Right: Utilities (desktop) ── */}

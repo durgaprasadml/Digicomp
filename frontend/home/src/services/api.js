@@ -1,5 +1,6 @@
 const ajaxUrl = window.dcSSD?.ajaxUrl || ''
 const nonce = window.dcSSD?.nonce || ''
+const searchUrl = window.dcSSD?.searchUrl || ''
 
 export function getCart () {
 	return window.dcSSD?.cart || {
@@ -49,4 +50,26 @@ export function getEcoSystem() {
 		mcus: window.dcSSD?.ecosystem.mcus || [],
 		fpga: window.dcSSD?.ecosystem.fpga || '/wp-content/plugins/woocommerce/assets/images/placeholder.png',
 	}
+}
+
+export async function fetchSearchResults(searchTerm) {
+  if (!searchTerm || searchTerm.length < 3) {
+    return [];
+  }
+
+  try {
+    const response = await fetch(
+      `${ searchUrl }?s=${ encodeURIComponent(searchTerm) }`
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error fetching search results: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Search API error:', error);
+    return [];
+  }
 }
