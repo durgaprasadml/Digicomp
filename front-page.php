@@ -111,7 +111,7 @@ $ssd = [
 	'ajaxUrl'   => admin_url('admin-ajax.php'),
 	'nonce'     => wp_create_nonce( get_cart_nonce_name() ),
 	'cart'      => $cart,
-	'searchUrl' => get_home_url() . '/wp-content/plugins/ajax-search-for-woocommerce-premium/includes/Engines/TNTSearchMySQL/Endpoints/search.php'
+	'searchUrl' => get_home_url() . '/wp-content/plugins/ajax-search-for-woocommerce-premium/includes/Engines/TNTSearchMySQL/Endpoints/search.php',
 ];
 $ssj = wp_json_encode( $ssd );
 ?>

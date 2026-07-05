@@ -2,6 +2,17 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { fetchSearchResults } from '../services/api';
 
+function extractImageUrl(imgHtml) {
+  const match = imgHtml.match(/src=["']([^"']+)["']/i);
+  if (!match) return null;
+
+  let url = match[1]
+    .replace(/\\\//g, "/") // unescape \/
+    .replace(/-(\d+)x(\d+)(?=\.[^.]+$)/, ""); // remove -64x36 before extension
+
+  return url;
+}
+
 const SearchIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="11" cy="11" r="8" />
@@ -18,6 +29,7 @@ const SpinnerIcon = () => (
 export default function SearchBox({ id, placeholder, isMobile = false }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const searchRef = useRef(null);
@@ -64,19 +76,25 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
 
   // Debounced search
   useEffect(() => {
-    if (searchTerm.length >= 3) setIsLoading(true);
+    setIsLoading( (searchTerm.length >= 3) ? true : false );
     const delayDebounceFn = setTimeout(async () => {
       if (searchTerm.length >= 3) {
         const data = await fetchSearchResults(searchTerm);
-        setResults(data.suggestions || []);
+        const fetchedResults = data.suggestions || [];
+        setResults(fetchedResults);
+        setHoveredIndex(null);
         setIsLoading(false);
       } else {
         setResults([]);
+        setHoveredIndex(null);
       }
     }, 300);
 
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm]);
+
+  const activeIndex = hoveredIndex !== null ? hoveredIndex : 0;
+  const activeResult = results[activeIndex]?.type === 'no-results' ? false : results[activeIndex];
 
   return (
     <>
@@ -125,33 +143,25 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
 
         {/* Dropdown Results */}
         {isFocused && searchTerm.length >= 3 && (
-          <div className="absolute left-0 top-[calc(100%+4px)] w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] shadow-2xl overflow-hidden flex flex-col max-h-[60vh]">
-            <div className="overflow-y-auto flex-1 p-2">
-              {isLoading && results.length === 0 && (
-                <div className="p-4 text-center text-sm text-[var(--text-muted)]">
-                  Searching...
-                </div>
-              )}
-
-              {!isLoading && results.length === 0 && (
+          <div className="absolute left-0 top-[calc(100%+4px)] w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
+            <div className="overflow-y-auto flex-1 flex">
+              { ! isLoading && results.length === 0 && (
                 <div className="p-4 text-center text-sm text-[var(--text-muted)]">
                   No results found for "{searchTerm}".
                 </div>
-              )}
+              ) }
 
-              {results.length > 0 && (
-                <ul className="flex flex-col gap-1">
+              { results.length > 0 && (
+                <>
+                <ul className="flex flex-col flex-1 gap-1">
                   {results.map((result, idx) => (
-                    <li key={idx}>
+                    <li key={idx} onMouseEnter={() => setHoveredIndex(idx)}>
                       { ( result.type === 'no-results' ) ? (
                         <div className="p-4 text-center text-sm text-[var(--text-muted)]">
-                          No results found for "{searchTerm}".
+                          No results found for "{searchTerm}". Try asking Digicomp Expert AI.
                         </div>
                       ) : (
-                      <a
-                        href={result.url || '#'}
-                        className="flex items-center gap-3 rounded-lg p-2 hover:bg-[var(--elevated)] transition-colors"
-                      >
+                      <a href={result.url || '#'} className="px-3 py-2 flex items-center gap-3 hover:bg-[var(--elevated)]">
                         {result.thumb_html && (
                           <div
                             className="w-10 h-10 shrink-0 [&>img]:w-full [&>img]:h-full [&>img]:object-cover [&>img]:rounded"
@@ -174,6 +184,54 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
                     </li>
                   ))}
                 </ul>
+                { activeResult && (
+                  <div className="p-4 flex-1 flex flex-col h-full gap-3 border-l border-[var(--border)] max-w-[50%]">
+                    {activeResult?.thumb_html && (
+                      <div className="w-full h-40 rounded-lg overflow-hidden bg-[var(--surface)]">
+                        <img className="w-full h-full object-contain" src={ extractImageUrl( activeResult?.thumb_html || '' ) } alt={ activeResult?.value } />
+                      </div>
+                    )}
+                    <div className="flex flex-col gap-1">
+                      <span className="text-base font-semibold text-[var(--text)] line-clamp-2">{activeResult?.value}</span>
+                      {activeResult?.price && (
+                        <span
+                          className="text-sm text-[var(--text-muted)] [&_del]:opacity-60 [&_ins]:no-underline [&_ins]:text-[var(--color-accent-start)] [&_.screen-reader-text]:hidden"
+                          dangerouslySetInnerHTML={{ __html: activeResult.price }}
+                        />
+                      )}
+                    </div>
+                    {activeResult?.desc && (
+                      <div
+                        className="text-xs text-[var(--text-secondary)] mt-1 line-clamp-3"
+                        dangerouslySetInnerHTML={{ __html: activeResult.desc }}
+                      />
+                    )}
+
+                    {activeResult?.type === 'product' ? (
+                      <div className="mt-auto flex items-center gap-2">
+                        <input
+                          type="number"
+                          min="1"
+                          defaultValue="1"
+                          className="w-12 rounded-md border border-[var(--border)] bg-[var(--bg)] px-2 py-1.5 text-sm text-[var(--text)] outline-none focus:border-[var(--color-accent-start)]"
+                        />
+                        <button
+                          className="flex-1 rounded-md bg-gradient-to-r from-[var(--color-accent-start)] to-[var(--color-accent-end)] py-2 text-center text-xs font-semibold text-white shadow-sm hover:opacity-90 transition-opacity cursor-pointer"
+                        >
+                          Add to Cart
+                        </button>
+                      </div>
+                    ) : (
+                      <a
+                        href={activeResult?.url || '#'}
+                        className="mt-auto w-full rounded-md bg-gradient-to-r from-[var(--color-accent-start)] to-[var(--color-accent-end)] py-2 text-center text-xs font-semibold text-white shadow-sm hover:opacity-90 transition-opacity"
+                      >
+                        View Result
+                      </a>
+                    ) }
+                  </div>
+                ) }
+                </>
               )}
             </div>
 
