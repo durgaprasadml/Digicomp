@@ -98,6 +98,39 @@ function Testimonials() {
     setActiveIndex((prev) => (prev + 1) % testimonials.length);
   }, []);
 
+  const goPrev = useCallback(() => {
+    setDirection(-1);
+    setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
+  }, []);
+
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+
+  const handleDragStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches ? e.targetTouches[0].clientX : e.clientX);
+    setIsPaused(true);
+  };
+
+  const handleDragMove = (e) => {
+    if (touchStart === null) return;
+    setTouchEnd(e.targetTouches ? e.targetTouches[0].clientX : e.clientX);
+  };
+
+  const handleDragEnd = () => {
+    if (touchStart !== null && touchEnd !== null) {
+      const distance = touchStart - touchEnd;
+      if (distance > 50) {
+        goNext();
+      } else if (distance < -50) {
+        goPrev();
+      }
+    }
+    setTouchStart(null);
+    setTouchEnd(null);
+    setIsPaused(false);
+  };
+
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(goNext, 5000);
@@ -127,11 +160,17 @@ function Testimonials() {
 
         {/* Carousel */}
         <div
-          className="max-w-3xl mx-auto"
+          className="max-w-3xl mx-auto cursor-grab active:cursor-grabbing select-none"
           onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
+          onMouseLeave={handleDragEnd}
+          onTouchStart={handleDragStart}
+          onTouchMove={handleDragMove}
+          onTouchEnd={handleDragEnd}
+          onMouseDown={handleDragStart}
+          onMouseMove={handleDragMove}
+          onMouseUp={handleDragEnd}
         >
-          <div className="relative min-h-[320px] md:min-h-[280px] flex items-center justify-center">
+          <div className="relative min-h-[320px] md:min-h-[280px] flex items-center justify-center overflow-hidden">
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={current.id}

@@ -30,8 +30,8 @@ const bmsSpecs = [
   },
   {
     icon: (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-        <path d="M8 1l1.5 3H14l-3 2.5L12.5 10 8 7.5 3.5 10 5 6.5 2 4h4.5L8 1z" fill="currentColor" opacity="0.7" />
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="currentColor" opacity="0.7" />
       </svg>
     ),
     label: 'Over-voltage Protection',
@@ -91,8 +91,6 @@ function BatteryIcon() {
       <rect x="23" y="19" width="8" height="26" rx="2" fill="#4ade80" opacity="0.7" />
       <rect x="33" y="19" width="8" height="26" rx="2" fill="#facc15" opacity="0.5" />
       <rect x="43" y="19" width="4" height="26" rx="2" fill="var(--color-accent-start)" opacity="0.3" />
-      {/* Lightning bolt */}
-      <path d="M30 22l-6 12h6l-2 10 8-14h-6l4-8h-4z" fill="white" opacity="0.3" />
     </svg>
   );
 }

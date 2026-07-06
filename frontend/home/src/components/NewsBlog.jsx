@@ -14,7 +14,7 @@ const item = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: 'easeOut' },
+    transition: { duration: 0.3, ease: 'easeOut' },
   },
 };
 
@@ -194,7 +194,7 @@ function NewsBlog() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.3 }}
         >
           <span className="inline-block uppercase tracking-widest text-sm text-[var(--color-accent-start)] font-semibold mb-4">
             INSIGHTS
@@ -221,7 +221,7 @@ function NewsBlog() {
               id={article.id}
               variants={item}
               whileHover={{ y: -8 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 22 }}
               className="glass-card overflow-hidden rounded-2xl cursor-pointer group flex flex-col"
             >
               {/* Card Image */}

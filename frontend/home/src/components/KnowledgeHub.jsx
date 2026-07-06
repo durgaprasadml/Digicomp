@@ -183,7 +183,7 @@ function SchematicMockup() {
 export default function KnowledgeHub() {
   return (
     <section id="knowledge-hub" className="section-padding">
-      <div className="section-container">
+      <div className="section-container overflow-hidden">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
           {/* Left column: text */}
           <motion.div
@@ -250,7 +250,7 @@ export default function KnowledgeHub() {
               transition={{ duration: 0.7, delay: 0.25 }}
               className="relative z-0 translate-x-4 translate-y-4 lg:translate-x-6 lg:translate-y-6"
             >
-              <SchematicMockup />
+              {/* <SchematicMockup /> */}
             </motion.div>
 
             {/* Code editor — on top, overlapping */}
@@ -259,7 +259,7 @@ export default function KnowledgeHub() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: '-80px' }}
               transition={{ duration: 0.7 }}
-              className="relative z-10 -mt-28 lg:-mt-36"
+              className="relative z-10"
             >
               <CodeEditorMockup />
             </motion.div>

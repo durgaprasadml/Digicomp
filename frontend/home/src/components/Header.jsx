@@ -214,7 +214,7 @@ function MobileDrawer({ onClose }) {
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-        className="absolute right-0 top-0 flex h-full w-80 max-w-[85vw] flex-col bg-[var(--surface)] shadow-2xl"
+        className="absolute right-0 top-0 flex h-full w-96 max-w-[90vw] flex-col bg-[var(--surface)] shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close */}
