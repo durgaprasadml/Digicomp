@@ -4,12 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "NODE_ENV=dev vite",
+    "build:client": "vite build",
+    "build:ssr": "vite build --ssr src/entry-server.jsx --outDir dist/server",
+    "build": "npm run build:client && npm run build:ssr",
     "lint": "oxlint",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@typeroute/router": "^0.12.1",
     "framer-motion": "^12.42.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"

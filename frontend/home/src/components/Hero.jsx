@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 // import NeonBackground from './NeonBackground';
 import DotGrid from './DotGrid';
 
-import { getHero } from '../services/api';
+import { getHero } from '../services/globals';
 
 const containerVariants = {
   hidden: {},

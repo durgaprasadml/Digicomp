@@ -1,10 +1,13 @@
 import { motion } from 'framer-motion';
 import { useState, useRef } from 'react';
+import { Link } from '@typeroute/router';
 
-import { useCart } from '../context/CartContext';
-import { getFeatured } from '../services/api';
+import { shop } from '../routes';
+import { CartStore } from '../stores/CartStore';
+import { getSSD } from '../services/globals';
 
-const { products, currency } = getFeatured()
+const { currency } = getSSD()
+const products = getSSD()?.featured || []
 
 const containerVariants = {
   hidden: {},
@@ -59,8 +62,8 @@ function CartPlusIcon() {
 function ProductCard({ product, index }) {
   const [wishlisted, setWishlisted] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
-  const { addToCart, cartRef } = useCart();
   const imgRef = useRef( null );
+  const { cartRef } = CartStore.use()
 
   const animate = () => {
     const imgRect = imgRef.current.getBoundingClientRect();
@@ -100,8 +103,8 @@ function ProductCard({ product, index }) {
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 1500);
     animate();
-    const d = await addToCart( product.id )
-    console.log( d )
+    const d = await CartStore.addToCart( product.id )
+    // console.log( d )
   };
 
   return (
@@ -237,9 +240,9 @@ export default function ProductGrid() {
           transition={{ delay: 0.5 }}
           className="mt-12 text-center"
         >
-          <a
+          <Link
             id="view-all-products"
-            href="/shop"
+            to={shop}
             className="btn-secondary inline-flex items-center gap-2"
           >
             View Full Catalog
@@ -247,7 +250,7 @@ export default function ProductGrid() {
               <line x1="5" y1="12" x2="19" y2="12" />
               <polyline points="12 5 19 12 12 19" />
             </svg>
-          </a>
+          </Link>
         </motion.div>
       </div>
     </section>

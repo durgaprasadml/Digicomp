@@ -2,15 +2,10 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
-import { ThemeProvider } from './context/ThemeContext.jsx'
-import { CartProvider } from './context/CartContext.jsx'
+import * as routes from './routes.js'
 
-createRoot(document.getElementById('dc-home')).render(
+createRoot(document.getElementById('dc-app')).render(
   <StrictMode>
-    <ThemeProvider>
-      <CartProvider>
-        <App />
-      </CartProvider>
-    </ThemeProvider>
+    <App routerProps={{ routes }} />
   </StrictMode>,
 )

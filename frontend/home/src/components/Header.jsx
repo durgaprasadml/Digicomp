@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from '../context/ThemeContext';
-import { useCart } from '../context/CartContext';
 import SearchBox from './SearchBox';
 import { createPortal } from 'react-dom';
+import { ThemeStore } from '../stores/ThemeStore';
+import { CartStore } from '../stores/CartStore';
 
 import Logo from "../assets/digicomp.svg?react";
 
@@ -196,8 +196,15 @@ function MegaMenu() {
 
 /* ── Mobile Drawer ── */
 function MobileDrawer({ onClose }) {
-  const { theme, toggleTheme } = useTheme();
-  const { cart, cartRef } = useCart();
+  const { theme } = ThemeStore.use()
+  const toggleTheme = () => ThemeStore.toggleTheme()
+  const { cart } = CartStore.use()
+  const cartRef = useRef(null)
+
+  useEffect(() => {
+    CartStore.setRef( cartRef )
+    return () => CartStore.setRef( null )
+  }, []);
 
   const drawerContent = (
     <motion.div
@@ -275,12 +282,19 @@ function MobileDrawer({ onClose }) {
 
 /* ── Header ── */
 export default function Header() {
-  const { theme, toggleTheme } = useTheme();
-  const { cart, cartRef } = useCart();
+  const { theme } = ThemeStore.use()
+  const toggleTheme = () => ThemeStore.toggleTheme()
   const [scrolled, setScrolled] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const { cart } = CartStore.use()
   const megaRef = useRef(null);
+  const cartRef = useRef(null);
+
+  useEffect(() => {
+    CartStore.setRef( cartRef )
+    return () => CartStore.setRef( null )
+  }, []);
 
   /* Scroll detection */
   useEffect(() => {

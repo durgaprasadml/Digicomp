@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-import { getSticky } from '../services/api';
+import { getSSD } from '../services/globals';
 
 const container = {
   hidden: {},
@@ -71,7 +71,7 @@ const ArrowIcon = () => (
   </svg>
 );
 
-const articles = getSticky()
+const articles = getSSD()?.sticky || []
 
 function CardImage({ article }) {
   if ( article.img ) {

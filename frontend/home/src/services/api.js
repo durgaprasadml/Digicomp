@@ -1,23 +1,15 @@
-const ajaxUrl = window.dcSSD?.ajaxUrl || ''
-const nonce = window.dcSSD?.nonce || ''
-const searchUrl = window.dcSSD?.searchUrl || ''
+import { UserStore } from "../stores/UserStore";
+import { getSSD } from "./globals";
 
-export function getCart () {
-	return window.dcSSD?.cart || {
-		items: [],
-		count: 0,
-		lineCount: 0,
-		url: '/cart',
-	}
-}
+const { ajaxUrl, searchUrl } = getSSD();
 
-export async function postToCart(id, qty = 1) {
-	const formData = { nonce, id, qty, action: 'add_to_cart' };
+async function postWPAjax( formData ) {
+	const { nonce } = UserStore.get()
 	try {
 		const response = await fetch(ajaxUrl, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-			body: new URLSearchParams(formData).toString()
+			body: new URLSearchParams( { ...formData, nonce } ).toString()
 		});
 
 		if ( ! response.ok ) throw new Error(`HTTP error! Status: ${response.status}`);
@@ -30,26 +22,14 @@ export async function postToCart(id, qty = 1) {
 	}
 }
 
-export function getHero() {
-	return window.dcSSD?.hero?.img || '/wp-content/plugins/woocommerce/assets/images/placeholder.png'
+export async function fetchUserData() {
+	const ud = await postWPAjax( { action: 'dc_user_data' } )
+	if ( ! ud?.success ) return {}
+	return ud?.data
 }
 
-export function getSticky() {
-	return window.dcSSD?.sticky || []
-}
-
-export function getFeatured() {
-	return {
-		products: window.dcSSD?.featured || [],
-		currency: window.dcSSD?.currency || ''
-	}
-}
-
-export function getEcoSystem() {
-	return {
-		mcus: window.dcSSD?.ecosystem.mcus || [],
-		fpga: window.dcSSD?.ecosystem.fpga || '/wp-content/plugins/woocommerce/assets/images/placeholder.png',
-	}
+export async function postToCart( id, qty = 1 ) {
+	return await postWPAjax( { id, qty, action: 'add_to_cart' } )
 }
 
 export async function fetchSearchResults(searchTerm) {

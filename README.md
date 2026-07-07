@@ -21,6 +21,8 @@ Code repository for Digicomp Technologies websites.
   require_once get_theme_root( 'dc' ) . '/dc/plugins/dc-essentials/index.php';
   ```
 - Under `cd frontend/home` Run `npm run build` to build home page.
+- Add `node` to server path. (Download binary directly if in shared hosting)
+- Add cron to run SSR `* * * * * {path-to}/node {dc-path}/frontend/home/ssr.js`
 
 ## Local development
 - Easily create local development environment with [localwp](https://localwp.com/).

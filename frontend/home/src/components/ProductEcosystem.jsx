@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-import { getEcoSystem } from '../services/api';
+import { getEcoSystem } from '../services/globals';
 
 const container = {
   hidden: {},
@@ -14,7 +14,7 @@ const item = {
 
 const mcuChips = ['ESP32-S3', 'RP2040', 'CH32V003', 'STM32F030', 'TI MSPM0'];
 
-const { mcus, fpga } = getEcoSystem();
+const { mcus } = getEcoSystem();
 
 const bmsSpecs = [
   {
@@ -230,7 +230,7 @@ export default function ProductEcosystem() {
 
               <div className="flex justify-center mb-5">
                 <motion.img
-                  src={ fpga }
+                  src={ getEcoSystem().fpga }
                   alt="FPGA Development Board"
                   className="w-40 h-40 md:w-48 md:h-48 object-contain drop-shadow-2xl"
                   animate={{ y: [0, -10, 0] }}

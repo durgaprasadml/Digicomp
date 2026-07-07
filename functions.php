@@ -8,6 +8,8 @@ define('SITE_VERSION', '0.2.0');
 define('CHILD_ASSETS_DIR', get_stylesheet_directory() . '/assets');
 define('CHILD_ASSETS_URL', get_stylesheet_directory_uri() . '/assets');
 
+require_once get_stylesheet_directory() . '/frontend/page-data.php';
+require_once get_stylesheet_directory() . '/frontend/renderer.php';
 require_once get_stylesheet_directory() . '/frontend/svg.php';
 require_once get_stylesheet_directory() . '/frontend/scripts.php';
 require_once get_stylesheet_directory() . '/frontend/buy-now.php';
@@ -325,26 +327,3 @@ function dc_custom_header_menu()
 <?php
 }
 add_action('greenlet_after_header_2_col_2', 'dc_custom_header_menu');
-
-function get_cart_nonce_name() {
-	return 'dc_cart_nonce';
-}
-
-function dc_add_to_kart() {
-	check_ajax_referer( get_cart_nonce_name(), 'nonce' );
-	if ( ! isset( $_POST['id'] ) ) {
-		wp_send_json_error( array( 'message' => 'No product id provided' ), 400 );
-	}
-	$pid  = intval( $_POST['id'] );
-	$qty  = intval( $_POST['qty'] || 1 );
-	$key = WC()->cart->add_to_cart( $pid, $qty );
-	wp_send_json_success( [
-		'key' => $key,
-		'id'  => $pid,
-		'qty' => $qty,
-	] );
-	die();
-}
-
-add_action('wp_ajax_add_to_cart', 'dc_add_to_kart');
-add_action('wp_ajax_nopriv_add_to_cart', 'dc_add_to_kart');
