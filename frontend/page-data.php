@@ -87,26 +87,108 @@ function get_home_data() {
 }
 
 function get_shop_data() {
-	// Fetch all products or a specific query for the shop page
+	// Fetch all products to build the filter dataset
 	$products_query = wc_get_products([
 		'status' => 'publish',
-		'limit'  => 16,
+		'limit'  => -1,
 	]);
 	$products = [];
+	$taxonomies = [
+		'categories' => [],
+		'tags'       => [],
+		'brands'     => [],
+		'attributes' => []
+	];
+	$min_price = PHP_INT_MAX;
+	$max_price = 0;
+
 	foreach ($products_query as $prod) {
 		$img_id = $prod->get_image_id();
 		$img_data = $img_id ? wp_get_attachment_image_src($img_id, 'medium') : [];
+		
+		$cats = wp_get_post_terms($prod->get_id(), 'product_cat', ['fields' => 'names']);
+		$cats = is_wp_error($cats) ? [] : ($cats ?: []);
+		
+		$tags = wp_get_post_terms($prod->get_id(), 'product_tag', ['fields' => 'names']);
+		$tags = is_wp_error($tags) ? [] : ($tags ?: []);
+		
+		// Try a few popular brand taxonomies
+		$brands = [];
+		if (taxonomy_exists('pwb-brand')) {
+			$b = wp_get_post_terms($prod->get_id(), 'pwb-brand', ['fields' => 'names']);
+			$brands = is_wp_error($b) ? [] : ($b ?: []);
+		}
+		if (empty($brands) && taxonomy_exists('product_brand')) {
+			$b = wp_get_post_terms($prod->get_id(), 'product_brand', ['fields' => 'names']);
+			$brands = is_wp_error($b) ? [] : ($b ?: []);
+		} elseif (empty($brands) && taxonomy_exists('yith_product_brand')) {
+			$b = wp_get_post_terms($prod->get_id(), 'yith_product_brand', ['fields' => 'names']);
+			$brands = is_wp_error($b) ? [] : ($b ?: []);
+		}
+
+		$attrs = [];
+		foreach ($prod->get_attributes() as $attr_name => $attr) {
+			$label = wc_attribute_label($attr_name);
+			if ($attr->is_taxonomy()) {
+				$terms = wc_get_product_terms($prod->get_id(), $attr_name, ['fields' => 'names']);
+				$attrs[$label] = is_wp_error($terms) ? [] : ($terms ?: []);
+			} else {
+				$options = $attr->get_options() ?: [];
+				$attrs[$label] = is_array($options) ? $options : array_map('trim', explode('|', $options));
+			}
+			
+			if (!isset($taxonomies['attributes'][$label])) {
+				$taxonomies['attributes'][$label] = [];
+			}
+			foreach ($attrs[$label] as $val) {
+				if (!in_array($val, $taxonomies['attributes'][$label])) {
+					$taxonomies['attributes'][$label][] = $val;
+				}
+			}
+		}
+		
+		// Extract badge if exists
+		$badges = function_exists( 'get_field' ) ? get_field( 'badges', $prod->get_id() ) : [];
+		$priority = ['Bestseller', 'Popular', 'Pro', 'New', 'Value'];
+		$badge = is_array($badges) ? current( array_intersect( $priority, $badges ) ) : null;
+		if (!$badge) $badge = null;
+
+		$price = (float) ($prod->get_price() ?: 0);
+		if ($price < $min_price) $min_price = $price;
+		if ($price > $max_price) $max_price = $price;
+
 		$products[] = [
-			'id'       => $prod->get_id(),
-			'name'     => $prod->get_name(),
-			'subtitle' => $prod->get_short_description(),
-			'price'    => $prod->get_sale_price(),
-			'regPrice' => $prod->get_regular_price(),
-			'image'    => $img_data ? $img_data[0] : '',
+			'id'         => $prod->get_id(),
+			'name'       => $prod->get_name(),
+			'subtitle'   => $prod->get_short_description(),
+			'price'      => $prod->get_price(),
+			'regPrice'   => $prod->get_regular_price(),
+			'image'      => $img_data ? $img_data[0] : '',
+			'categories' => $cats,
+			'tags'       => $tags,
+			'brands'     => $brands,
+			'attributes' => $attrs,
+			'badge'      => $badge,
+			'stock'      => $prod->get_stock_status(),
+			'date'       => $prod->get_date_created() ? $prod->get_date_created()->getOffsetTimestamp() : 0,
 		];
+
+		$taxonomies['categories'] = array_unique(array_merge($taxonomies['categories'], $cats));
+		$taxonomies['tags'] = array_unique(array_merge($taxonomies['tags'], $tags));
+		$taxonomies['brands'] = array_unique(array_merge($taxonomies['brands'], $brands));
 	}
+
+	$taxonomies['categories'] = array_values($taxonomies['categories']);
+	$taxonomies['tags'] = array_values($taxonomies['tags']);
+	$taxonomies['brands'] = array_values($taxonomies['brands']);
+	
+	if ($min_price === PHP_INT_MAX) $min_price = 0;
+
 	return [
-		'products' => $products
+		'products' => $products,
+		'filters'  => $taxonomies,
+		'priceMin' => $min_price,
+		'priceMax' => $max_price,
 	];
 }
 
@@ -212,9 +294,15 @@ function dc_page_data() {
 	if ( ! isset( $_POST['path'] ) ) {
 		wp_send_json_error( array( 'message' => 'No path provided' ), 400 );
 	}
-	$path = sanitize_text_field( $_POST['path'] );
-	$data = get_specific_data( $path, true );
-	wp_send_json_success( $data );
+	try {
+		$path = sanitize_text_field( $_POST['path'] );
+		$data = get_specific_data( $path, true );
+		wp_send_json_success( $data );
+	} catch (Exception $e) {
+		wp_send_json_error( ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500 );
+	} catch (Error $e) {
+		wp_send_json_error( ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500 );
+	}
 	die();
 }
 

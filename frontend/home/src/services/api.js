@@ -1,10 +1,9 @@
 import { UserStore } from "../stores/UserStore";
 import { PageStore } from "../stores/PageStore";
 
-const { ajaxUrl, searchUrl } = PageStore.get();
-
 async function postWPAjax( formData ) {
 	const { nonce } = UserStore.get()
+	const { ajaxUrl } = PageStore.get()
 	try {
 		const response = await fetch(ajaxUrl, {
 			method: 'POST',
@@ -42,6 +41,8 @@ export async function fetchSearchResults(searchTerm) {
   if (!searchTerm || searchTerm.length < 3) {
     return [];
   }
+
+  const { searchUrl } = PageStore.get()
 
   try {
     const response = await fetch(
