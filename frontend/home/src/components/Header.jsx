@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import SearchBox from './SearchBox';
 import { createPortal } from 'react-dom';
+import { Link } from '@typeroute/router';
+
+import { home } from '../routes';
 import { ThemeStore } from '../stores/ThemeStore';
 import { CartStore } from '../stores/CartStore';
+import SearchBox from './SearchBox';
 
 import Logo from "../assets/digicomp.svg?react";
 
@@ -327,10 +330,15 @@ export default function Header() {
     >
       <div className="section-container flex h-16 items-center justify-between gap-4 border-none">
         {/* ── Left: Brand ── */}
-        <a id="header-brand" href="#" className="flex-shrink-0" alt="Digicomp Technologies">
+        <Link
+          id="header-brand"
+          to={ home }
+          className="flex-shrink-0"
+          alt="Digicomp Technologies"
+        >
           <span className="sr-only">Digicomp Technologies</span>
           <Logo className="h-8" />
-        </a>
+        </Link>
 
         {/* ── Center: Navigation + Search (desktop) ── */}
         <div className="hidden flex-1 items-center justify-center gap-6 lg:flex">

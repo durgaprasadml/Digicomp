@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-import { getEcoSystem } from '../services/globals';
+import { usePageData } from '../stores/PageStore';
 
 const container = {
   hidden: {},
@@ -14,7 +14,6 @@ const item = {
 
 const mcuChips = ['ESP32-S3', 'RP2040', 'CH32V003', 'STM32F030', 'TI MSPM0'];
 
-const { mcus } = getEcoSystem();
 
 const bmsSpecs = [
   {
@@ -96,6 +95,8 @@ function BatteryIcon() {
 }
 
 export default function ProductEcosystem() {
+  const { ecosystem = {} } = usePageData('/');
+  const { mcus = [], fpga = undefined } = ecosystem;
   return (
     <section id="product-ecosystem" className="section-padding relative">
       <div className="section-container">
@@ -230,7 +231,7 @@ export default function ProductEcosystem() {
 
               <div className="flex justify-center mb-5">
                 <motion.img
-                  src={ getEcoSystem().fpga }
+                  src={ fpga }
                   alt="FPGA Development Board"
                   className="w-40 h-40 md:w-48 md:h-48 object-contain drop-shadow-2xl"
                   animate={{ y: [0, -10, 0] }}

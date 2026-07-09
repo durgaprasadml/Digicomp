@@ -1,6 +1,6 @@
 import { Store, useStore } from './Store'
 
-import { getStorageString, setStorage } from '../services/globals'
+import { getStorageString, setStorage } from '../services/helper'
 
 class ThemeClass extends Store {
 	constructor ( ...params ) {

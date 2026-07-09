@@ -2,7 +2,7 @@ import { Store, useStore } from './Store'
 import { UserStore } from './UserStore'
 
 import { postToCart } from '../services/api'
-import { getStorageJSON, setStorage } from '../services/globals'
+import { getStorageJSON, setStorage } from '../services/helper'
 
 const initialCart = {
 	items: [],

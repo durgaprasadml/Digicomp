@@ -1,32 +1,21 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { render } from './dist/server/entry-server.js'
+
 
 const __filename = fileURLToPath( import.meta.url )
 const __dirname = path.dirname( __filename )
-
-// Resolve the absolute path to the uploads/dc-cache/jobs directory
 const cacheDir = path.resolve( __dirname, '../../../../uploads/dc-cache' )
-const jobsDir = `${ cacheDir }/jobs`
 
-if ( !fs.existsSync( jobsDir ) ) {
-  console.log( `[INFO] Jobs directory not found at ${jobsDir}. Exiting.` )
-  process.exit( 0 )
+const jobFilePath = process.argv[2]
+if (!jobFilePath || !fs.existsSync(jobFilePath)) {
+    console.error('[ERROR] Invalid or missing job file path.')
+    process.exit(1)
 }
 
-const files = fs.readdirSync( jobsDir ).filter( f => f.endsWith( '.json' ) )
+const file = path.basename(jobFilePath)
 
-if ( files.length === 0 ) {
-  console.log( `[INFO] No jobs to process.` )
-  process.exit( 0 )
-}
-
-for ( const file of files ) {
-  const jobFilePath = path.join( jobsDir, file )
-  console.log( `[INFO] Processing job: ${ file }` )
-
-  try {
+try {
     // 1. Read Job File
     const jobRaw = fs.readFileSync( jobFilePath, 'utf-8' )
     const jobData = JSON.parse( jobRaw )
@@ -74,7 +63,8 @@ for ( const file of files ) {
     }
 
     // 3. Render React App
-    const appHtml = render( jobData.url || '/' )
+    const { render } = await import( './dist/server/entry-server.js' )
+    const appHtml = render( `/${ 'home' === jobData.path ? '' : jobData.path }` )
 
     // 4. Construct Inner HTML (App + Hydration Data)
     const innerHtml = `
@@ -94,8 +84,7 @@ for ( const file of files ) {
     // 6. Cleanup the job file
     fs.unlinkSync( jobFilePath )
 
-  } catch ( e ) {
+} catch ( e ) {
     console.error( `[ERROR] Failed to process job ${ jobFilePath }:`, e )
-    // Note: We DO NOT exit here, so that a single bad job doesn't crash the entire queue!
-  }
+    process.exit(1)
 }

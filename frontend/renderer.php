@@ -1,28 +1,28 @@
 <?php
 
-function get_cache_path( $uri ) {
+function get_cache_path( $path ) {
 	$cache_base = wp_upload_dir()['basedir'] . '/dc-cache';
-	$req_hash   = substr( md5( $uri), 0, 8 );
+	$req_hash   = substr( md5( $path), 0, 8 );
 	return [
 		'html' => $cache_base . '/html/ssr-' . $req_hash . '.html',
 		'job'  => $cache_base . '/jobs/job-' . $req_hash . '.json',
 	];
 }
 
-function get_ssr_html( $uri ) {
+function get_ssr_html( $path ) {
 	$midnight = strtotime( 'today 3:00 AM' );
 	if ( time() < $midnight ) {
 		$midnight = strtotime( '-1 day', $midnight );
 	}
-	$html_path = get_cache_path( $uri )['html'];
+	$html_path = get_cache_path( $path )['html'];
 	$serve_cache = file_exists( $html_path ) && filemtime( $html_path ) > $midnight;
 	return $serve_cache ? file_get_contents( $html_path ) : '';
 }
 
-function add_ssr_job( $uri, $ssd ) {
-	$job_path = get_cache_path( $uri )['job'];
+function add_ssr_job( $path, $ssd ) {
+	$job_path = get_cache_path( $path )['job'];
 	$job_data = [
-		'url'   => $uri,
+		'path'  => $path,
 		'dcSSD' => $ssd,
 	];
 	return file_put_contents( $job_path, wp_json_encode( $job_data ) );
@@ -39,14 +39,15 @@ function get_react_assets() {
 }
 
 function dc_render() {
-	$uri = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
-	if ( ! in_array( $uri, get_react_pages() ) ) return;
+	$uri = trim( parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '', '/' );
+	$path = ( '' === $uri ) ? 'home' : $uri;
+	if ( ! in_array( $path, get_react_pages() ) ) return;
 
 	$assets = get_react_assets();
-	$html = get_ssr_html( $uri );
-	$data = get_page_data( $uri, ! $html );
+	$html = get_ssr_html( $path );
+	$data = get_page_data( $path, ! $html );
 	if ( ! $html ) {
-		add_ssr_job( $uri, $data['ssd'] );
+		add_ssr_job( $path, $data['ssd'] );
 	}
 	?>
 <!doctype html>

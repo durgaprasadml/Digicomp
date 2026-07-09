@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 // import NeonBackground from './NeonBackground';
 import DotGrid from './DotGrid';
 
-import { getHero } from '../services/globals';
+import { usePageData } from '../stores/PageStore';
 
 const containerVariants = {
   hidden: {},
@@ -33,7 +33,7 @@ export default function Hero() {
   const [is3DLoaded, setIs3DLoaded] = useState( false )
   const isImporting = useRef( false )
 
-  const heroData = getHero()
+  const { hero: heroData = {} } = usePageData('/')
   const has3D = !!heroData?.glb
 
   const handleInteraction = () => {

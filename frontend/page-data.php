@@ -106,25 +106,25 @@ function get_shop_data() {
 		];
 	}
 	return [
-		'featured' => $products
+		'products' => $products
 	];
 }
 
-function get_specific_data( $uri = '/', $ssr = false ) {
-	if ( '/' === $uri ) {
+function get_specific_data( $path = 'home', $ssr = false ) {
+	if ( 'home' === $path ) {
 		return [
-			'ssd' => $ssr ? get_home_data() : [],
+			'ssd' => [ 'pages' => [ 'home' => $ssr ? get_home_data() : [] ] ],
 		];
-	} elseif ( '/shop/' === $uri ) {
+	} elseif ( 'shop' === $path ) {
 		return [
 			'title' => 'Digicomp Technologies - Shop all products',
-			'ssd'   => $ssr ? get_shop_data() : [],
+			'ssd'   => [ 'pages' => [ 'shop' => $ssr ? get_shop_data() : [] ] ],
 		];
 	}
 	return [];
 }
 
-function get_page_data( $uri = '/', $ssr = false ) {
+function get_page_data( $path = 'home', $ssr = false ) {
 	$data = [
 		'title' => 'Digicomp Technologies — Engineered for Innovators',
 		'desc'  => 'Digicomp Technologies — Research-grade development boards, BMS, and FPGA modules designed and manufactured in India. Open-source documentation, industrial reliability.',
@@ -136,14 +136,17 @@ function get_page_data( $uri = '/', $ssr = false ) {
 			'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
 			'searchUrl' => get_home_url() . '/wp-content/plugins/ajax-search-for-woocommerce-premium/includes/Engines/TNTSearchMySQL/Endpoints/search.php',
 			'currency'  => html_entity_decode( get_woocommerce_currency_symbol() ),
+			'pages'     => [],
 		],
 	];
 
-	$specific = get_specific_data( $uri, $ssr );
+	$specific = get_specific_data( $path, $ssr );
 	if ( ! empty( $specific ) ) {
 		foreach ( $specific as $key => $value ) {
 			if ( 'ssd' === $key ) {
-				$data['ssd'] = array_merge( $data['ssd'], $specific['ssd'] );
+				if ( isset( $specific['ssd']['pages'] ) ) {
+					$data['ssd']['pages'] = array_merge( $data['ssd']['pages'], $specific['ssd']['pages'] );
+				}
 			} else {
 				$data[ $key ] = $value;
 			}
@@ -154,7 +157,7 @@ function get_page_data( $uri = '/', $ssr = false ) {
 }
 
 function get_react_pages() {
-	return ['/', '/shop/'];
+	return ['home', 'shop'];
 }
 
 function get_user_nonce_name() {
@@ -205,7 +208,19 @@ function dc_add_to_kart() {
 	die();
 }
 
+function dc_page_data() {
+	if ( ! isset( $_POST['path'] ) ) {
+		wp_send_json_error( array( 'message' => 'No path provided' ), 400 );
+	}
+	$path = sanitize_text_field( $_POST['path'] );
+	$data = get_specific_data( $path, true );
+	wp_send_json_success( $data );
+	die();
+}
+
 add_action('wp_ajax_add_to_cart', 'dc_add_to_kart');
 add_action('wp_ajax_nopriv_add_to_cart', 'dc_add_to_kart');
 add_action('wp_ajax_dc_user_data', 'dc_user_data');
 add_action('wp_ajax_nopriv_dc_user_data', 'dc_user_data');
+add_action('wp_ajax_dc_page_data', 'dc_page_data');
+add_action('wp_ajax_nopriv_dc_page_data', 'dc_page_data');

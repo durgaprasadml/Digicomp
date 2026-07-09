@@ -1,7 +1,7 @@
 import { UserStore } from "../stores/UserStore";
-import { getSSD } from "./globals";
+import { PageStore } from "../stores/PageStore";
 
-const { ajaxUrl, searchUrl } = getSSD();
+const { ajaxUrl, searchUrl } = PageStore.get();
 
 async function postWPAjax( formData ) {
 	const { nonce } = UserStore.get()
@@ -26,6 +26,12 @@ export async function fetchUserData() {
 	const ud = await postWPAjax( { action: 'dc_user_data' } )
 	if ( ! ud?.success ) return {}
 	return ud?.data
+}
+
+export async function fetchPageData(path) {
+	const pd = await postWPAjax( { action: 'dc_page_data', path } )
+	if ( ! pd?.success ) return null
+	return pd?.data
 }
 
 export async function postToCart( id, qty = 1 ) {

@@ -1,5 +1,8 @@
 import { lazy } from 'react'
 import { route } from "@typeroute/router"
+import App from './App'
 
-export const home = route( '/' ).component( lazy( () => import( './pages/Home' ) ) )
-export const shop = route( '/shop' ).component( lazy( () => import( './pages/Shop' ) ) )
+const app = route( '/' ).component( App )
+
+export const home = app.component( lazy( () => import( './pages/Home' ) ) )
+export const shop = app.route( '/shop' ).component( lazy( () => import( './pages/Shop' ) ) )

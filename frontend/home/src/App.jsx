@@ -1,11 +1,11 @@
 import { Suspense, useEffect } from 'react'
-import { RouterRoot } from "@typeroute/router"
+import { Outlet } from "@typeroute/router"
 import Header from './components/Header'
 import Footer from './components/Footer'
 import ScrollToTop from './components/ScrollToTop'
 import { UserStore } from './stores/UserStore'
 
-function App({ routerProps }) {
+function App() {
   useEffect( () => {
     UserStore.fetchData()
   }, [] )
@@ -21,7 +21,7 @@ function App({ routerProps }) {
             </div>
           </div>
         }>
-          <RouterRoot {...routerProps} />
+          <Outlet />
         </Suspense>
       </main>
       <Footer />

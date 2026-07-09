@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-import { getSSD } from '../services/globals';
+import { usePageData } from '../stores/PageStore';
 
 const container = {
   hidden: {},
@@ -71,17 +71,21 @@ const ArrowIcon = () => (
   </svg>
 );
 
-const articles = getSSD()?.sticky || []
-
 function CardImage({ article }) {
   if ( article.img ) {
     return (
       <div className="relative h-48 overflow-hidden bg-[var(--elevated)]">
-        <img
-          src={article.img}
-          alt={article.title}
-          className="w-full h-full object-cover"
-        />
+        {article.img ? (
+          <img
+            src={article.img}
+            alt={article.title}
+            className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+          />
+        ) : (
+          <div className="h-full w-full bg-[var(--bg-highlight)] flex items-center justify-center text-[var(--text-muted)]">
+             <span className="text-sm">No Image</span>
+          </div>
+        )}
         <div
           className="absolute inset-0"
           style={{
@@ -185,6 +189,8 @@ function CardImage({ article }) {
 }
 
 function NewsBlog() {
+  const { sticky: articles = [] } = usePageData('/')
+
   return (
     <section id="news-blog" className="section-padding bg-[var(--bg)]">
       <div className="section-container">
