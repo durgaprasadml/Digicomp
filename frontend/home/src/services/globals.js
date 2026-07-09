@@ -8,7 +8,10 @@ export function getSSD() {
 }
 
 export function getHero() {
-	return globalThis.window?.dcSSD?.hero?.img || '/wp-content/plugins/woocommerce/assets/images/placeholder.webp'
+	return globalThis.window?.dcSSD?.hero || {
+    img: '/wp-content/plugins/woocommerce/assets/images/placeholder.webp',
+    glb: '',
+  }
 }
 
 export function getEcoSystem() {

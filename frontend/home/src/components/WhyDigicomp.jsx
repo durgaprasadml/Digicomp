@@ -18,8 +18,8 @@ const cards = [
           strokeLinejoin="round"
         />
         {/* Small flag inside */}
-        <rect x="14" y="8" width="5" height="3.5" rx="0.5" fill="url(#pin-grad)" opacity="0.9" />
-        <line x1="14" y1="8" x2="14" y2="15" stroke="url(#pin-grad)" strokeWidth="1.5" strokeLinecap="round" />
+        <rect x="14" y="10" width="7" height="5" rx="0.5" fill="url(#pin-grad)" opacity="0.9" />
+        <line x1="14" y1="10" x2="14" y2="20" stroke="url(#pin-grad)" strokeWidth="1.5" strokeLinecap="round" />
         <defs>
           <linearGradient id="pin-grad" x1="6" y1="2" x2="26" y2="30" gradientUnits="userSpaceOnUse">
             <stop stopColor="var(--color-accent-start)" />
@@ -69,14 +69,14 @@ const cards = [
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
         <path
-          d="M16 3L4 9v8c0 7.73 5.12 14.95 12 17 6.88-2.05 12-9.27 12-17V9L16 3z"
+          d="M16 0.5L4 6.5V14.5C4 22.23 9.12 29.45 16 31.5C22.88 29.45 28 22.23 28 14.5V6.5L16 0.5Z"
           stroke="url(#shield-grad)"
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        <polyline
-          points="11,16 14.5,19.5 21,13"
+        <path
+          d="M11 13.5L14.5 17L21 10.5"
           stroke="url(#shield-grad)"
           strokeWidth="2"
           strokeLinecap="round"

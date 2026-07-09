@@ -1,3 +1,4 @@
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 // import NeonBackground from './NeonBackground';
 import DotGrid from './DotGrid';
@@ -29,6 +30,28 @@ const avatars = [
 ];
 
 export default function Hero() {
+  const [is3DLoaded, setIs3DLoaded] = useState( false )
+  const isImporting = useRef( false )
+
+  const heroData = getHero()
+  const has3D = !!heroData?.glb
+
+  const handleInteraction = () => {
+    if (!has3D || is3DLoaded || isImporting.current) return;
+
+    if (typeof window !== 'undefined') {
+      isImporting.current = true;
+      import('@google/model-viewer')
+        .then(() => {
+          setIs3DLoaded(true);
+        })
+        .catch((err) => {
+          console.error("Failed to load 3D viewer:", err);
+          isImporting.current = false;
+        });
+    }
+  };
+
   return (
     <section
       id="hero"
@@ -47,7 +70,10 @@ export default function Hero() {
         resistance={1}
         returnDuration={1} />
 
-      <div className="section-container relative z-10 flex w-full flex-col-reverse items-center gap-12 py-20 lg:flex-row lg:gap-16">
+      <div
+        className="section-container relative z-10 flex w-full flex-col-reverse items-center gap-12 py-20 lg:flex-row lg:gap-16"
+        onMouseEnter={handleInteraction}
+        onClick={handleInteraction} >
         {/* ── Left Side (Text) ── */}
         <motion.div
           className="flex w-full flex-col items-center text-center lg:w-[55%] lg:items-start lg:text-left"
@@ -155,19 +181,34 @@ export default function Hero() {
             aria-hidden="true"
           />
 
-          {/* Floating board image */}
-          <motion.img
-            id="hero-product-image"
-            src={ getHero() }
-            alt="ESP32-S3 Development Board by Digicomp Technologies"
-            className="relative z-10 w-full max-w-md drop-shadow-2xl lg:max-w-lg"
-            animate={{ y: [0, -12, 0] }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-          />
+          {is3DLoaded ? (
+            <div className="w-full h-full overflow-hidden">
+              <model-viewer
+                src={ heroData.glb }
+                poster={ heroData.img }
+                alt="ESP32-S3 Development Board by Digicomp Technologies"
+                camera-controls="true"
+                camera-orbit="45deg 45deg 10m"
+                // auto-rotate="true"
+                rotation-per-second="30deg"
+                // interaction-prompt="hover-after-interaction"
+                style={{ width: '100%', height: 'calc(100% + 6px)', '--poster-color': 'transparent', position: 'relative', zIndex: 10, marginTop: '-6px' }}
+              ></model-viewer>
+            </div>
+          ) : (
+            <motion.img
+              id="hero-product-image"
+              src={ heroData.img }
+              alt="ESP32-S3 Development Board by Digicomp Technologies"
+              className={`relative z-10 w-full max-w-md drop-shadow-2xl lg:max-w-lg ${has3D ? 'cursor-pointer' : ''}`}
+              animate={{ y: [0, -12, 0] }}
+              transition={{
+                duration: 6,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+          )}
         </motion.div>
       </div>
     </section>

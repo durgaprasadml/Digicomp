@@ -72,7 +72,7 @@ function get_home_data() {
 		'featured'  => $featured,
 		'hero'      => [
 			'img'   => $hero_url,
-			'3d'    => '',
+			'glb'   => '/wp-content/uploads/2026/07/ESP32-S3.glb',
 		],
 		'ecosystem' => [
 			'mcus' => [
@@ -106,7 +106,7 @@ function get_shop_data() {
 		];
 	}
 	return [
-		'products' => $products
+		'featured' => $products
 	];
 }
 

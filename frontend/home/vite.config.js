@@ -7,17 +7,15 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), svgr()],
   base: '/wp-content/themes/dc/frontend/home/dist/',
   build: {
+    modulePreload: {
+      resolveDependencies: (filename, deps) => {
+        return deps.filter(dep => !dep.includes('model-viewer'));
+      }
+    },
     manifest: '_manifest.json',
     outDir: 'dist',
     rollupOptions: {
-      input: 'src/main.jsx',
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            return 'vendor';
-          }
-        }
-      }
+      input: 'src/main.jsx'
     }
   }
 })

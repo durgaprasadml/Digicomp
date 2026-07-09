@@ -38,53 +38,35 @@ function restrict_login() {
 add_action( 'init', 'restrict_login' );
 
 /**
- * Enable upload for webp image files.
+ * Enable upload for glb 3d model files.
  */
-function webp_upload_mimes( $existing_mimes ) {
-	$existing_mimes['webp'] = 'image/webp';
+function glb_upload_mimes( $existing_mimes ) {
+	$existing_mimes['glb'] = 'model/gltf-binary';
 	return $existing_mimes;
 }
 
 function webp_file_and_ext( $mime, $file, $filename, $mimes ) {
 	$wp_filetype = wp_check_filetype( $filename, $mimes );
-	if ( in_array( $wp_filetype['ext'], [ 'webp' ] ) ) {
-		$mime['ext']  = 'webp';
-		$mime['type'] = 'image/webp';
+	if ( in_array( $wp_filetype['ext'], [ 'glb' ] ) ) {
+		$mime['ext']  = 'glb';
+		$mime['type'] = 'model/gltf-binary';
 	}
 
 	return $mime;
 }
 
-function add_webp_mime_type( $mimes ) {
-	$mimes['webp'] = 'image/webp';
+function add_glb_mime_type( $mimes ) {
+	$mimes['glb'] = 'model/gltf-binary';
 	return $mimes;
 }
 
-function webp_is_displayable( $result, $path ) {
-	if ( false === $result ) {
-		$displayable_image_types = array( IMAGETYPE_WEBP );
-		$info = @getimagesize( $path );
-
-		if ( empty( $info ) ) {
-			$result = false;
-		} elseif ( ! in_array( $info[2], $displayable_image_types ) ) {
-			$result = false;
-		} else {
-			$result = true;
-		}
-	}
-
-	return $result;
-}
-
-add_filter( 'mime_types', 'webp_upload_mimes' );
-add_filter( 'upload_mimes', 'add_webp_mime_type' );
+add_filter( 'mime_types', 'glb_upload_mimes' );
+add_filter( 'upload_mimes', 'add_glb_mime_type' );
 add_filter( 'wp_check_filetype_and_ext', 'webp_file_and_ext', 10, 4 );
-add_filter( 'file_is_displayable_image', 'webp_is_displayable', 99, 2 );
 
 function gl_security_headers($headers) {
 	if ( ! is_admin() ) {
-		$headers['content-security-policy'] = "default-src 'self' 'unsafe-inline' https: data:";
+		$headers['content-security-policy'] = "default-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https: data:; worker-src 'self' blob:;";
 	}
 	// $headers['x-powered-by'] = 'PHP/X';
 	return $headers;

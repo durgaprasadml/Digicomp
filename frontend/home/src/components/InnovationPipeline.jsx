@@ -45,12 +45,12 @@ const upcomingProducts = [
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
         {/* Radio waves / antenna */}
-        <line x1="16" y1="28" x2="16" y2="16" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="16" y1="28" x2="16" y2="18" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" />
         <line x1="12" y1="28" x2="20" y2="28" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="16" cy="14" r="2" fill="var(--color-accent-start)" opacity="0.6" />
-        <path d="M10 10a8.5 8.5 0 0 1 12 0" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-        <path d="M7 7a13 13 0 0 1 18 0" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.7" />
-        <path d="M4 4a17.5 17.5 0 0 1 24 0" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.4" />
+        <circle cx="16" cy="16" r="2" fill="var(--color-accent-start)" opacity="0.6" />
+        <path d="M10 12.4a8.5 8.5 0 0 1 12 0" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+        <path d="M7 9.4a13 13 0 0 1 18 0" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.7" />
+        <path d="M4 6.4a17.5 17.5 0 0 1 24 0" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.4" />
       </svg>
     ),
     title: 'Sub-1GHz & 2.4GHz Wireless Modules',
