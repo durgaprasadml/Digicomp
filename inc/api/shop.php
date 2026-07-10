@@ -11,11 +11,19 @@ if (!defined('ABSPATH')) {
  * Generates the full product and filter payload for the Shop SPA.
  */
 function dc_api_get_shop( \WP_REST_Request $request ) {
-	// Fetch all products to build the filter dataset and virtualization payload
-	$products_query = wc_get_products([
+	$slug = $request['slug'] ?? null;
+
+	$query_args = [
 		'status' => 'publish',
 		'limit'  => -1,
-	]);
+	];
+
+	if ( $slug ) {
+		$query_args['category'] = array( $slug );
+	}
+
+	// Fetch all products to build the filter dataset and virtualization payload
+	$products_query = wc_get_products( $query_args );
 
 	$products = [];
 	$taxonomies = [
@@ -132,17 +140,33 @@ function dc_api_get_shop( \WP_REST_Request $request ) {
 	$taxonomies['tags'] = array_values($taxonomies['tags']);
 	$taxonomies['brands'] = array_values($taxonomies['brands']);
 
+	$heading = 'Shop';
+	if ( $slug ) {
+		$term = get_term_by( 'slug', $slug, 'product_cat' );
+		if ( $term && ! is_wp_error( $term ) ) {
+			$heading = $term->name;
+		} else {
+			$heading = ucwords( str_replace( '-', ' ', $slug ) );
+		}
+	}
+
 	if ( defined( 'IS_DC_DEMO' ) ) {
 		require_once get_stylesheet_directory() . '/inc/api/shop-mock.php';
-		return rest_ensure_response( get_shop_mock_data( $products, $taxonomies ) );
+		$mock_data = get_shop_mock_data( $products, $taxonomies );
+		$mock_data['heading'] = $heading;
+		if ( ! isset( $mock_data['head'] ) ) {
+			$mock_data['head'] = $slug ? dc_api_category_head( $request ) : dc_api_shop_head();
+		}
+		return rest_ensure_response( $mock_data );
 	}
 
 	return rest_ensure_response([
+		'heading'  => $heading,
 		'products' => $products,
 		'filters'  => $taxonomies,
 		'priceMin' => $min_price,
 		'priceMax' => $max_price,
-		'head'     => dc_api_shop_head(),
+		'head'     => $slug ? dc_api_category_head( $request ) : dc_api_shop_head(),
 	]);
 }
 
@@ -150,5 +174,15 @@ function dc_api_shop_head() {
 	return [
 		'title' => 'Digicomp Technologies - Shop all products',
 		'desc'  => 'Browse all Digicomp Technologies products - Research-grade development boards, BMS, and FPGA modules designed and manufactured in India. Open-source documentation, industrial reliability.'
+	];
+}
+
+function dc_api_category_head( $request = null ) {
+	$slug = $request ? $request['slug'] : '';
+	$term = $slug ? get_term_by( 'slug', $slug, 'product_cat' ) : null;
+	$title = $term && ! is_wp_error( $term ) ? $term->name . ' - Digicomp Technologies' : 'Category - Digicomp Technologies';
+	return [
+		'title' => $title,
+		'desc'  => 'Browse ' . ( $term && ! is_wp_error( $term ) ? $term->name : 'our products' ) . ' at Digicomp Technologies.',
 	];
 }

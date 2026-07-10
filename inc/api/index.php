@@ -17,6 +17,10 @@ function dc_api_routes() {
 			'callback' => 'dc_api_get_shop',
 			'get_head' => 'dc_api_shop_head',
 		],
+		'product-category/(?P<slug>[a-zA-Z0-9-]+)' => [
+			'callback' => 'dc_api_get_shop',
+			'get_head' => 'dc_api_category_head',
+		],
 	];
 }
 

@@ -41,7 +41,15 @@ function get_react_assets() {
 function dc_render() {
 	$uri = trim( parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '', '/' );
 	$path = ( '' === $uri ) ? 'home' : $uri;
-	if ( ! in_array( $path, get_react_pages() ) ) return;
+	$routes = dc_api_routes();
+	$is_react = false;
+	foreach ( $routes as $route => $args ) {
+		if ( preg_match( '#^' . $route . '$#', $path ) ) {
+			$is_react = true;
+			break;
+		}
+	}
+	if ( ! $is_react ) return;
 
 	$assets = get_react_assets();
 	$html = get_ssr_html( $path );

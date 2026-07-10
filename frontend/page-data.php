@@ -11,20 +11,35 @@ function dc_default_head() {
 
 function get_specific_data( $path = 'home', $has_ssr = true ) {
 	$routes = dc_api_routes();
-	if ( ! isset( $routes[$path] ) || ! isset( $routes[$path]['callback'] ) ) {
+	$matched_route = null;
+	$matches = [];
+
+	foreach ( $routes as $route => $args ) {
+		if ( preg_match( '#^' . $route . '$#', $path, $matches ) ) {
+			$matched_route = $args;
+			break;
+		}
+	}
+
+	if ( ! $matched_route || ! isset( $matched_route['callback'] ) ) {
 		return [];
+	}
+
+	$request = new \WP_REST_Request( 'GET', '/dc/v1/' . $path );
+	foreach ( $matches as $key => $val ) {
+		if ( is_string( $key ) ) {
+			$request->set_param( $key, $val );
+		}
 	}
 
 	if ( $has_ssr ) {
 		// Only return head data.
-		return [ 'head' => isset( $routes[$path]['get_head'] ) ? call_user_func( $routes[$path]['get_head'] ) : [] ];
+		return [ 'head' => isset( $matched_route['get_head'] ) ? call_user_func( $matched_route['get_head'], $request ) : [] ];
 	}
 
-	$request = new \WP_REST_Request( 'GET', '/dc/v1/' . $path );
-	$response = call_user_func( $routes[$path]['callback'], $request );
+	$response = call_user_func( $matched_route['callback'], $request );
 	if ( ! is_wp_error( $response ) ) {
-		$data = $response->get_data();
-		return $has_ssr ? [] : $data;
+		return $response->get_data();
 	}
 	return [];
 }
@@ -57,10 +72,6 @@ function get_page_data( $path = 'home', $has_ssr = true ) {
 	}
 
 	return $data;
-}
-
-function get_react_pages() {
-	return ['home', 'shop'];
 }
 
 function get_user_nonce_name() {

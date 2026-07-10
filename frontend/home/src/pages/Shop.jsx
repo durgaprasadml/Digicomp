@@ -7,7 +7,7 @@ import ShopFilters from '../components/ShopFilters'
 
 export default function Shop() {
   const { path } = useLocation()
-  const { products = [], filters = {}, priceMin = 0, priceMax = 99999 } = usePageData(path) || {}
+  const { products = [], filters = {}, priceMin = 0, priceMax = 99999, heading = 'Shop' } = usePageData(path) || {}
 
   const [activeFilters, setActiveFilters] = useState({
     categories: [],
@@ -81,7 +81,7 @@ export default function Shop() {
       {/* Top Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-4 border-b border-[var(--border)]">
         <div>
-          <h1 className="text-3xl font-bold text-[var(--text)]">Shop</h1>
+          <h1 className="text-3xl font-bold text-[var(--text)]">{heading}</h1>
           <p className="text-[var(--text-muted)] mt-1">Showing {filteredProducts.length} results</p>
         </div>
         <div className="flex items-center gap-3">
