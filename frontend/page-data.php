@@ -97,8 +97,10 @@ function get_shop_data() {
 		'categories' => [],
 		'tags'       => [],
 		'brands'     => [],
-		'attributes' => []
+		'attributes' => [],
+		'acf'        => []
 	];
+	$acf_filter_keys = ['badges'];
 	$min_price = PHP_INT_MAX;
 	$max_price = 0;
 
@@ -147,11 +149,33 @@ function get_shop_data() {
 			}
 		}
 
-		// Extract badge if exists
+		// Extract badge if exists (for UI presentation)
 		$badges = function_exists( 'get_field' ) ? get_field( 'badges', $prod->get_id() ) : [];
 		$priority = ['Bestseller', 'Popular', 'Pro', 'New', 'Value'];
 		$badge = is_array($badges) ? current( array_intersect( $priority, $badges ) ) : null;
 		if (!$badge) $badge = null;
+
+		// Extract generic ACF fields for filtering logic
+		$acf_values = [];
+		foreach ($acf_filter_keys as $key) {
+			$val = function_exists('get_field') ? get_field($key, $prod->get_id()) : null;
+			if (empty($val)) {
+				$acf_values[$key] = [];
+			} elseif (is_array($val)) {
+				$acf_values[$key] = $val;
+			} else {
+				$acf_values[$key] = [$val === true ? 'Yes' : (string)$val];
+			}
+			
+			if (!isset($taxonomies['acf'][$key])) {
+				$taxonomies['acf'][$key] = [];
+			}
+			foreach ($acf_values[$key] as $v) {
+				if (!in_array($v, $taxonomies['acf'][$key])) {
+					$taxonomies['acf'][$key][] = $v;
+				}
+			}
+		}
 
 		$price = (float) ($prod->get_price() ?: 0);
 		if ($price < $min_price) $min_price = $price;
@@ -168,6 +192,7 @@ function get_shop_data() {
 			'tags'       => $tags,
 			'brands'     => $brands,
 			'attributes' => $attrs,
+			'acf'        => $acf_values,
 			'badge'      => $badge,
 			'stock'      => $prod->get_stock_status(),
 			'date'       => $prod->get_date_created() ? $prod->get_date_created()->getOffsetTimestamp() : 0,

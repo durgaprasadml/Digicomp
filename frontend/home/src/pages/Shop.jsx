@@ -14,6 +14,7 @@ export default function Shop() {
     tags: [],
     brands: [],
     attributes: {},
+    acf: {},
     price: [priceMin, priceMax],
     inStockOnly: true
   })
@@ -40,10 +41,22 @@ export default function Shop() {
       if (activeFilters.tags.length > 0 && !activeFilters.tags.some(t => p.tags?.includes(t))) return false
 
       // Attributes
-      for (const [attrName, selectedValues] of Object.entries(activeFilters.attributes)) {
-        if (selectedValues.length > 0) {
-          const productAttrValues = p.attributes?.[attrName] || []
-          if (!selectedValues.some(v => productAttrValues.includes(v))) return false
+      if (activeFilters.attributes) {
+        for (const [attrName, selectedValues] of Object.entries(activeFilters.attributes)) {
+          if (selectedValues.length > 0) {
+            const productAttrValues = p.attributes?.[attrName] || []
+            if (!selectedValues.some(v => productAttrValues.includes(v))) return false
+          }
+        }
+      }
+
+      // ACF Fields
+      if (activeFilters.acf) {
+        for (const [acfName, selectedValues] of Object.entries(activeFilters.acf)) {
+          if (selectedValues.length > 0) {
+            const productAcfValues = p.acf?.[acfName] || []
+            if (!selectedValues.some(v => productAcfValues.includes(v))) return false
+          }
         }
       }
 
@@ -155,8 +168,8 @@ export default function Shop() {
               </div>
               <h3 className="text-xl font-bold text-[var(--text)] mb-2">No products found</h3>
               <p className="text-[var(--text-muted)] max-w-sm">Try adjusting your filters or search terms to find what you're looking for.</p>
-              <button
-                onClick={() => setActiveFilters({ categories: [], tags: [], brands: [], attributes: {}, price: [priceMin, priceMax], inStockOnly: true })}
+              <button 
+                onClick={() => setActiveFilters({ categories: [], tags: [], brands: [], attributes: {}, acf: {}, price: [priceMin, priceMax], inStockOnly: true })}
                 className="mt-6 text-sm font-semibold text-[var(--color-accent-start)] hover:underline cursor-pointer"
               >
                 Clear all filters

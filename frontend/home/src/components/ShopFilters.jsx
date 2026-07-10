@@ -111,7 +111,7 @@ export default function ShopFilters({ filtersData, activeFilters, setActiveFilte
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-xl font-bold text-[var(--text)]">Filters</h2>
         <button
-          onClick={() => setActiveFilters({ categories: [], tags: [], brands: [], attributes: {}, price: [minPrice, maxPrice], inStockOnly: true })}
+          onClick={() => setActiveFilters({ categories: [], tags: [], brands: [], attributes: {}, acf: {}, price: [minPrice, maxPrice], inStockOnly: true })}
           className="text-xs text-[var(--color-accent-start)] hover:underline cursor-pointer"
         >
           Clear All
@@ -159,17 +159,39 @@ export default function ShopFilters({ filtersData, activeFilters, setActiveFilte
       {/* Dynamic Attributes (Processor, RAM, etc) */}
       {Object.entries(filtersData?.attributes || {}).map(([attrName, options]) => (
         options.length > 0 && (
-          <Accordion key={attrName} title={attrName} defaultOpen={false}>
+          <Accordion key={`attr-${attrName}`} title={attrName} defaultOpen={false}>
             <CheckboxList
               options={options}
-              selected={activeFilters.attributes[attrName] || []}
+              selected={activeFilters.attributes?.[attrName] || []}
               onChange={(val) => {
-                const current = activeFilters.attributes[attrName] || []
+                const current = activeFilters.attributes?.[attrName] || []
                 setActiveFilters(prev => ({
                   ...prev,
                   attributes: {
                     ...prev.attributes,
                     [attrName]: toggleArrayItem(current, val)
+                  }
+                }))
+              }}
+            />
+          </Accordion>
+        )
+      ))}
+
+      {/* ACF Filters */}
+      {Object.entries(filtersData?.acf || {}).map(([acfName, options]) => (
+        options.length > 0 && (
+          <Accordion key={`acf-${acfName}`} title={acfName.charAt(0).toUpperCase() + acfName.slice(1).replace('_', ' ')} defaultOpen={false}>
+            <CheckboxList
+              options={options}
+              selected={activeFilters.acf?.[acfName] || []}
+              onChange={(val) => {
+                const current = activeFilters.acf?.[acfName] || []
+                setActiveFilters(prev => ({
+                  ...prev,
+                  acf: {
+                    ...prev.acf,
+                    [acfName]: toggleArrayItem(current, val)
                   }
                 }))
               }}
