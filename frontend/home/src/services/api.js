@@ -28,9 +28,27 @@ export async function fetchUserData() {
 }
 
 export async function fetchPageData(path) {
-	const pd = await postWPAjax( { action: 'dc_page_data', path } )
-	if ( ! pd?.success ) return null
-	return pd?.data
+	try {
+		const { homeUrl, dcApiUrl } = PageStore.get();
+		const response = await fetch(`${ dcApiUrl }${ path }`);
+		if (!response.ok) throw new Error('REST API error');
+		const data = await response.json();
+
+		const { ...pageData } = data;
+
+		// Reconstruct the expected shape so components don't break
+		return {
+			ssd: {
+				pages: {
+					[path]: pageData
+				}
+			}
+		};
+	} catch (error) {
+		console.error(`Error fetching ${path} REST API:`, error);
+		// Todo: Retry once or twice?
+		return null;
+	}
 }
 
 export async function postToCart( id, qty = 1 ) {

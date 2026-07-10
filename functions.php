@@ -13,6 +13,7 @@ require_once get_stylesheet_directory() . '/frontend/renderer.php';
 require_once get_stylesheet_directory() . '/frontend/svg.php';
 require_once get_stylesheet_directory() . '/frontend/scripts.php';
 require_once get_stylesheet_directory() . '/frontend/buy-now.php';
+require_once get_stylesheet_directory() . '/inc/api/index.php';
 
 // FOOTER.
 

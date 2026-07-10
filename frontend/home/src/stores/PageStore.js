@@ -4,6 +4,7 @@ import { getCleanPath } from '../services/helper'
 
 const initialState = globalThis.window?.dcSSD || {
 	homeUrl: '/',
+	dcApiUrl: '/wp-json/dc/v1/',
 	ajaxUrl: '/wp-admin/admin-ajax.php',
 	searchUrl: '/wp-content/plugins/ajax-search-for-woocommerce-premium/includes/Engines/TNTSearchMySQL/Endpoints/search.php',
 	currency: '₹',

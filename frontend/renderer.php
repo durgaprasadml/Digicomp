@@ -45,21 +45,22 @@ function dc_render() {
 
 	$assets = get_react_assets();
 	$html = get_ssr_html( $path );
-	$data = get_page_data( $path, ! $html );
+	$data = get_page_data( $path, !! $html );
 	if ( ! $html ) {
-		add_ssr_job( $path, $data['ssd'] );
+		add_ssr_job( $path, $data );
 	}
+	$head = $data['pages'][ $path ]['head'];
+	$default_head = dc_default_head();
 	?>
 <!doctype html>
-<html lang="en" data-theme="<? echo $data['theme']; ?>">
+<html lang="en" data-theme="<? echo $head['theme'] ?? $default_head['theme']; ?>">
 <head>
 	<meta charset="UTF-8" />
 	<link rel="icon" type="image/svg+xml" href="/wp-content/themes/dc/assets/img/logo.svg" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<meta name="keywords" content="<? echo $data['kws']; ?>" />
-	<meta name="theme-color" content="<? echo $data['color']; ?>" />
-	<meta name="description" content="<? echo $data['desc']; ?>" />
-	<title><? echo $data['title']; ?></title>
+	<meta name="theme-color" content="<? echo $head['color'] ?? $default_head['color']; ?>" />
+	<meta name="description" content="<? echo $head['desc'] ?? $default_head['desc']; ?>" />
+	<title><? echo $head['title'] ?? $default_head['title']; ?></title>
 	<?php
 	foreach ( $assets['csss'] as $css ) {
 		echo '<link rel="stylesheet" href="' . $assets['dist'] . $css . '">';
@@ -69,7 +70,7 @@ function dc_render() {
 <body>
 	<?php echo $html ? $html :
 	'<div id="dc-app">
-	</div><script>var dcSSD = ' . wp_json_encode( $data['ssd'] ) . ';</script>'; ?>
+	</div><script>var dcSSD = ' . wp_json_encode( $data ) . ';</script>'; ?>
 	<script type="module" src="<?php echo $assets['dist'] . $assets['js'] ?>" defer></script>
 </body>
 </html>
