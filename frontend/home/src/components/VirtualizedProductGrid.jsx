@@ -89,12 +89,12 @@ function ProductCard({ product }) {
   return (
     <div
       id={`product-card-${product.id}`}
-      className="group relative flex flex-col rounded-2xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:border-transparent hover:[background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--color-accent-start),var(--color-accent-end))_border-box] shadow-sm hover:shadow-xl"
+      className="group relative flex flex-col rounded-xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden transition-all duration-200 shadow-sm hover:shadow-md"
     >
       <a href={`#product-link-${product.id}`} className="absolute rounded-2xl inset-0 z-0"></a>
-      
+
       {/* Image area */}
-      <div className="relative flex items-center justify-center px-4 pt-6 pb-2 h-52 bg-[var(--elevated)]/30 z-10 pointer-events-none">
+      <div className="relative flex items-center justify-center h-44 bg-[var(--elevated)]/30 z-10 pointer-events-none">
         {/* Tag */}
         {product.badge && (
           <span className={`absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${ badgeColor( product.badge ) }`}>
@@ -106,7 +106,7 @@ function ProductCard({ product }) {
         <button
           id={`wishlist-${product.id}`}
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setWishlisted(!wishlisted) }}
-          className="absolute top-3 right-3 p-1.5 rounded-full bg-[var(--bg)]/60 backdrop-blur-sm text-[var(--text-muted)] hover:text-[var(--color-accent-start)] transition-colors pointer-events-auto cursor-pointer"
+          className="absolute top-2 right-3 p-1.5 rounded-full bg-[var(--bg)]/60 backdrop-blur-sm text-[var(--text-muted)] hover:text-[var(--color-accent-start)] transition-colors pointer-events-auto cursor-pointer"
           aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
         >
           <HeartIcon filled={wishlisted} />
@@ -168,14 +168,14 @@ function ProductCard({ product }) {
       </div>
 
       {/* Subtle bottom accent on hover */}
-      <div className="absolute bottom-0 left-0 right-0 h-4 border-b-[3px] border-transparent hover:border-transparent group-hover:[background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--color-accent-start),var(--color-accent-end))_border-box] pointer-events-none" style={{ borderRadius: '1px 1px 18px 18px' }} />
+      {/* <div className="absolute bottom-0 left-0 right-0 h-4 border-b-[3px] border-transparent hover:border-transparent group-hover:[background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--color-accent-start),var(--color-accent-end))_border-box] pointer-events-none" style={{ borderRadius: '1px 1px 18px 18px' }} /> */}
     </div>
   );
 }
 
 export default function VirtualizedProductGrid({ products }) {
   const listRef = useRef(null)
-  
+
   // Responsive Columns
   const [cols, setCols] = useState(4)
   useEffect(() => {
@@ -228,7 +228,7 @@ export default function VirtualizedProductGrid({ products }) {
                 transform: `translateY(${virtualRow.start}px)`,
                 paddingBottom: '20px', // Matches the gap-5 visual spacing
               }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 gap-x-4"
             >
               {rowProducts.map((product) => (
                 <div key={product.id}>

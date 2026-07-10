@@ -322,3 +322,22 @@ body {
   animation: move 1s infinite linear;
 }
 
+/* ===== Input Range Slider ===== */
+input[type="range"]::-webkit-slider-thumb, input[type="range"]::-moz-range-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border: 3px solid var(--color-accent-mid);
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: auto;
+  position: relative;
+  z-index: 3;
+  transform: translateY(-30%);
+  transition: all 0.2s ease
+}
+input[type="range"]::-webkit-slider-thumb:hover, input[type="range"]::-moz-range-thumb:hover {
+  transform: translateY(-30%) scale(110%);
+}

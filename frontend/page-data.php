@@ -105,13 +105,13 @@ function get_shop_data() {
 	foreach ($products_query as $prod) {
 		$img_id = $prod->get_image_id();
 		$img_data = $img_id ? wp_get_attachment_image_src($img_id, 'medium') : [];
-		
+
 		$cats = wp_get_post_terms($prod->get_id(), 'product_cat', ['fields' => 'names']);
 		$cats = is_wp_error($cats) ? [] : ($cats ?: []);
-		
+
 		$tags = wp_get_post_terms($prod->get_id(), 'product_tag', ['fields' => 'names']);
 		$tags = is_wp_error($tags) ? [] : ($tags ?: []);
-		
+
 		// Try a few popular brand taxonomies
 		$brands = [];
 		if (taxonomy_exists('pwb-brand')) {
@@ -136,7 +136,7 @@ function get_shop_data() {
 				$options = $attr->get_options() ?: [];
 				$attrs[$label] = is_array($options) ? $options : array_map('trim', explode('|', $options));
 			}
-			
+
 			if (!isset($taxonomies['attributes'][$label])) {
 				$taxonomies['attributes'][$label] = [];
 			}
@@ -146,7 +146,7 @@ function get_shop_data() {
 				}
 			}
 		}
-		
+
 		// Extract badge if exists
 		$badges = function_exists( 'get_field' ) ? get_field( 'badges', $prod->get_id() ) : [];
 		$priority = ['Bestseller', 'Popular', 'Pro', 'New', 'Value'];
@@ -181,8 +181,13 @@ function get_shop_data() {
 	$taxonomies['categories'] = array_values($taxonomies['categories']);
 	$taxonomies['tags'] = array_values($taxonomies['tags']);
 	$taxonomies['brands'] = array_values($taxonomies['brands']);
-	
+
 	if ($min_price === PHP_INT_MAX) $min_price = 0;
+
+	if ( defined( 'IS_DC_DEMO' ) ) {
+		require_once get_stylesheet_directory() . '/frontend/page-data-mock.php';
+		return get_shop_mock_data( $products, $taxonomies );
+	}
 
 	return [
 		'products' => $products,

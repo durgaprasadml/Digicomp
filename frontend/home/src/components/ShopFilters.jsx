@@ -14,36 +14,30 @@ function DualRangeSlider({ min, max, value, onChange }) {
   const percentMax = ((value[1] - min) / (max - min)) * 100 || 0;
 
   return (
-    <div className="mt-4 px-2 pb-6">
-      <div className="relative w-full h-1.5 bg-[var(--surface)] rounded-full">
-        <div 
-          className="absolute h-1.5 bg-[var(--color-accent-start)] rounded-full" 
-          style={{ left: `${percentMin}%`, right: `${100 - percentMax}%` }} 
-        />
-        <input 
-          type="range" 
-          min={min} 
-          max={max} 
-          value={value[0]} 
+    <div className="mt-6 px-2 pb-4 -mx-1.5">
+      <div className="relative mt-4 h-4">
+        <input
+          type="range"
+          min={min}
+          max={max}
+          value={value[0]}
           onChange={handleMinChange}
-          className="absolute w-full -top-1.5 h-4 opacity-0 cursor-pointer pointer-events-auto" 
+          className="absolute w-full [-webkit-appearance: none] appearance-none bg-transparent pointer-events-none z-[2]"
         />
-        <input 
-          type="range" 
-          min={min} 
-          max={max} 
-          value={value[1]} 
+        <input
+          type="range"
+          min={min}
+          max={max}
+          value={value[1]}
           onChange={handleMaxChange}
-          className="absolute w-full -top-1.5 h-4 opacity-0 cursor-pointer pointer-events-auto" 
+          className="absolute w-full [-webkit-appearance: none] appearance-none bg-transparent pointer-events-none z-[2]"
         />
-        <div 
-          className="absolute w-4 h-4 bg-[var(--text)] rounded-full -top-1.5 shadow pointer-events-none transition-transform hover:scale-110"
-          style={{ left: `calc(${percentMin}% - 8px)` }}
-        />
-        <div 
-          className="absolute w-4 h-4 bg-[var(--text)] rounded-full -top-1.5 shadow pointer-events-none transition-transform hover:scale-110"
-          style={{ left: `calc(${percentMax}% - 8px)` }}
-        />
+        <div className="relative w-full h-1.5 bg-gray-200 rounded-md">
+          <div
+            className="absolute h-1.5 bg-gradient-to-l from-[var(--color-accent-start)] to-[var(--color-accent-end)] rounded-md"
+            style={{ left: `calc(${percentMin}%)`, right: `calc(${100 - percentMax}%)` }}
+          />
+        </div>
       </div>
     </div>
   );
@@ -61,15 +55,22 @@ function Accordion({ title, children, defaultOpen = true }) {
   const [isOpen, setIsOpen] = useState(defaultOpen)
   return (
     <div className="border-b border-[var(--border)] py-4">
-      <button 
+      <button
         className="flex w-full items-center justify-between font-semibold text-[var(--text)] hover:text-[var(--color-accent-start)] transition-colors cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
         <span>{title}</span>
         <ChevronDown isOpen={isOpen} />
       </button>
-      <div className={`mt-3 space-y-2 overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-96 opacity-100 overflow-y-auto' : 'max-h-0 opacity-0'}`}>
-        {children}
+      <div
+        className={`overflow-hidden transition-all duration-300 ${isOpen
+            ? "max-h-52 opacity-100 overflow-y-auto"
+            : "max-h-0 opacity-0"
+          }`}
+      >
+        <div className="mt-3 space-y-2">
+          {children}
+        </div>
       </div>
     </div>
   )
@@ -80,11 +81,11 @@ function CheckboxList({ options, selected, onChange }) {
     const isChecked = selected.includes(option)
     return (
       <label key={option} className="flex items-center gap-3 cursor-pointer group">
-        <input 
-          type="checkbox" 
-          className="hidden" 
-          checked={isChecked} 
-          onChange={() => onChange(option)} 
+        <input
+          type="checkbox"
+          className="hidden"
+          checked={isChecked}
+          onChange={() => onChange(option)}
         />
         <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${isChecked ? 'bg-[var(--color-accent-start)] border-[var(--color-accent-start)]' : 'border-[var(--border)] group-hover:border-[var(--color-accent-start)]'}`}>
           {isChecked && (
@@ -102,14 +103,14 @@ function CheckboxList({ options, selected, onChange }) {
 }
 
 export default function ShopFilters({ filtersData, activeFilters, setActiveFilters, minPrice, maxPrice, currency }) {
-  const toggleArrayItem = (array, item) => 
+  const toggleArrayItem = (array, item) =>
     array.includes(item) ? array.filter(i => i !== item) : [...array, item]
 
   return (
     <div className="w-full flex flex-col">
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-xl font-bold text-[var(--text)]">Filters</h2>
-        <button 
+        <button
           onClick={() => setActiveFilters({ categories: [], tags: [], brands: [], attributes: {}, price: [minPrice, maxPrice], inStockOnly: true })}
           className="text-xs text-[var(--color-accent-start)] hover:underline cursor-pointer"
         >
@@ -120,26 +121,26 @@ export default function ShopFilters({ filtersData, activeFilters, setActiveFilte
       {/* Stock Status */}
       <div className="py-4 border-b border-[var(--border)]">
         <label className="flex items-center gap-3 cursor-pointer group">
-          <input 
-            type="checkbox" 
-            className="hidden" 
-            checked={activeFilters.inStockOnly} 
-            onChange={() => setActiveFilters(prev => ({ ...prev, inStockOnly: !prev.inStockOnly }))} 
+          <input
+            type="checkbox"
+            className="hidden"
+            checked={activeFilters.inStockOnly}
+            onChange={() => setActiveFilters(prev => ({ ...prev, inStockOnly: !prev.inStockOnly }))}
           />
-          <div className={`w-10 h-5 rounded-full transition-colors relative ${activeFilters.inStockOnly ? 'bg-[var(--color-accent-start)]' : 'bg-[var(--surface)] border border-[var(--border)]'}`}>
-            <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-[var(--text)] transition-transform ${activeFilters.inStockOnly ? 'translate-x-5 bg-[var(--bg)]' : ''}`} />
+          <div className={`w-10 h-5 rounded-full transition-colors relative border border-[var(--border)] ${activeFilters.inStockOnly ? 'border-[var(--text)]' : 'bg-[var(--surface)]'}`}>
+            <div className={`absolute top-[1px] left-px w-4 h-4 rounded-full bg-[var(--text)] transition-transform ${activeFilters.inStockOnly ? 'translate-x-5 bg-[var(--bg)]' : ''}`} />
           </div>
-          <span className="text-sm font-semibold text-[var(--text)]">In Stock Only</span>
+          <span className="text-sm font-semibold text-[var(--text)]">In Stock</span>
         </label>
       </div>
 
       {/* Categories */}
       {filtersData?.categories?.length > 0 && (
         <Accordion title="Categories">
-          <CheckboxList 
-            options={filtersData.categories} 
-            selected={activeFilters.categories} 
-            onChange={(cat) => setActiveFilters(prev => ({ ...prev, categories: toggleArrayItem(prev.categories, cat) }))} 
+          <CheckboxList
+            options={filtersData.categories}
+            selected={activeFilters.categories}
+            onChange={(cat) => setActiveFilters(prev => ({ ...prev, categories: toggleArrayItem(prev.categories, cat) }))}
           />
         </Accordion>
       )}
@@ -147,10 +148,10 @@ export default function ShopFilters({ filtersData, activeFilters, setActiveFilte
       {/* Brands */}
       {filtersData?.brands?.length > 0 && (
         <Accordion title="Brands">
-          <CheckboxList 
-            options={filtersData.brands} 
-            selected={activeFilters.brands} 
-            onChange={(brand) => setActiveFilters(prev => ({ ...prev, brands: toggleArrayItem(prev.brands, brand) }))} 
+          <CheckboxList
+            options={filtersData.brands}
+            selected={activeFilters.brands}
+            onChange={(brand) => setActiveFilters(prev => ({ ...prev, brands: toggleArrayItem(prev.brands, brand) }))}
           />
         </Accordion>
       )}
@@ -159,9 +160,9 @@ export default function ShopFilters({ filtersData, activeFilters, setActiveFilte
       {Object.entries(filtersData?.attributes || {}).map(([attrName, options]) => (
         options.length > 0 && (
           <Accordion key={attrName} title={attrName} defaultOpen={false}>
-            <CheckboxList 
-              options={options} 
-              selected={activeFilters.attributes[attrName] || []} 
+            <CheckboxList
+              options={options}
+              selected={activeFilters.attributes[attrName] || []}
               onChange={(val) => {
                 const current = activeFilters.attributes[attrName] || []
                 setActiveFilters(prev => ({
@@ -171,7 +172,7 @@ export default function ShopFilters({ filtersData, activeFilters, setActiveFilte
                     [attrName]: toggleArrayItem(current, val)
                   }
                 }))
-              }} 
+              }}
             />
           </Accordion>
         )
@@ -180,33 +181,33 @@ export default function ShopFilters({ filtersData, activeFilters, setActiveFilte
       {/* Tags */}
       {filtersData?.tags?.length > 0 && (
         <Accordion title="Tags" defaultOpen={false}>
-          <CheckboxList 
-            options={filtersData.tags} 
-            selected={activeFilters.tags} 
-            onChange={(tag) => setActiveFilters(prev => ({ ...prev, tags: toggleArrayItem(prev.tags, tag) }))} 
+          <CheckboxList
+            options={filtersData.tags}
+            selected={activeFilters.tags}
+            onChange={(tag) => setActiveFilters(prev => ({ ...prev, tags: toggleArrayItem(prev.tags, tag) }))}
           />
         </Accordion>
       )}
 
       {/* Price */}
       <Accordion title="Price Range">
-        <DualRangeSlider 
-          min={minPrice} 
-          max={maxPrice} 
-          value={activeFilters.price} 
-          onChange={(newVal) => setActiveFilters(p => ({ ...p, price: newVal }))} 
+        <DualRangeSlider
+          min={minPrice}
+          max={maxPrice}
+          value={activeFilters.price}
+          onChange={(newVal) => setActiveFilters(p => ({ ...p, price: newVal }))}
         />
         <div className="flex items-center gap-2 mt-2">
-          <input 
-            type="number" 
-            value={activeFilters.price[0]} 
+          <input
+            type="number"
+            value={activeFilters.price[0]}
             onChange={e => setActiveFilters(p => ({ ...p, price: [Number(e.target.value), p.price[1]] }))}
             className="w-full bg-[var(--surface)] border border-[var(--border)] rounded px-2 py-1.5 text-sm text-[var(--text)] outline-none focus:border-[var(--color-accent-start)] text-center"
           />
           <span className="text-[var(--text-muted)]">-</span>
-          <input 
-            type="number" 
-            value={activeFilters.price[1]} 
+          <input
+            type="number"
+            value={activeFilters.price[1]}
             onChange={e => setActiveFilters(p => ({ ...p, price: [p.price[0], Number(e.target.value)] }))}
             className="w-full bg-[var(--surface)] border border-[var(--border)] rounded px-2 py-1.5 text-sm text-[var(--text)] outline-none focus:border-[var(--color-accent-start)] text-center"
           />
