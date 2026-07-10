@@ -11,15 +11,21 @@ if (!defined('ABSPATH')) {
  * Generates the full product and filter payload for the Shop SPA.
  */
 function dc_api_get_shop( \WP_REST_Request $request ) {
-	$slug = $request['slug'] ?? null;
+	$cat = $request['cat'] ?? null;
+	$tag = $request['tag'] ?? null;
+	$brand = $request['brand'] ?? null;
 
 	$query_args = [
 		'status' => 'publish',
 		'limit'  => -1,
 	];
 
-	if ( $slug ) {
-		$query_args['category'] = array( $slug );
+	if ( $cat ) {
+		$query_args['category'] = array( $cat );
+	} elseif ( $tag ) {
+		$query_args['tag'] = array( $tag );
+	} elseif ( $brand ) {
+		$query_args['product_brand'] = array( $brand );
 	}
 
 	// Fetch all products to build the filter dataset and virtualization payload
@@ -47,19 +53,8 @@ function dc_api_get_shop( \WP_REST_Request $request ) {
 		$tags = wp_get_post_terms($prod->get_id(), 'product_tag', ['fields' => 'names']);
 		$tags = is_wp_error($tags) ? [] : ($tags ?: []);
 
-		// Try a few popular brand taxonomies
-		$brands = [];
-		if (taxonomy_exists('pwb-brand')) {
-			$b = wp_get_post_terms($prod->get_id(), 'pwb-brand', ['fields' => 'names']);
-			$brands = is_wp_error($b) ? [] : ($b ?: []);
-		}
-		if (empty($brands) && taxonomy_exists('product_brand')) {
-			$b = wp_get_post_terms($prod->get_id(), 'product_brand', ['fields' => 'names']);
-			$brands = is_wp_error($b) ? [] : ($b ?: []);
-		} elseif (empty($brands) && taxonomy_exists('yith_product_brand')) {
-			$b = wp_get_post_terms($prod->get_id(), 'yith_product_brand', ['fields' => 'names']);
-			$brands = is_wp_error($b) ? [] : ($b ?: []);
-		}
+		$brands = wp_get_post_terms($prod->get_id(), 'product_brand', ['fields' => 'names']);
+		$brands = is_wp_error($brands) ? [] : ($brands ?: []);
 
 		$attrs = [];
 		foreach ($prod->get_attributes() as $attr_name => $attr) {
@@ -141,13 +136,22 @@ function dc_api_get_shop( \WP_REST_Request $request ) {
 	$taxonomies['brands'] = array_values($taxonomies['brands']);
 
 	$heading = 'Shop';
-	if ( $slug ) {
-		$term = get_term_by( 'slug', $slug, 'product_cat' );
+	if ( $cat ) {
+		$term = get_term_by( 'slug', $cat, 'product_cat' );
 		if ( $term && ! is_wp_error( $term ) ) {
-			$heading = $term->name;
+			$heading = 'Category: ' . $term->name;
 		} else {
-			$heading = ucwords( str_replace( '-', ' ', $slug ) );
+			$heading = 'Category: ' . ucwords( str_replace( '-', ' ', $cat ) );
 		}
+	} elseif ( $tag ) {
+		$term = get_term_by( 'slug', $tag, 'product_tag' );
+		if ( $term && ! is_wp_error( $term ) ) {
+			$heading = 'Tag: ' . $term->name;
+		} else {
+			$heading = 'Tag: ' . ucwords( str_replace( '-', ' ', $tag ) );
+		}
+	} elseif ( $brand ) {
+		$heading = 'Brand: ' . ucwords( str_replace( '-', ' ', $brand ) );
 	}
 
 	if ( defined( 'IS_DC_DEMO' ) ) {
@@ -155,7 +159,7 @@ function dc_api_get_shop( \WP_REST_Request $request ) {
 		$mock_data = get_shop_mock_data( $products, $taxonomies );
 		$mock_data['heading'] = $heading;
 		if ( ! isset( $mock_data['head'] ) ) {
-			$mock_data['head'] = $slug ? dc_api_category_head( $request ) : dc_api_shop_head();
+			$mock_data['head'] = ( $cat || $tag || $brand ) ? dc_api_taxonomy_head( $request ) : dc_api_shop_head();
 		}
 		return rest_ensure_response( $mock_data );
 	}
@@ -166,7 +170,7 @@ function dc_api_get_shop( \WP_REST_Request $request ) {
 		'filters'  => $taxonomies,
 		'priceMin' => $min_price,
 		'priceMax' => $max_price,
-		'head'     => $slug ? dc_api_category_head( $request ) : dc_api_shop_head(),
+		'head'     => ( $cat || $tag || $brand ) ? dc_api_taxonomy_head( $request ) : dc_api_shop_head(),
 	]);
 }
 
@@ -177,12 +181,27 @@ function dc_api_shop_head() {
 	];
 }
 
-function dc_api_category_head( $request = null ) {
-	$slug = $request ? $request['slug'] : '';
-	$term = $slug ? get_term_by( 'slug', $slug, 'product_cat' ) : null;
-	$title = $term && ! is_wp_error( $term ) ? $term->name . ' - Digicomp Technologies' : 'Category - Digicomp Technologies';
+function dc_api_taxonomy_head( $request = null ) {
+	$cat = $request ? ($request['cat'] ?? null) : null;
+	$tag = $request ? ($request['tag'] ?? null) : null;
+	$brand = $request ? ($request['brand'] ?? null) : null;
+
+	$title = 'Digicomp Technologies';
+	$name = 'products';
+
+	if ( $cat ) {
+		$name = ucwords( str_replace( '-', ' ', $cat ) );
+		$title = $name . ' - Digicomp Technologies';
+	} elseif ( $tag ) {
+		$name = ucwords( str_replace( '-', ' ', $tag ) );
+		$title = $name . ' - Digicomp Technologies';
+	} elseif ( $brand ) {
+		$name = ucwords( str_replace( '-', ' ', $brand ) );
+		$title = $name . ' - Digicomp Technologies';
+	}
+
 	return [
 		'title' => $title,
-		'desc'  => 'Browse ' . ( $term && ! is_wp_error( $term ) ? $term->name : 'our products' ) . ' at Digicomp Technologies.',
+		'desc'  => 'Browse ' . $name . ' at Digicomp Technologies.',
 	];
 }

@@ -17,9 +17,17 @@ function dc_api_routes() {
 			'callback' => 'dc_api_get_shop',
 			'get_head' => 'dc_api_shop_head',
 		],
-		'product-category/(?P<slug>[a-zA-Z0-9-]+)' => [
+		'product-category/(?P<cat>[a-zA-Z0-9-]+)' => [
 			'callback' => 'dc_api_get_shop',
-			'get_head' => 'dc_api_category_head',
+			'get_head' => 'dc_api_taxonomy_head',
+		],
+		'product-tag/(?P<tag>[a-zA-Z0-9-]+)' => [
+			'callback' => 'dc_api_get_shop',
+			'get_head' => 'dc_api_taxonomy_head',
+		],
+		'brand/(?P<brand>[a-zA-Z0-9-]+)' => [
+			'callback' => 'dc_api_get_shop',
+			'get_head' => 'dc_api_taxonomy_head',
 		],
 	];
 }
