@@ -76,16 +76,18 @@ function Accordion({ title, children, defaultOpen = true }) {
   )
 }
 
-function CheckboxList({ options, selected, onChange }) {
+function CheckboxList({ options, selected, onChange, disabledList = [] }) {
   return options.map(option => {
-    const isChecked = selected.includes(option)
+    const isDisabled = disabledList.includes(option)
+    const isChecked = isDisabled || selected.includes(option)
     return (
-      <label key={option} className="flex items-center gap-3 cursor-pointer group">
+      <label key={option} className={`flex items-center gap-3 ${isDisabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer group'}`}>
         <input
           type="checkbox"
           className="hidden"
           checked={isChecked}
-          onChange={() => onChange(option)}
+          disabled={isDisabled}
+          onChange={() => { if (!isDisabled) onChange(option) }}
         />
         <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${isChecked ? 'bg-[var(--color-accent-start)] border-[var(--color-accent-start)]' : 'border-[var(--border)] group-hover:border-[var(--color-accent-start)]'}`}>
           {isChecked && (
@@ -102,7 +104,7 @@ function CheckboxList({ options, selected, onChange }) {
   })
 }
 
-export default function ShopFilters({ filtersData, activeFilters, setActiveFilters, minPrice, maxPrice, currency }) {
+export default function ShopFilters({ filtersData, activeFilters, setActiveFilters, minPrice, maxPrice, currency, disabledFilters = {} }) {
   const toggleArrayItem = (array, item) =>
     array.includes(item) ? array.filter(i => i !== item) : [...array, item]
 
@@ -140,6 +142,7 @@ export default function ShopFilters({ filtersData, activeFilters, setActiveFilte
           <CheckboxList
             options={filtersData.categories}
             selected={activeFilters.categories}
+            disabledList={disabledFilters.categories}
             onChange={(cat) => setActiveFilters(prev => ({ ...prev, categories: toggleArrayItem(prev.categories, cat) }))}
           />
         </Accordion>
@@ -151,6 +154,7 @@ export default function ShopFilters({ filtersData, activeFilters, setActiveFilte
           <CheckboxList
             options={filtersData.brands}
             selected={activeFilters.brands}
+            disabledList={disabledFilters.brands}
             onChange={(brand) => setActiveFilters(prev => ({ ...prev, brands: toggleArrayItem(prev.brands, brand) }))}
           />
         </Accordion>
@@ -206,6 +210,7 @@ export default function ShopFilters({ filtersData, activeFilters, setActiveFilte
           <CheckboxList
             options={filtersData.tags}
             selected={activeFilters.tags}
+            disabledList={disabledFilters.tags}
             onChange={(tag) => setActiveFilters(prev => ({ ...prev, tags: toggleArrayItem(prev.tags, tag) }))}
           />
         </Accordion>

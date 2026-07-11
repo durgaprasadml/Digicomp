@@ -1,9 +1,11 @@
 import { useState, useMemo } from 'react'
 import { useLocation } from '@typeroute/router'
 import { usePageData } from '../stores/PageStore'
+import { home, shop } from '../routes'
 
 import VirtualizedProductGrid from '../components/VirtualizedProductGrid'
 import ShopFilters from '../components/ShopFilters'
+import Breadcrumb from '../components/Breadcrumb'
 
 export default function Shop() {
   const { path } = useLocation()
@@ -20,6 +22,30 @@ export default function Shop() {
   })
   const [sortOrder, setSortOrder] = useState('newest') // newest, priceAsc, priceDesc, nameAsc
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
+
+  const disabledFilters = { categories: [], tags: [], brands: [] }
+  const breadcrumbItems = [
+    { label: 'Home', route: home }
+  ]
+
+  if (path.startsWith('/product-category/')) {
+    const termName = heading.replace('Category: ', '')
+    disabledFilters.categories.push(termName)
+    breadcrumbItems.push({ label: 'Shop', route: shop })
+    breadcrumbItems.push({ label: termName })
+  } else if (path.startsWith('/product-tag/')) {
+    const termName = heading.replace('Tag: ', '')
+    disabledFilters.tags.push(termName)
+    breadcrumbItems.push({ label: 'Shop', route: shop })
+    breadcrumbItems.push({ label: termName })
+  } else if (path.startsWith('/brand/')) {
+    const termName = heading.replace('Brand: ', '')
+    disabledFilters.brands.push(termName)
+    breadcrumbItems.push({ label: 'Shop', route: shop })
+    breadcrumbItems.push({ label: termName })
+  } else {
+    breadcrumbItems.push({ label: 'Shop' })
+  }
 
   // Memoized Filter & Sort
   const filteredProducts = useMemo(() => {
@@ -79,10 +105,11 @@ export default function Shop() {
     <div className="page-container relative max-w-7xl mx-auto px-4 lg:px-8 py-8 lg:py-12">
 
       {/* Top Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-4 border-b border-[var(--border)]">
-        <div>
-          <h1 className="text-3xl font-bold text-[var(--text)]">{heading}</h1>
-          <p className="text-[var(--text-muted)] mt-1">Showing {filteredProducts.length} results</p>
+      <Breadcrumb items={breadcrumbItems} />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--border)]">
+        <div className="flex gap-2 items-baseline">
+          <h1 className="text-2xl font-bold text-[var(--text)]">{heading}</h1>
+          <p className="text-[var(--text-muted)] text-sm px-2 border border-[var(--border)] rounded">{filteredProducts.length} results</p>
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -118,6 +145,7 @@ export default function Shop() {
             setActiveFilters={setActiveFilters}
             minPrice={priceMin}
             maxPrice={priceMax}
+            disabledFilters={disabledFilters}
           />
         </aside>
 
@@ -145,6 +173,7 @@ export default function Shop() {
                   setActiveFilters={setActiveFilters}
                   minPrice={priceMin}
                   maxPrice={priceMax}
+                  disabledFilters={disabledFilters}
                 />
               </div>
               <div className="p-4 border-t border-[var(--border)]">
@@ -168,7 +197,7 @@ export default function Shop() {
               </div>
               <h3 className="text-xl font-bold text-[var(--text)] mb-2">No products found</h3>
               <p className="text-[var(--text-muted)] max-w-sm">Try adjusting your filters or search terms to find what you're looking for.</p>
-              <button 
+              <button
                 onClick={() => setActiveFilters({ categories: [], tags: [], brands: [], attributes: {}, acf: {}, price: [priceMin, priceMax], inStockOnly: true })}
                 className="mt-6 text-sm font-semibold text-[var(--color-accent-start)] hover:underline cursor-pointer"
               >

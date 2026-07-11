@@ -145,7 +145,7 @@ function ProductCard({ product }) {
         <button
           id={`add-to-cart-${product.id}`}
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleAddToCart(); }}
-          className={`relative mt-4 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-300 pointer-events-auto cursor-pointer ${
+          className={`relative mt-4 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-300 pointer-events-auto cursor-pointer ${
             addedToCart
               ? 'bg-green-500/20 text-green-600 border border-green-500/30'
               : 'bg-[var(--elevated)] text-[var(--text-secondary)] border border-[var(--border)] hover:border-[var(--color-accent-start)] hover:text-[var(--text)] hover:bg-[var(--color-accent-glow)]'
