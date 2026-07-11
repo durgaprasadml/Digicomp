@@ -1,6 +1,6 @@
 import { Store, useStore } from './Store'
 
-import { fetchUserData } from '../services/api'
+import { fetchUserData } from '../utils/api'
 
 class UserClass extends Store {
 	async fetchData() {

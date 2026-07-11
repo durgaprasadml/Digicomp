@@ -1,8 +1,8 @@
 import { Store, useStore } from './Store'
 import { UserStore } from './UserStore'
 
-import { postToCart } from '../services/api'
-import { getStorageJSON, setStorage } from '../services/helper'
+import { postToCart } from '../utils/api'
+import { getStorageJSON, setStorage } from '../utils/helper'
 
 const initialCart = {
 	items: [],

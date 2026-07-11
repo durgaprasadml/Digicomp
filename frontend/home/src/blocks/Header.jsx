@@ -197,91 +197,7 @@ function MegaMenu() {
   );
 }
 
-/* ── Mobile Drawer ── */
-function MobileDrawer({ onClose }) {
-  const { theme } = ThemeStore.use()
-  const toggleTheme = () => ThemeStore.toggleTheme()
-  const { cart } = CartStore.use()
-  const cartRef = useRef(null)
-
-  useEffect(() => {
-    CartStore.setRef( cartRef )
-    return () => CartStore.setRef( null )
-  }, []);
-
-  const drawerContent = (
-    <motion.div
-      id="mobile-drawer-overlay"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm clear-both"
-      onClick={onClose}
-    >
-      <motion.aside
-        id="mobile-drawer"
-        initial={{ x: '100%' }}
-        animate={{ x: 0 }}
-        exit={{ x: '100%' }}
-        transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-        className="absolute right-0 top-0 flex h-full w-96 max-w-[90vw] flex-col bg-[var(--surface)] shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Close */}
-        <div className="flex items-center justify-between border-b border-[var(--border)] px-5 py-4">
-          <span className="sr-only">Digicomp Technologies</span>
-          <Logo className="h-7" />
-          <button id="mobile-drawer-close" onClick={onClose} className="text-[var(--text-secondary)] hover:text-[var(--text)]">
-            <CloseIcon />
-          </button>
-        </div>
-
-        {/* Search */}
-        <div className="px-5 py-4">
-          <SearchBox id="mobile-search-input" isMobile={true} />
-        </div>
-
-        {/* Nav links */}
-        <nav className="flex-1 overflow-y-auto px-5 py-2">
-          {navLinks.map((link) => (
-            <a
-              key={link.id}
-              id={`mobile-nav-${link.id}`}
-              href={link.href || '#products'}
-              className="block border-b border-[var(--border-subtle)] py-3.5 text-[var(--text-secondary)] transition-colors hover:text-[var(--text)]"
-              onClick={onClose}
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
-
-        {/* Utilities */}
-        <div className="border-t border-[var(--border)] px-5 py-5">
-          <div className="flex items-center justify-around">
-            <button id="mobile-theme-toggle" onClick={toggleTheme} className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]">
-              {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
-            </button>
-            <a id="mobile-login-link" href="#login" className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]">
-              <UserIcon />
-            </a>
-            <a id="mobile-wishlist-link" href="#wishlist" className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]">
-              <HeartIcon />
-            </a>
-            <a ref={ cartRef } id="mobile-cart-link" href={ cart.url } className="relative rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]">
-              <CartIcon />
-              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-r from-[var(--color-accent-start)] to-[var(--color-accent-end)] text-[10px] font-bold text-white">
-                { cart.lineCount }
-              </span>
-            </a>
-          </div>
-        </div>
-      </motion.aside>
-    </motion.div>
-  );
-
-  return typeof document !== 'undefined' ? createPortal(drawerContent, document.body) : drawerContent;
-}
+import Drawer from '../components/Drawer';
 
 /* ── Header ── */
 export default function Header() {
@@ -436,9 +352,64 @@ export default function Header() {
       </AnimatePresence>
 
       {/* ── Mobile Drawer ── */}
-      <AnimatePresence>
-        {drawerOpen && <MobileDrawer onClose={() => setDrawerOpen(false)} />}
-      </AnimatePresence>
+      <Drawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        onOpen={() => setDrawerOpen(true)}
+        position="right"
+        swipeToOpen={true}
+        className="w-96"
+      >
+        {/* Close */}
+        <div className="flex items-center justify-between border-b border-[var(--border)] px-5 py-4">
+          <span className="sr-only">Digicomp Technologies</span>
+          <Logo className="h-7" />
+          <button id="mobile-drawer-close" onClick={() => setDrawerOpen(false)} className="text-[var(--text-secondary)] hover:text-[var(--text)]">
+            <CloseIcon />
+          </button>
+        </div>
+
+        {/* Search */}
+        <div className="px-5 py-4">
+          <SearchBox id="mobile-search-input" isMobile={true} />
+        </div>
+
+        {/* Nav links */}
+        <nav className="flex-1 overflow-y-auto px-5 py-2">
+          {navLinks.map((link) => (
+            <a
+              key={link.id}
+              id={`mobile-nav-${link.id}`}
+              href={link.href || '#products'}
+              className="block border-b border-[var(--border-subtle)] py-3.5 text-[var(--text-secondary)] transition-colors hover:text-[var(--text)]"
+              onClick={() => setDrawerOpen(false)}
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+
+        {/* Utilities */}
+        <div className="border-t border-[var(--border)] px-5 py-5">
+          <div className="flex items-center justify-around">
+            <button id="mobile-theme-toggle" onClick={toggleTheme} className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]">
+              {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+            </button>
+            <a id="mobile-login-link" href="#login" className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]">
+              <UserIcon />
+            </a>
+            <a id="mobile-wishlist-link" href="#wishlist" className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]">
+              <HeartIcon />
+            </a>
+            <a ref={ cartRef } id="mobile-cart-link" href={ cart.url } className="relative rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]">
+              <CartIcon />
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-r from-[var(--color-accent-start)] to-[var(--color-accent-end)] text-[10px] font-bold text-white">
+                { cart.lineCount }
+              </span>
+            </a>
+          </div>
+        </div>
+      </Drawer>
     </header>
   );
 }

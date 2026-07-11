@@ -6,6 +6,15 @@ import { home, shop } from '../routes'
 import VirtualizedProductGrid from '../blocks/VirtualizedProductGrid'
 import ShopFilters from '../blocks/ShopFilters'
 import Breadcrumb from '../blocks/Breadcrumb'
+import Select from '../components/Select'
+import Drawer from '../components/Drawer'
+
+const sortOptions = [
+  { value: 'newest', label: 'Newest Arrivals' },
+  { value: 'priceAsc', label: 'Price: Low to High' },
+  { value: 'priceDesc', label: 'Price: High to Low' },
+  { value: 'nameAsc', label: 'Name: A to Z' }
+]
 
 export default function Shop() {
   const { path } = useLocation()
@@ -122,16 +131,12 @@ export default function Shop() {
             Filters
           </button>
 
-          <select
+          <Select
             value={sortOrder}
-            onChange={e => setSortOrder(e.target.value)}
-            className="bg-[var(--surface)] border border-[var(--border)] px-4 py-2 rounded-lg text-sm font-semibold text-[var(--text)] outline-none focus:border-[var(--color-accent-start)] hover:border-[var(--border-hover)] transition-colors cursor-pointer"
-          >
-            <option value="newest">Newest Arrivals</option>
-            <option value="priceAsc">Price: Low to High</option>
-            <option value="priceDesc">Price: High to Low</option>
-            <option value="nameAsc">Name: A to Z</option>
-          </select>
+            onChange={setSortOrder}
+            options={sortOptions}
+            className="w-48"
+          />
         </div>
       </div>
 
@@ -150,40 +155,32 @@ export default function Shop() {
         </aside>
 
         {/* Mobile Filters Modal */}
-        {isMobileFiltersOpen && (
-          <div className="fixed inset-0 z-50 lg:hidden flex">
-            {/* Backdrop */}
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsMobileFiltersOpen(false)} />
-
-            {/* Drawer */}
-            <div className="relative w-full max-w-xs h-full bg-[var(--bg)] border-r border-[var(--border)] shadow-2xl flex flex-col pointer-events-auto transform transition-transform animate-slide-in-right">
-              <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
-                <h2 className="text-lg font-bold text-[var(--text)]">Filters</h2>
-                <button onClick={() => setIsMobileFiltersOpen(false)} className="p-2 text-[var(--text-muted)] hover:text-[var(--text)]">
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
-                </button>
-              </div>
-              <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-                <ShopFilters
-                  filtersData={filters}
-                  activeFilters={activeFilters}
-                  setActiveFilters={setActiveFilters}
-                  minPrice={priceMin}
-                  maxPrice={priceMax}
-                  disabledFilters={disabledFilters}
-                />
-              </div>
-              <div className="p-4 border-t border-[var(--border)]">
-                <button onClick={() => setIsMobileFiltersOpen(false)} className="w-full bg-[var(--color-accent-start)] text-[var(--bg)] font-bold py-3 rounded-xl hover:opacity-90 transition-opacity">
-                  Show {filteredProducts.length} Results
-                </button>
-              </div>
-            </div>
+        <Drawer isOpen={isMobileFiltersOpen} onClose={() => setIsMobileFiltersOpen(false)} position="left" className="w-80">
+          <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
+            <h2 className="text-lg font-bold text-[var(--text)]">Filters</h2>
+            <button onClick={() => setIsMobileFiltersOpen(false)} className="p-2 text-[var(--text-muted)] hover:text-[var(--text)]">
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
           </div>
-        )}
+          <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+            <ShopFilters
+              filtersData={filters}
+              activeFilters={activeFilters}
+              setActiveFilters={setActiveFilters}
+              minPrice={priceMin}
+              maxPrice={priceMax}
+              disabledFilters={disabledFilters}
+            />
+          </div>
+          <div className="p-4 border-t border-[var(--border)]">
+            <button onClick={() => setIsMobileFiltersOpen(false)} className="w-full bg-[var(--color-accent-start)] text-[var(--bg)] font-bold py-3 rounded-xl hover:opacity-90 transition-opacity">
+              Show {filteredProducts.length} Results
+            </button>
+          </div>
+        </Drawer>
 
         {/* Product Grid Area */}
         <div className="flex-1 w-full min-w-0">

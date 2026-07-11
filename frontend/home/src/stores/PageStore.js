@@ -1,6 +1,6 @@
 import { Store, useStore } from './Store'
-import { fetchPageData } from '../services/api'
-import { getCleanPath } from '../services/helper'
+import { fetchPageData } from '../utils/api'
+import { getCleanPath } from '../utils/helper'
 
 const initialState = globalThis.window?.dcSSD || {
 	homeUrl: '/',

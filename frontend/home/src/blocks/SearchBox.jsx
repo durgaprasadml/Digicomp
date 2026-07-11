@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { fetchSearchResults } from '../services/api';
+import { fetchSearchResults } from '../utils/api';
 
 function extractImageUrl(imgHtml) {
   const match = imgHtml.match(/src=["']([^"']+)["']/i);
