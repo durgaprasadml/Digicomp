@@ -3,9 +3,9 @@ import { useLocation } from '@typeroute/router'
 import { usePageData } from '../stores/PageStore'
 import { home, shop } from '../routes'
 
-import VirtualizedProductGrid from '../components/VirtualizedProductGrid'
-import ShopFilters from '../components/ShopFilters'
-import Breadcrumb from '../components/Breadcrumb'
+import VirtualizedProductGrid from '../blocks/VirtualizedProductGrid'
+import ShopFilters from '../blocks/ShopFilters'
+import Breadcrumb from '../blocks/Breadcrumb'
 
 export default function Shop() {
   const { path } = useLocation()

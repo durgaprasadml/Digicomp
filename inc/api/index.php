@@ -6,6 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once get_stylesheet_directory() . '/inc/api/home.php';
 require_once get_stylesheet_directory() . '/inc/api/shop.php';
+require_once get_stylesheet_directory() . '/inc/api/product.php';
 
 function dc_api_routes() {
 	return [
@@ -28,6 +29,10 @@ function dc_api_routes() {
 		'brand/(?P<brand>[a-zA-Z0-9-]+)' => [
 			'callback' => 'dc_api_get_shop',
 			'get_head' => 'dc_api_taxonomy_head',
+		],
+		'product/(?P<slug>[a-zA-Z0-9-]+)' => [
+			'callback' => 'dc_api_get_product',
+			'get_head' => 'dc_api_product_head',
 		],
 	];
 }

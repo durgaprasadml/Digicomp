@@ -1,8 +1,8 @@
 import { Suspense, useEffect } from 'react'
 import { Outlet } from "@typeroute/router"
-import Header from './components/Header'
-import Footer from './components/Footer'
-import ScrollToTop from './components/ScrollToTop'
+import Header from './blocks/Header'
+import Footer from './blocks/Footer'
+import ScrollToTop from './blocks/ScrollToTop'
 import { UserStore } from './stores/UserStore'
 
 function App() {
