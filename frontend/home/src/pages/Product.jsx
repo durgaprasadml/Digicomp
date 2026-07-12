@@ -3,6 +3,7 @@ import { useLocation } from '@typeroute/router'
 import { usePageData } from '../stores/PageStore'
 import { CartStore } from '../stores/CartStore'
 import { home, shop } from '../routes'
+import { Button } from "@heroui/react"
 
 import Breadcrumb from '../blocks/Breadcrumb'
 import Slider from '../components/Slider'
@@ -112,19 +113,22 @@ export default function Product() {
             <QuantityInput value={qty} onChange={setQty} max={product.stockQuantity || null} />
 
             <div className="flex-1 flex gap-3">
-              <button
-                onClick={handleAddToCart}
-                disabled={product.stockStatus !== 'instock'}
-                className="flex-1 bg-[var(--surface)] border-2 border-[var(--border)] hover:border-[var(--color-accent-start)] text-[var(--text)] hover:text-[var(--color-accent-start)] font-bold py-3 px-6 rounded-xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              <Button
+                onPress={handleAddToCart}
+                isDisabled={product.stockStatus !== 'instock'}
+                variant="bordered"
+                size="lg"
+                className="flex-1 font-bold"
               >
                 Add to Cart
-              </button>
-              <button
-                disabled={product.stockStatus !== 'instock'}
-                className="flex-1 bg-gradient-to-r from-[var(--color-accent-start)] to-[var(--color-accent-end)] hover:opacity-90 text-[var(--bg)] font-bold py-3 px-6 rounded-xl transition-opacity cursor-pointer shadow-[0_4px_14px_0_rgba(var(--color-accent-start-rgb),0.39)] disabled:opacity-50 disabled:cursor-not-allowed"
+              </Button>
+              <Button
+                isDisabled={product.stockStatus !== 'instock'}
+                size="lg"
+                className="flex-1 font-bold bg-gradient-to-r from-[var(--color-accent-start)] to-[var(--color-accent-end)] text-white shadow-lg shadow-orange-500/30"
               >
                 Buy Now
-              </button>
+              </Button>
             </div>
 
             <button

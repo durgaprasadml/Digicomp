@@ -1,4 +1,20 @@
+/* Define layers */
+@layer theme, base, components, utilities;
+
+/* Base requirements */
 @import "tailwindcss";
+@import "@heroui/styles/base" layer(base);
+
+/* Theme variables */
+@import "@heroui/styles/themes/shared/theme.css" layer(theme);
+@import "@heroui/styles/themes/default" layer(theme);
+
+/* Components */
+@import "@heroui/styles/components/button.css" layer(components);
+
+/* Utilities and Variants (Required for some component features) */
+@import "@heroui/styles/utilities";
+@import "@heroui/styles/variants";
 
 /* ===== DESIGN SYSTEM TOKENS ===== */
 @theme {

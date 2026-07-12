@@ -401,7 +401,7 @@ export default function Header() {
             <a id="mobile-wishlist-link" href="#wishlist" className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]">
               <HeartIcon />
             </a>
-            <a ref={ cartRef } id="mobile-cart-link" href={ cart.url } className="relative rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]">
+            <a id="mobile-cart-link" href={ cart.url } className="relative rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]">
               <CartIcon />
               <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-r from-[var(--color-accent-start)] to-[var(--color-accent-end)] text-[10px] font-bold text-white">
                 { cart.lineCount }

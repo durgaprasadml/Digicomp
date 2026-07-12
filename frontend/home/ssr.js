@@ -41,7 +41,10 @@ try {
         removeListener: noop,
         addEventListener: noop,
         removeEventListener: noop,
-      } )
+      } ),
+      HTMLInputElement: { prototype: {} },
+      HTMLTextAreaElement: { prototype: {} },
+      HTMLElement: { prototype: {} }
     }
 
     globalThis.document = {
@@ -58,6 +61,8 @@ try {
       body: {
         appendChild: noop,
         removeChild: noop,
+        addEventListener: noop,
+        removeEventListener: noop,
         classList: { add: noop, remove: noop, contains: () => false }
       }
     }
