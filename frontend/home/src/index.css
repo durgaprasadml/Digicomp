@@ -357,3 +357,31 @@ input[type="range"]::-webkit-slider-thumb, input[type="range"]::-moz-range-thumb
 input[type="range"]::-webkit-slider-thumb:hover, input[type="range"]::-moz-range-thumb:hover {
   transform: translateY(-30%) scale(110%);
 }
+
+/* This is not Tree shakable. Delete or comment this if the component is not being used. */
+@layer components {
+  .rating {
+    @apply flex items-center gap-1;
+  }
+
+  .rating__item {
+    @apply relative rounded-sm transition-transform;
+  }
+
+  .rating__item--interactive {
+    @apply cursor-pointer focus-within:ring-2 focus-within:ring-warning focus-within:ring-offset-1 focus-within:ring-offset-transparent hover:scale-110;
+  }
+
+  .rating__icon, .rating__icon-partial {
+    color: var(--color-surface-tertiary);
+    fill: var(--color-surface-tertiary);
+    @apply w-5 h-5 transition-transform duration-200;
+
+    svg {
+      @apply w-5 h-5;
+    }
+  }
+  .rating__icon-partial {
+    @apply absolute top-0 left-0 overflow-hidden text-warning fill-warning;
+  }
+}

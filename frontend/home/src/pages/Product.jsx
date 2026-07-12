@@ -9,6 +9,7 @@ import Breadcrumb from '../blocks/Breadcrumb'
 import Slider from '../components/Slider'
 import QuantityInput from '../components/QuantityInput'
 import ProductCard from '../components/ProductCard'
+import Rating from '../components/Rating'
 
 // Helper icons
 function HeartIcon({ filled }) {
@@ -78,12 +79,9 @@ export default function Product() {
             )}
             <h1 className="text-3xl lg:text-4xl font-bold text-[var(--text)] mb-3 leading-tight">{product.name}</h1>
             <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center text-[var(--color-accent-start)] bg-[var(--color-accent-start)]/10 px-2 py-1 rounded-md">
-                <span className="font-bold mr-1">{product.averageRating || '0.0'}</span>
-                ★
-              </div>
+              <Rating rating={ product.averageRating || 0 } isReadOnly />
               <a href="#reviews" className="text-[var(--text-muted)] hover:text-[var(--color-accent-start)] transition-colors">
-                {product.reviewCount || 0} customer reviews
+                {product.reviewCount || 0} customer review{ 1 !== product?.reviewCount && 's' }
               </a>
             </div>
           </div>
@@ -298,10 +296,8 @@ export default function Product() {
                     <div className="font-bold text-[var(--text)]">{review.author}</div>
                     <div className="text-xs text-[var(--text-muted)] mt-0.5">{new Date(review.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
                   </div>
-                  <div className="ml-auto flex text-[var(--color-accent-start)] bg-[var(--color-accent-start)]/10 px-2.5 py-1 rounded-lg">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <span key={i} className={`text-lg ${i < review.rating ? 'opacity-100' : 'opacity-20'}`}>★</span>
-                    ))}
+                  <div className="ml-auto flex">
+                    <Rating rating={review.rating} isReadOnly={true} />
                   </div>
                 </div>
                 <div className="text-[var(--text-secondary)] text-sm leading-relaxed prose prose-invert" dangerouslySetInnerHTML={{ __html: review.content }} />
