@@ -21,32 +21,36 @@ export function useSwipeDrag({
     const target = targetRef?.current;
     if (!target || !active) return;
 
-    const handleTouchStart = (e) => {
-      if (e.touches.length > 1) return; // ignore multi-touch
-      
-      const touch = e.touches[0];
-      
+    const handleStart = (clientX, clientY, e) => {
       if (onDragStart) {
-        const shouldStart = onDragStart(e, { x: touch.clientX, y: touch.clientY });
+        const shouldStart = onDragStart(e, { x: clientX, y: clientY });
         if (shouldStart === false) return;
       }
       
       isDragging.current = true;
-      startX.current = touch.clientX;
-      startY.current = touch.clientY;
-      lastX.current = touch.clientX;
-      lastY.current = touch.clientY;
+      startX.current = clientX;
+      startY.current = clientY;
+      lastX.current = clientX;
+      lastY.current = clientY;
       lastTime.current = Date.now();
       velocity.current = 0;
       dragAxis.current = null;
     };
 
-    const handleTouchMove = (e) => {
+    const handleTouchStart = (e) => {
+      if (e.touches.length > 1) return;
+      handleStart(e.touches[0].clientX, e.touches[0].clientY, e);
+    };
+    
+    const handleMouseDown = (e) => {
+      handleStart(e.clientX, e.clientY, e);
+    };
+
+    const handleMove = (clientX, clientY, e) => {
       if (!isDragging.current) return;
       
-      const touch = e.touches[0];
-      const deltaX = touch.clientX - startX.current;
-      const deltaY = touch.clientY - startY.current;
+      const deltaX = clientX - startX.current;
+      const deltaY = clientY - startY.current;
       
       if (!dragAxis.current) {
         if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 5) {
@@ -59,26 +63,25 @@ export function useSwipeDrag({
       const targetAxis = direction === 'horizontal' ? 'x' : 'y';
       
       if (dragAxis.current && dragAxis.current !== targetAxis) {
-        // User is scrolling in the opposite axis, cancel drag
         isDragging.current = false;
         if (onDragEnd) onDragEnd(e, { deltaX, deltaY, velocity: velocity.current, cancelled: true });
         return;
       }
       
-      if (dragAxis.current !== targetAxis) return; // wait until axis is clearly determined
+      if (dragAxis.current !== targetAxis) return;
 
       const now = Date.now();
       const dt = now - lastTime.current;
       if (dt > 0) {
         if (direction === 'horizontal') {
-          velocity.current = (touch.clientX - lastX.current) / dt;
+          velocity.current = (clientX - lastX.current) / dt;
         } else {
-          velocity.current = (touch.clientY - lastY.current) / dt;
+          velocity.current = (clientY - lastY.current) / dt;
         }
       }
       
-      lastX.current = touch.clientX;
-      lastY.current = touch.clientY;
+      lastX.current = clientX;
+      lastY.current = clientY;
       lastTime.current = now;
 
       if (onDragMove) {
@@ -86,7 +89,16 @@ export function useSwipeDrag({
       }
     };
 
-    const handleTouchEnd = (e) => {
+    const handleTouchMove = (e) => {
+      handleMove(e.touches[0].clientX, e.touches[0].clientY, e);
+    };
+
+    const handleMouseMove = (e) => {
+      if (!isDragging.current) return;
+      handleMove(e.clientX, e.clientY, e);
+    };
+
+    const handleEnd = (e) => {
       if (!isDragging.current) return;
       isDragging.current = false;
       
@@ -100,12 +112,20 @@ export function useSwipeDrag({
 
     target.addEventListener('touchstart', handleTouchStart, { passive: true });
     target.addEventListener('touchmove', handleTouchMove, { passive: true });
-    target.addEventListener('touchend', handleTouchEnd);
+    target.addEventListener('touchend', handleEnd);
+    
+    target.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleEnd);
     
     return () => {
       target.removeEventListener('touchstart', handleTouchStart);
       target.removeEventListener('touchmove', handleTouchMove);
-      target.removeEventListener('touchend', handleTouchEnd);
+      target.removeEventListener('touchend', handleEnd);
+      
+      target.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleEnd);
     };
   }, [targetRef, active, onDragStart, onDragMove, onDragEnd, direction]);
 }

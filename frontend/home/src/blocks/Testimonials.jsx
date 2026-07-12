@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import Slider from '../components/Slider';
 
 const testimonials = [
   {
@@ -65,82 +65,9 @@ const QuoteIcon = () => (
   </svg>
 );
 
-const slideVariants = {
-  enter: (direction) => ({
-    x: direction > 0 ? 60 : -60,
-    opacity: 0,
-  }),
-  center: {
-    x: 0,
-    opacity: 1,
-  },
-  exit: (direction) => ({
-    x: direction > 0 ? -60 : 60,
-    opacity: 0,
-  }),
-};
-
 function Testimonials() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [direction, setDirection] = useState(1);
-  const [isPaused, setIsPaused] = useState(false);
-
-  const goTo = useCallback(
-    (index) => {
-      setDirection(index > activeIndex ? 1 : -1);
-      setActiveIndex(index);
-    },
-    [activeIndex]
-  );
-
-  const goNext = useCallback(() => {
-    setDirection(1);
-    setActiveIndex((prev) => (prev + 1) % testimonials.length);
-  }, []);
-
-  const goPrev = useCallback(() => {
-    setDirection(-1);
-    setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
-  }, []);
-
-  const [touchStart, setTouchStart] = useState(null);
-  const [touchEnd, setTouchEnd] = useState(null);
-
-  const handleDragStart = (e) => {
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches ? e.targetTouches[0].clientX : e.clientX);
-    setIsPaused(true);
-  };
-
-  const handleDragMove = (e) => {
-    if (touchStart === null) return;
-    setTouchEnd(e.targetTouches ? e.targetTouches[0].clientX : e.clientX);
-  };
-
-  const handleDragEnd = () => {
-    if (touchStart !== null && touchEnd !== null) {
-      const distance = touchStart - touchEnd;
-      if (distance > 50) {
-        goNext();
-      } else if (distance < -50) {
-        goPrev();
-      }
-    }
-    setTouchStart(null);
-    setTouchEnd(null);
-    setIsPaused(false);
-  };
-
-  useEffect(() => {
-    if (isPaused) return;
-    const interval = setInterval(goNext, 5000);
-    return () => clearInterval(interval);
-  }, [isPaused, goNext]);
-
-  const current = testimonials[activeIndex];
-
   return (
-    <section id="testimonials" className="section-padding bg-[var(--bg)]">
+    <section id="testimonials" className="section-padding bg-[var(--bg)] overflow-hidden">
       <div className="section-container">
         {/* Header */}
         <motion.div
@@ -159,89 +86,43 @@ function Testimonials() {
         </motion.div>
 
         {/* Carousel */}
-        <div
-          className="max-w-3xl mx-auto cursor-grab active:cursor-grabbing select-none"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={handleDragEnd}
-          onTouchStart={handleDragStart}
-          onTouchMove={handleDragMove}
-          onTouchEnd={handleDragEnd}
-          onMouseDown={handleDragStart}
-          onMouseMove={handleDragMove}
-          onMouseUp={handleDragEnd}
-        >
-          <div className="relative min-h-[320px] md:min-h-[280px] flex items-center justify-center overflow-hidden">
-            <AnimatePresence mode="wait" custom={direction}>
-              <motion.div
-                key={current.id}
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.4, ease: 'easeInOut' }}
-                className="absolute inset-0"
-              >
-                <div className="glass-card p-8 md:p-12 text-center h-full flex flex-col justify-center">
-                  {/* Decorative Quote */}
-                  <div className="flex justify-center mb-4">
-                    <QuoteIcon />
-                  </div>
-
-                  {/* Quote Text */}
-                  <p className="text-lg md:text-xl italic text-[var(--text-secondary)] leading-relaxed mb-8">
-                    &ldquo;{current.quote}&rdquo;
-                  </p>
-
-                  {/* Stars */}
-                  <div className="flex justify-center gap-1 mb-4" aria-label={`${current.rating} out of 5 stars`}>
-                    {Array.from({ length: current.rating }).map((_, i) => (
-                      <StarIcon key={i} />
-                    ))}
-                  </div>
-
-                  {/* Author */}
-                  <div>
-                    <p className="font-semibold text-[var(--text)]">
-                      {current.author}
-                    </p>
-                    <p className="text-sm text-[var(--text-muted)]">
-                      {current.role}, {current.company}
-                    </p>
-                  </div>
+        <div className="max-w-3xl mx-auto">
+          <Slider 
+            autoPlayInterval={5000} 
+            className="min-h-[320px] md:min-h-[280px]"
+            slideClassName="px-2 md:px-4"
+          >
+            {testimonials.map((current) => (
+              <div key={current.id} className="glass-card p-8 md:p-12 text-center h-full flex flex-col justify-center">
+                {/* Decorative Quote */}
+                <div className="flex justify-center mb-4">
+                  <QuoteIcon />
                 </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
 
-          {/* Dot Indicators */}
-          <div className="flex justify-center gap-3 mt-8" role="tablist" aria-label="Testimonial navigation">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                id={`testimonial-dot-${index}`}
-                role="tab"
-                aria-selected={index === activeIndex}
-                aria-label={`Testimonial ${index + 1}`}
-                onClick={() => goTo(index)}
-                className="relative w-3 h-3 rounded-full cursor-pointer border-none outline-none bg-[var(--border)] transition-colors duration-300"
-              >
-                {index === activeIndex && (
-                  <motion.div
-                    layoutId="testimonial-active-dot"
-                    className="absolute inset-0 rounded-full"
-                    style={{
-                      background:
-                        'linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end))',
-                    }}
-                    initial={{ scale: 0.8 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                  />
-                )}
-              </button>
+                {/* Quote Text */}
+                <p className="text-lg md:text-xl italic text-[var(--text-secondary)] leading-relaxed mb-8">
+                  &ldquo;{current.quote}&rdquo;
+                </p>
+
+                {/* Stars */}
+                <div className="flex justify-center gap-1 mb-4" aria-label={`${current.rating} out of 5 stars`}>
+                  {Array.from({ length: current.rating }).map((_, i) => (
+                    <StarIcon key={i} />
+                  ))}
+                </div>
+
+                {/* Author */}
+                <div>
+                  <p className="font-semibold text-[var(--text)]">
+                    {current.author}
+                  </p>
+                  <p className="text-sm text-[var(--text-muted)]">
+                    {current.role}, {current.company}
+                  </p>
+                </div>
+              </div>
             ))}
-          </div>
+          </Slider>
         </div>
       </div>
     </section>
