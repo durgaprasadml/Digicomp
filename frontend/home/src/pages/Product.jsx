@@ -20,6 +20,18 @@ function HeartIcon({ filled }) {
   );
 }
 
+function ShareIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="18" cy="5" r="3"></circle>
+      <circle cx="6" cy="12" r="3"></circle>
+      <circle cx="18" cy="19" r="3"></circle>
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+    </svg>
+  );
+}
+
 export default function Product() {
   const { path } = useLocation()
   const product = usePageData(path) || {}
@@ -64,7 +76,7 @@ export default function Product() {
             <Slider className="w-full h-full" showDots={true}>
               {product.gallery.map(img => (
                 <div key={img.id} className="w-full h-full flex items-center justify-center p-8 md:p-12">
-                  <img src={img.url} alt={product.name} className="max-w-full max-h-full object-contain drop-shadow-2xl" />
+                  <img src={img.url} alt={product.name} className="max-w-full max-h-full object-contain drop-shadow-2xl" draggable="false" />
                 </div>
               ))}
             </Slider>
@@ -159,11 +171,10 @@ export default function Product() {
             </Button>
             <Button
               variant="ghost"
-              color={wishlisted ? "danger" : "default"}
-              onPress={() => setWishlisted(!wishlisted)}
-              aria-label="Wishlist"
+              color="default"
+              aria-label="Share"
             >
-              <HeartIcon />Share
+              <ShareIcon />Share
             </Button>
           </div>
 
