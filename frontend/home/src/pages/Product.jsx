@@ -3,13 +3,13 @@ import { useLocation } from '@typeroute/router'
 import { usePageData } from '../stores/PageStore'
 import { CartStore } from '../stores/CartStore'
 import { home, shop } from '../routes'
-import { Button } from "@heroui/react"
+import { Button, NumberField, Breadcrumbs, BreadcrumbsItem, Chip, Avatar, Card, CardHeader, CardContent, Separator, Table } from "@heroui/react"
 
 import Breadcrumb from '../blocks/Breadcrumb'
 import Slider from '../components/Slider'
-import QuantityInput from '../components/QuantityInput'
 import ProductCard from '../components/ProductCard'
 import Rating from '../components/Rating'
+import CustomButton from '../components/CustomButton'
 
 // Helper icons
 function HeartIcon({ filled }) {
@@ -29,7 +29,7 @@ export default function Product() {
 
   if (!product.id) return <div className="p-8 text-center text-[var(--text-muted)] min-h-[50vh] flex items-center justify-center">Loading product data...</div>
 
-  // Breadcrumb
+  // Breadcrumbs
   const breadcrumbItems = [
     { label: 'Home', route: home },
     { label: 'Shop', route: shop }
@@ -44,10 +44,16 @@ export default function Product() {
   }
 
   return (
-    <div className="page-container relative max-w-7xl mx-auto px-4 lg:px-8 py-8 lg:py-12 flex flex-col gap-12">
-      {/* R1: Breadcrumb */}
+    <div className="page-container relative max-w-7xl mx-auto px-4 lg:px-8 py-8 lg:py-12 flex flex-col gap-8">
+      {/* R1: Breadcrumbs */}
       <div>
-        <Breadcrumb items={breadcrumbItems} />
+        <Breadcrumbs>
+          {breadcrumbItems.map((item, index) => (
+            <BreadcrumbsItem key={index} href={item.route ? item.route : undefined}>
+              {item.label}
+            </BreadcrumbsItem>
+          ))}
+        </Breadcrumbs>
       </div>
 
       {/* R2: Product Top (Slider + Info) */}
@@ -73,9 +79,9 @@ export default function Product() {
         <div className="lg:col-span-5 flex flex-col gap-8">
           <div>
             {product.badge && (
-              <span className="inline-block mb-3 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-orange-500/20 text-orange-500">
+              <Chip color="warning" variant="flat" className="mb-3 uppercase font-bold tracking-wider" size="sm">
                 {product.badge}
-              </span>
+              </Chip>
             )}
             <h1 className="text-3xl lg:text-4xl font-bold text-[var(--text)] mb-3 leading-tight">{product.name}</h1>
             <div className="flex items-center gap-4 text-sm">
@@ -97,24 +103,38 @@ export default function Product() {
 
           <div className="text-[var(--text-secondary)] text-lg leading-relaxed prose prose-invert" dangerouslySetInnerHTML={{ __html: product.shortDescription }} />
 
-          <div className="flex items-center gap-2 text-sm font-semibold p-3 bg-[var(--surface)] border border-[var(--border)] rounded-xl w-fit">
-            <div className={`w-2 h-2 rounded-full ${product.stockStatus === 'instock' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]'}`}></div>
-            {product.stockStatus === 'instock' ? (
-              <span className="text-[var(--text)]">{product.stockQuantity ? `${product.stockQuantity} items in stock` : 'In Stock - Ready to ship'}</span>
+          <Chip color={ product.stockStatus === 'instock' ? 'success' : 'warning' } size="lg" variant="secondary">
+            <div className={`w-2 h-2 mr-1 rounded-full shadow-md ${product.stockStatus === 'instock' ? 'bg-(--success)' : 'bg-(--warning)'}`}></div>
+            { product.stockStatus === 'instock' ? (
+              <Chip.Label>{product.stockQuantity ? `${product.stockQuantity} items in stock` : 'In Stock - Ready to ship'}</Chip.Label>
             ) : (
-              <span className="text-[var(--text)]">Out of Stock</span>
-            )}
-          </div>
+              <Chip.Label>Out of Stock</Chip.Label>
+            ) }
+          </Chip>
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row flex-wrap items-stretch gap-4 mt-2">
-            <QuantityInput value={qty} onChange={setQty} max={product.stockQuantity || null} />
+            <NumberField
+              value={qty}
+              onChange={setQty}
+              maxValue={product.stockQuantity || undefined}
+              minValue={1}
+              aria-label="Quantity"
+              size="lg"
+              className="w-32"
+            >
+              <NumberField.Group>
+                <NumberField.DecrementButton />
+                <NumberField.Input />
+                <NumberField.IncrementButton />
+              </NumberField.Group>
+            </NumberField>
 
             <div className="flex-1 flex gap-3">
               <Button
                 onPress={handleAddToCart}
                 isDisabled={product.stockStatus !== 'instock'}
-                variant="bordered"
+                variant="secondary"
                 size="lg"
                 className="flex-1 font-bold"
               >
@@ -123,59 +143,62 @@ export default function Product() {
               <Button
                 isDisabled={product.stockStatus !== 'instock'}
                 size="lg"
-                className="flex-1 font-bold bg-gradient-to-r from-[var(--color-accent-start)] to-[var(--color-accent-end)] text-white shadow-lg shadow-orange-500/30"
               >
                 Buy Now
               </Button>
             </div>
-
-            <button
-              onClick={() => setWishlisted(!wishlisted)}
-              className={`p-3 rounded-xl border-2 transition-colors cursor-pointer flex items-center justify-center w-12 sm:w-auto ${wishlisted ? 'border-[var(--color-accent-start)] bg-[var(--color-accent-start)]/10 text-[var(--color-accent-start)]' : 'border-[var(--border)] bg-[var(--surface)] text-[var(--text-muted)] hover:text-[var(--text)] hover:border-[var(--text-muted)]'}`}
+          </div>
+          <div className="flex flex-col sm:flex-row flex-wrap items-stretch gap-4">
+            <Button
+              variant="ghost"
+              color={wishlisted ? "danger" : "default"}
+              onPress={() => setWishlisted(!wishlisted)}
               aria-label="Wishlist"
             >
-              <HeartIcon filled={wishlisted} />
-            </button>
+              <HeartIcon filled={wishlisted} /> { wishlisted ? 'In Wishlist' : 'Add to Wishlist' }
+            </Button>
           </div>
 
           {/* Meta */}
-          <div className="grid grid-cols-2 gap-y-3 gap-x-4 text-sm mt-4 pt-8 border-t border-[var(--border)]">
+          <div className="grid grid-cols-2 gap-y-4 gap-x-4 text-sm mt-4 pt-8 border-t border-[var(--border)]">
             {product.sku && (
-              <div className="flex flex-col">
-                <span className="text-[var(--text-muted)] mb-1">SKU</span>
+              <div className="flex flex-col gap-1">
+                <span className="text-[var(--text-muted)]">SKU</span>
                 <span className="font-semibold text-[var(--text)]">{product.sku}</span>
               </div>
             )}
             {product.categories?.length > 0 && (
-              <div className="flex flex-col">
-                <span className="text-[var(--text-muted)] mb-1">Category</span>
+              <div className="flex flex-col gap-1">
+                <span className="text-[var(--text-muted)]">Category</span>
                 <span className="font-semibold text-[var(--text)]">{product.categories.join(', ')}</span>
               </div>
             )}
             {product.brands?.length > 0 && (
-              <div className="flex flex-col">
-                <span className="text-[var(--text-muted)] mb-1">Brand</span>
+              <div className="flex flex-col gap-1">
+                <span className="text-[var(--text-muted)]">Brand</span>
                 <span className="font-semibold text-[var(--text)]">{product.brands.join(', ')}</span>
               </div>
             )}
             {product.tags?.length > 0 && (
-              <div className="flex flex-col">
-                <span className="text-[var(--text-muted)] mb-1">Tags</span>
-                <span className="font-semibold text-[var(--text)]">{product.tags.join(', ')}</span>
+              <div className="flex flex-col gap-2">
+                <span className="text-[var(--text-muted)]">Tags</span>
+                <div className="flex flex-wrap gap-1">
+                  {product.tags.map(tag => <Chip key={tag} size="sm" variant="flat">{tag}</Chip>)}
+                </div>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-[var(--border)] to-transparent my-4"></div>
+      <Separator className="my-4 bg-gradient-to-r from-transparent via-[var(--border)] to-transparent h-px border-none" />
 
       {/* R3: Description */}
       {product.description && (
         <div className="glass-card p-8 lg:p-12 rounded-3xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-accent-start)] opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
           <h2 className="text-2xl lg:text-3xl font-bold text-[var(--text)] mb-8 flex items-center gap-4">
-            <span className="w-8 h-1 bg-[var(--color-accent-start)] rounded-full"></span>
+            <span className="w-2 h-1 bg-[var(--color-accent-start)] rounded-full"></span>
             Overview
           </h2>
           <div className="prose prose-invert prose-lg max-w-none text-[var(--text-secondary)]" dangerouslySetInnerHTML={{ __html: product.description }} />
@@ -184,39 +207,50 @@ export default function Product() {
 
       {/* R4: Specifications */}
       {product.attributes && Object.keys(product.attributes).length > 0 && (
-        <div className="glass-card p-8 lg:p-12 rounded-3xl relative overflow-hidden">
-           <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500 opacity-5 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
-          <h2 className="text-2xl lg:text-3xl font-bold text-[var(--text)] mb-8 flex items-center gap-4">
-            <span className="w-8 h-1 bg-blue-500 rounded-full"></span>
+        <>
+          {/* <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500 opacity-5 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div> */}
+          <h2 className="text-2xl lg:text-3xl font-bold text-[var(--text)] flex items-center gap-4">
+            <span className="w-2 h-1 bg-blue-500 rounded-full"></span>
             Technical Specifications
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
-            {Object.entries(product.attributes).map(([key, values], index) => (
-              <div key={key} className={`flex py-4 ${index % 2 === 0 ? 'border-b border-[var(--border)]/30' : 'border-b border-[var(--border)]/30 md:border-transparent'}`}>
-                <span className="w-1/3 font-semibold text-[var(--text)]">{key}</span>
-                <span className="w-2/3 text-[var(--text-secondary)]">{values.join(', ')}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+          <Table aria-label="Technical Specifications" className="w-full" shadow="none">
+            <Table.ScrollContainer>
+              <Table.Content>
+                <Table.Header>
+                  <Table.Column>Feature</Table.Column>
+                  <Table.Column>Specification</Table.Column>
+                </Table.Header>
+                <Table.Body>
+                  {Object.entries(product.attributes).map(([key, values]) => (
+                    <Table.Row key={key}>
+                      <Table.Cell className="font-semibold text-[var(--text)] w-1/3">{key}</Table.Cell>
+                      <Table.Cell className="text-[var(--text-secondary)] w-2/3">{values.join(', ')}</Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </Table.Content>
+            </Table.ScrollContainer>
+          </Table>
+        </>
       )}
 
       {/* R5: Files */}
       {product.acf && (product.acf.datasheet || product.acf.schematic) && (
-        // <div className="flex flex-col gap-12">
         <>
           <div className="glass-card p-8 lg:p-12 rounded-3xl">
           {product.acf.datasheet && (
             <div className="flex flex-col gap-6">
               <div className="flex justify-between items-end pb-4 border-b border-[var(--border)]">
                 <h3 className="text-2xl font-bold text-[var(--text)] flex items-center gap-3">
-                  <span className="w-6 h-1 bg-purple-500 rounded-full"></span>
+                  <span className="w-2 h-1 bg-purple-500 rounded-full"></span>
                   Datasheet
                 </h3>
-                <a href={product.acf.datasheet.url} download className="bg-[var(--surface)] hover:bg-[var(--elevated)] border border-[var(--border)] px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2 text-[var(--text)]">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                  Download
-                </a>
+                <CustomButton variant="outline">
+                  <a href={product.acf.datasheet.url} download>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    Download
+                  </a>
+                </CustomButton>
               </div>
               {product.acf.datasheet.mime === 'application/pdf' ? (
                 <iframe src={product.acf.datasheet.url} className="w-full h-[800px] border border-[var(--border)] rounded-3xl bg-white shadow-sm" title="Datasheet" />
@@ -231,13 +265,15 @@ export default function Product() {
             <div className="flex flex-col gap-6">
               <div className="flex justify-between items-end pb-4 border-b border-[var(--border)]">
                 <h3 className="text-2xl font-bold text-[var(--text)] flex items-center gap-3">
-                  <span className="w-6 h-1 bg-green-500 rounded-full"></span>
+                  <span className="w-2 h-1 bg-green-500 rounded-full"></span>
                   Schematic
                 </h3>
-                <a href={product.acf.schematic.url} download className="bg-[var(--surface)] hover:bg-[var(--elevated)] border border-[var(--border)] px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2 text-[var(--text)]">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                  Download
-                </a>
+                <CustomButton variant="outline">
+                  <a href={product.acf.schematic.url} download>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    Download
+                  </a>
+                </CustomButton>
               </div>
               {product.acf.schematic.mime === 'application/pdf' ? (
                 <iframe src={product.acf.schematic.url} className="w-full h-[800px] border border-[var(--border)] rounded-3xl bg-white shadow-sm" title="Schematic" />
@@ -256,7 +292,7 @@ export default function Product() {
       {product.acf && product.acf.designers && product.acf.designers.length > 0 && (
         <div className="glass-card p-8 lg:p-12 rounded-3xl">
           <h2 className="text-2xl lg:text-3xl font-bold text-[var(--text)] mb-8 flex items-center gap-4">
-            <span className="w-8 h-1 bg-yellow-500 rounded-full"></span>
+            <span className="w-2 h-1 bg-yellow-500 rounded-full"></span>
             Hardware Designers
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -277,31 +313,31 @@ export default function Product() {
       <div id="reviews" className="glass-card p-8 lg:p-12 rounded-3xl">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10 pb-6 border-b border-[var(--border)]">
           <h2 className="text-2xl lg:text-3xl font-bold text-[var(--text)] flex items-center gap-4">
-            <span className="w-8 h-1 bg-orange-500 rounded-full"></span>
+            <span className="w-2 h-1 bg-orange-500 rounded-full"></span>
             Customer Reviews
             <span className="bg-[var(--surface)] text-sm font-normal px-3 py-1 rounded-full border border-[var(--border)] text-[var(--text-muted)]">{product.reviewCount || 0}</span>
           </h2>
-          <button className="w-full sm:w-auto bg-[var(--surface)] hover:bg-[var(--elevated)] border border-[var(--border)] text-[var(--text)] font-bold py-3 px-6 rounded-xl transition-colors shadow-sm">
-            Write a Review
-          </button>
+          <Button variant="outline" size="lg">Write a Review</Button>
         </div>
 
         {product.reviews && product.reviews.length > 0 ? (
           <div className="flex flex-col gap-6">
             {product.reviews.map(review => (
-              <div key={review.id} className="p-6 border border-[var(--border)] rounded-2xl bg-[var(--bg)] shadow-sm">
-                <div className="flex items-center gap-4 mb-4">
-                  <img src={review.avatar} alt={review.author} className="w-12 h-12 rounded-full border border-[var(--border)]" />
-                  <div>
-                    <div className="font-bold text-[var(--text)]">{review.author}</div>
-                    <div className="text-xs text-[var(--text-muted)] mt-0.5">{new Date(review.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+              <Card key={review.id} className="bg-[var(--bg)] border border-[var(--border)] shadow-sm rounded-2xl" shadow="none">
+                <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 pb-2 gap-4">
+                  <div className="flex gap-3 items-center">
+                    <Avatar src={review.avatar} size="md" isBordered />
+                    <div className="flex flex-col">
+                      <span className="font-bold text-[var(--text)]">{review.author}</span>
+                      <span className="text-xs text-[var(--text-muted)] mt-0.5">{new Date(review.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                    </div>
                   </div>
-                  <div className="ml-auto flex">
-                    <Rating rating={review.rating} isReadOnly={true} />
-                  </div>
-                </div>
-                <div className="text-[var(--text-secondary)] text-sm leading-relaxed prose prose-invert" dangerouslySetInnerHTML={{ __html: review.content }} />
-              </div>
+                  <Rating rating={review.rating} isReadOnly={true} />
+                </CardHeader>
+                <CardContent className="p-6 pt-2">
+                  <div className="text-[var(--text-secondary)] text-sm leading-relaxed prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: review.content }} />
+                </CardContent>
+              </Card>
             ))}
           </div>
         ) : (
@@ -320,7 +356,7 @@ export default function Product() {
         <div className="pt-8 mb-12">
           <div className="flex justify-between items-end mb-8">
             <h2 className="text-2xl lg:text-3xl font-bold text-[var(--text)] flex items-center gap-4">
-              <span className="w-8 h-1 bg-red-500 rounded-full"></span>
+              <span className="w-2 h-1 bg-red-500 rounded-full"></span>
               You May Also Like
             </h2>
           </div>

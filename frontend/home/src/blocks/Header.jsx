@@ -242,7 +242,7 @@ export default function Header() {
   return (
     <header
       id="site-header"
-      className={`sticky top-0 z-50 w-full transition-all duration-300 backdrop-blur-xl bg-[var(--surface)]/80 border-b ${ scrolled ? 'border-[var(--border)]' : 'border-transparent' }`}
+      className={`sticky top-0 z-50 w-full transition-all duration-300 backdrop-blur-xl bg-[var(--surface)]/80 border-b border-[var(--border)] ${ scrolled ? '' : '' }`}
     >
       <div className="section-container flex h-16 items-center justify-between gap-4 border-none">
         {/* ── Left: Brand ── */}

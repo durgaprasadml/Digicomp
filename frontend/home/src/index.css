@@ -11,6 +11,13 @@
 
 /* Components */
 @import "@heroui/styles/components/button.css" layer(components);
+@import "@heroui/styles/components/number-field.css" layer(components);
+@import "@heroui/styles/components/breadcrumbs.css" layer(components);
+@import "@heroui/styles/components/chip.css" layer(components);
+@import "@heroui/styles/components/card.css" layer(components);
+@import "@heroui/styles/components/separator.css" layer(components);
+@import "@heroui/styles/components/avatar.css" layer(components);
+@import "@heroui/styles/components/table.css" layer(components);
 
 /* Utilities and Variants (Required for some component features) */
 @import "@heroui/styles/utilities";
