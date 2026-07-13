@@ -328,3 +328,9 @@ function dc_custom_header_menu()
 <?php
 }
 add_action('greenlet_after_header_2_col_2', 'dc_custom_header_menu');
+
+function dc_get_top_badge( $badges ) {
+	$priority = ['Bestseller', 'Popular', 'Pro', 'New', 'Value'];
+	$badge = is_array( $badges ) ? current( array_intersect( $priority, $badges ) ) : null;
+	return $badge ? $badge : null;
+}

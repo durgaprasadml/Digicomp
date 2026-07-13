@@ -28,7 +28,7 @@ function dc_api_get_product( \WP_REST_Request $request ) {
 
 	$img_id = $product->get_image_id();
 	$img_data = $img_id ? wp_get_attachment_image_src( $img_id, 'large' ) : [];
-	
+
 	// Gallery
 	$gallery_ids = $product->get_gallery_image_ids();
 	$gallery = [];
@@ -75,8 +75,10 @@ function dc_api_get_product( \WP_REST_Request $request ) {
 		$datasheet = get_field( 'datasheet', $product->get_id() );
 		$schematic = get_field( 'schematic', $product->get_id() );
 		$designers_raw = get_field( 'designers', $product->get_id() );
+		$badges = get_field( 'badges', $product->get_id() );
 
 		// Helper from acf-product-fields.php
+		$acf['badge'] = dc_get_top_badge( $badges ); // Todo: Semantically wrong
 		$acf['datasheet'] = function_exists( 'sk_get_acf_file_info' ) ? sk_get_acf_file_info( $datasheet ) : null;
 		$acf['schematic'] = function_exists( 'sk_get_acf_file_info' ) ? sk_get_acf_file_info( $schematic ) : null;
 

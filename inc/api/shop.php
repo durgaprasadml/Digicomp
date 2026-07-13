@@ -79,9 +79,7 @@ function dc_api_get_shop( \WP_REST_Request $request ) {
 
 		// Extract badge if exists (for UI presentation)
 		$badges = function_exists( 'get_field' ) ? get_field( 'badges', $prod->get_id() ) : [];
-		$priority = ['Bestseller', 'Popular', 'Pro', 'New', 'Value'];
-		$badge = is_array($badges) ? current( array_intersect( $priority, $badges ) ) : null;
-		if (!$badge) $badge = null;
+		$badge = dc_get_top_badge( $badges );
 
 		// Extract generic ACF fields for filtering logic
 		$acf_values = [];

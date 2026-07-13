@@ -187,7 +187,7 @@ function Footer() {
             <p>&copy; 2026 Digicomp Technologies. All rights reserved.</p>
 
             {/* Made in India */}
-            <p className="hidden md:block">Made with precision in India 🇮🇳</p>
+            <p className="hidden md:block">Made with precision in India</p>
 
             {/* Social Icons */}
             <div className="flex items-center gap-4">
@@ -205,7 +205,7 @@ function Footer() {
             </div>
 
             {/* Made in India (mobile) */}
-            <p className="block md:hidden">Made with precision in India 🇮🇳</p>
+            <p className="block md:hidden">Made with precision in India</p>
           </div>
         </div>
       </div>

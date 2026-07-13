@@ -73,16 +73,16 @@ export default function Product() {
               No Image Available
             </div>
           )}
+          { product.acf?.badge && (
+            <Chip color="accent" variant="soft" className="absolute top-4 left-4 uppercase font-bold tracking-wider" size="sm">
+              {product.acf.badge}
+            </Chip>
+          ) }
         </div>
 
         {/* R2 C2: Product Info */}
         <div className="lg:col-span-5 flex flex-col gap-8">
           <div>
-            {product.badge && (
-              <Chip color="warning" variant="flat" className="mb-3 uppercase font-bold tracking-wider" size="sm">
-                {product.badge}
-              </Chip>
-            )}
             <h1 className="text-3xl lg:text-4xl font-bold text-[var(--text)] mb-3 leading-tight">{product.name}</h1>
             <div className="flex items-center gap-4 text-sm">
               <Rating rating={ product.averageRating || 0 } isReadOnly />
@@ -93,7 +93,7 @@ export default function Product() {
           </div>
 
           <div className="flex items-baseline gap-4">
-            <span className="text-4xl font-black text-[var(--text)] bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-accent-start)] to-[var(--color-accent-end)]">
+            <span className="text-3xl font-bold text-[var(--text)] bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-accent-start)] to-[var(--color-accent-end)]">
               ₹{product.price || product.regPrice}
             </span>
             {product.regPrice && product.price !== product.regPrice && (
@@ -157,10 +157,18 @@ export default function Product() {
             >
               <HeartIcon filled={wishlisted} /> { wishlisted ? 'In Wishlist' : 'Add to Wishlist' }
             </Button>
+            <Button
+              variant="ghost"
+              color={wishlisted ? "danger" : "default"}
+              onPress={() => setWishlisted(!wishlisted)}
+              aria-label="Wishlist"
+            >
+              <HeartIcon />Share
+            </Button>
           </div>
 
           {/* Meta */}
-          <div className="grid grid-cols-2 gap-y-4 gap-x-4 text-sm mt-4 pt-8 border-t border-[var(--border)]">
+          <div className="grid grid-cols-2 gap-y-4 gap-x-4 text-sm pt-4 border-t border-[var(--border)]">
             {product.sku && (
               <div className="flex flex-col gap-1">
                 <span className="text-[var(--text-muted)]">SKU</span>
@@ -183,15 +191,13 @@ export default function Product() {
               <div className="flex flex-col gap-2">
                 <span className="text-[var(--text-muted)]">Tags</span>
                 <div className="flex flex-wrap gap-1">
-                  {product.tags.map(tag => <Chip key={tag} size="sm" variant="flat">{tag}</Chip>)}
+                  {product.tags.map(tag => <Chip key={tag} size="sm">{tag}</Chip>)}
                 </div>
               </div>
             )}
           </div>
         </div>
       </div>
-
-      <Separator className="my-4 bg-gradient-to-r from-transparent via-[var(--border)] to-transparent h-px border-none" />
 
       {/* R3: Description */}
       {product.description && (
@@ -315,7 +321,9 @@ export default function Product() {
           <h2 className="text-2xl lg:text-3xl font-bold text-[var(--text)] flex items-center gap-4">
             <span className="w-2 h-1 bg-orange-500 rounded-full"></span>
             Customer Reviews
-            <span className="bg-[var(--surface)] text-sm font-normal px-3 py-1 rounded-full border border-[var(--border)] text-[var(--text-muted)]">{product.reviewCount || 0}</span>
+            <Chip variant="soft" size="md">
+              {product.reviewCount || 0}
+            </Chip>
           </h2>
           <Button variant="outline" size="lg">Write a Review</Button>
         </div>
