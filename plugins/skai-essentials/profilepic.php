@@ -96,17 +96,17 @@ function cs_save_avatar($user_id) {
 		}
 	}
 }
-add_filter('get_avatar', 'cs_replace_avatar', 10, 5);
+add_filter('get_avatar_data', 'cs_replace_avatar_data', 10, 2);
 
-function cs_replace_avatar($avatar, $id_or_email, $size, $default, $alt) {
+function cs_replace_avatar_data($args, $id_or_email) {
 
 	$user = false;
 
 	if (is_numeric($id_or_email)) {
 		$user = get_user_by('id', $id_or_email);
-	} elseif (is_object($id_or_email) && isset($id_or_email->user_id)) {
+	} elseif (is_object($id_or_email) && !empty($id_or_email->user_id)) {
 		$user = get_user_by('id', $id_or_email->user_id);
-	} else {
+	} elseif (is_string($id_or_email)) {
 		$user = get_user_by('email', $id_or_email);
 	}
 
@@ -115,18 +115,14 @@ function cs_replace_avatar($avatar, $id_or_email, $size, $default, $alt) {
 		$avatar_id = get_user_meta($user->ID, 'custom_avatar_id', true);
 
 		if ($avatar_id) {
+			$size = isset($args['size']) ? $args['size'] : 96;
+			$avatar_url = wp_get_attachment_image_url($avatar_id, array($size, $size));
 
-			return wp_get_attachment_image(
-				$avatar_id,
-				array($size, $size),
-				false,
-				array(
-					'class' => 'avatar avatar-' . $size,
-					'alt'   => esc_attr($alt)
-				)
-			);
+			if ($avatar_url) {
+				$args['url'] = $avatar_url;
+			}
 		}
 	}
 
-	return $avatar;
+	return $args;
 }

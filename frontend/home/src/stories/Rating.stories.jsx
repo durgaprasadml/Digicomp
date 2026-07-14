@@ -12,6 +12,31 @@ export const Default = () => {
   );
 };
 
+export const Sizes = () => {
+  const [rating, setRating] = useState(3);
+  return (
+    <div className="space-y-6">
+      <h2 className="text-xl font-bold">Rating Sizes</h2>
+
+      <div>
+        <p className="my-4 text-sm text-gray-500">Size: sm</p>
+        <Rating rating={rating} onChange={setRating} size="sm" />
+      </div>
+
+      <div>
+        <p className="my-4 text-sm text-gray-500">Size: md</p>
+        <Rating rating={rating} onChange={setRating} />
+      </div>
+
+      <div>
+        <p className="my-4 text-sm text-gray-500">Size: lg</p>
+        <Rating rating={rating} onChange={setRating} size="lg" />
+      </div>
+
+    </div>
+  );
+};
+
 export const ReadOnly = () => {
   return (
     <div className="space-y-6">

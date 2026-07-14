@@ -4,13 +4,18 @@ import { usePageData } from '../stores/PageStore'
 import { CartStore } from '../stores/CartStore'
 import { Link } from '@typeroute/router'
 import { home, shop } from '../routes'
-import { Button, NumberField, Breadcrumbs, Chip, Avatar, Card, CardHeader, CardContent, Separator, Table } from "@heroui/react"
+import { Button, NumberField, Breadcrumbs, Chip, Avatar, Card, Separator, Table } from "@heroui/react"
 
 import Breadcrumb from '../blocks/Breadcrumb'
 import Slider from '../components/Slider'
 import ProductCard from '../components/ProductCard'
 import Rating from '../components/Rating'
 import CustomButton from '../components/CustomButton'
+import Container from '../components/layout/Container'
+import Section from '../components/layout/Section'
+import Grid from '../components/layout/Grid'
+import Stack from '../components/layout/Stack'
+import FlexRow from '../components/layout/FlexRow'
 import { getCleanPath } from '../utils/helper'
 
 // Helper icons
@@ -58,9 +63,9 @@ export default function Product() {
   }
 
   return (
-    <div className="page-container relative max-w-7xl mx-auto px-4 lg:px-8 py-8 lg:py-12 flex flex-col gap-8">
+    <Container className="relative max-w-7xl py-4">
       {/* R1: Breadcrumbs */}
-      <div>
+      <Section className="py-0">
         <Breadcrumbs>
           {breadcrumbItems.map((item, index) => (
             ! item.route ? <Breadcrumbs.Item className="pointer-events-none">{item.label}</Breadcrumbs.Item> :
@@ -71,12 +76,13 @@ export default function Product() {
             </Breadcrumbs.Item>
           ))}
         </Breadcrumbs>
-      </div>
+      </Section>
 
       {/* R2: Product Top (Slider + Info) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        {/* R2 C1: Image Slider */}
-        <div className="lg:col-span-6 relative rounded-3xl overflow-hidden bg-[var(--surface)] border border-[var(--border)] h-[400px] md:h-[600px] flex items-center justify-center">
+      <Section>
+        <Grid cols={2} className="gap-8">
+          {/* R2 C1: Image Slider */}
+          <div className="relative rounded-3xl overflow-hidden bg-[var(--surface)] border border-[var(--border)] h-[400px] md:h-[600px] flex items-center justify-center">
           {product.gallery && product.gallery.length > 0 ? (
             <Slider className="w-full h-full" showDots={true}>
               {product.gallery.map(img => (
@@ -98,19 +104,19 @@ export default function Product() {
         </div>
 
         {/* R2 C2: Product Info */}
-        <div className="lg:col-span-6 flex flex-col gap-4">
+        <Stack>
           <div>
             <h1 className="mb-2">{product.name}</h1>
             <div className="flex items-center gap-4 text-sm">
-              <Rating rating={ product.averageRating || 0 } isReadOnly />
-              <a href="#reviews" className="text-[var(--text-muted)] hover:text-[var(--color-accent-start)] transition-colors">
+              <Rating rating={ product.averageRating || 0 } isReadOnly size="sm" />
+              <a href="#reviews" className="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">
                 {product.reviewCount || 0} customer review{ 1 !== product?.reviewCount && 's' }
               </a>
             </div>
           </div>
 
           <div className="flex items-baseline gap-4">
-            <span className="text-3xl font-bold text-[var(--text)] bg-clip-text text-transparent bg-gradient-to-r from-[var(--accent)] to-[var(--color-accent-hover)]">
+            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--accent)] to-[var(--color-accent-hover)]">
               ₹{product.price || product.regPrice}
             </span>
             {product.regPrice && product.price !== product.regPrice && (
@@ -118,7 +124,7 @@ export default function Product() {
             )}
           </div>
 
-          <div className="text-[var(--text-secondary)] text-lg leading-relaxed prose prose-invert" dangerouslySetInnerHTML={{ __html: product.shortDescription }} />
+          <div className="text-[var(--text-secondary)] leading-relaxed" dangerouslySetInnerHTML={{ __html: product.shortDescription }} />
 
           <Chip color={ product.stockStatus === 'instock' ? 'success' : 'warning' } size="lg" variant="secondary">
             <div className={`w-2 h-2 mr-1 rounded-full shadow-md ${product.stockStatus === 'instock' ? 'bg-(--success)' : 'bg-(--warning)'}`}></div>
@@ -130,7 +136,7 @@ export default function Product() {
           </Chip>
 
           {/* Actions */}
-          <div className="flex flex-col sm:flex-row flex-wrap items-stretch gap-4 mt-2">
+          <FlexRow className="flex-wrap items-stretch mt-2">
             <NumberField
               value={qty}
               onChange={setQty}
@@ -165,8 +171,8 @@ export default function Product() {
                 Buy Now
               </Button>
             </div>
-          </div>
-          <div className="flex flex-col sm:flex-row flex-wrap items-stretch gap-4">
+          </FlexRow>
+          <FlexRow className="flex-wrap items-stretch">
             <Button
               variant="ghost"
               color={wishlisted ? "danger" : "default"}
@@ -182,10 +188,10 @@ export default function Product() {
             >
               <ShareIcon />Share
             </Button>
-          </div>
+          </FlexRow>
 
           {/* Meta */}
-          <div className="grid grid-cols-2 gap-y-4 gap-x-4 text-sm pt-4 border-t border-[var(--border)]">
+          <div className="grid grid-cols-2 gap-4 text-sm pt-4 border-t border-[var(--border)]">
             {product.sku && (
               <div className="flex flex-col gap-1">
                 <span className="text-[var(--text-muted)]">SKU</span>
@@ -213,25 +219,28 @@ export default function Product() {
               </div>
             )}
           </div>
-        </div>
-      </div>
+        </Stack>
+      </Grid>
+      </Section>
 
       {/* R3: Description */}
       {product.description && (
-        <div className="surface surface--default rounded-3xl p-6 relative overflow-hidden" variant="default">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-accent-start)] opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
-          <h2 className="flex items-center gap-2 mb-6">
-            <span className="w-1 h-1 bg-[var(--color-accent-start)] rounded-full"></span>
-            Overview
-          </h2>
-          <div className="prose prose-invert prose-lg max-w-none text-[var(--text-secondary)]" dangerouslySetInnerHTML={{ __html: product.description }} />
-        </div>
+        <Section>
+          <div className="surface surface--default rounded-3xl p-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--accent)] opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+            <h2 className="title-section">
+              <span className="w-1 h-1 bg-[var(--color-accent-start)] rounded-full"></span>
+              Overview
+            </h2>
+            <div dangerouslySetInnerHTML={{ __html: product.description }} />
+          </div>
+        </Section>
       )}
 
       {/* R4: Specifications */}
       {product.attributes && Object.keys(product.attributes).length > 0 && (
-        <div>
-          <h2 className="flex items-center gap-2 mb-6">
+        <Section>
+          <h2 className="title-section">
             <span className="w-1 h-1 bg-blue-500 rounded-full"></span>
             Technical Specifications
           </h2>
@@ -253,16 +262,17 @@ export default function Product() {
               </Table.Content>
             </Table.ScrollContainer>
           </Table>
-        </div>
+        </Section>
       )}
 
       {/* R5: Files */}
       {product.acf && (product.acf.datasheet || product.acf.schematic) && (
-        <>
+        <Section>
+          <Stack className="gap-8">
           {product.acf.datasheet && (
             <div className="flex flex-col">
-              <div className="flex justify-between items-end mb-6">
-                <h2 className="flex items-center gap-2">
+              <FlexRow className="justify-between items-start">
+                <h2 className="title-section">
                   <span className="w-1 h-1 bg-purple-500 rounded-full"></span>
                   Datasheet
                 </h2>
@@ -272,7 +282,7 @@ export default function Product() {
                     Download
                   </a>
                 </CustomButton>
-              </div>
+              </FlexRow>
               {product.acf.datasheet.mime === 'application/pdf' ? (
                 <iframe src={product.acf.datasheet.url} className="w-full h-[800px] border border-[var(--border)] rounded-3xl bg-white shadow-sm" title="Datasheet" />
               ) : (
@@ -281,9 +291,9 @@ export default function Product() {
             </div>
           )}
           {product.acf.schematic && (
-            <div className="flex flex-col mb-6">
-              <div className="flex justify-between items-end mb-6">
-                <h2 className="flex items-center gap-2">
+            <div className="flex flex-col">
+              <FlexRow className="justify-between items-start">
+                <h2 className="title-section">
                   <span className="w-1 h-1 bg-green-500 rounded-full"></span>
                   Schematic
                 </h2>
@@ -293,44 +303,48 @@ export default function Product() {
                     Download
                   </a>
                 </CustomButton>
-              </div>
+              </FlexRow>
               {product.acf.schematic.mime === 'application/pdf' ? (
                 <iframe src={product.acf.schematic.url} className="w-full h-[800px] border border-[var(--border)] rounded-3xl bg-white shadow-sm" title="Schematic" />
               ) : (
-                <div className="h-[800px] w-full bg-[var(--surface)] rounded-3xl overflow-hidden border border-[var(--border)] p-8 flex items-center justify-center shadow-sm">
+                <Card className="items-center">
                   <img src={product.acf.schematic.url} alt="Schematic" className="max-w-full max-h-full object-contain" />
-                </div>
+                </Card>
               )}
             </div>
           )}
-        </>
+          </Stack>
+        </Section>
       )}
 
       {/* R7: Designers */}
       {product.acf && product.acf.designers && product.acf.designers.length > 0 && (
-        <div className="mb-6">
-          <h2 className="flex items-center gap-2 mb-6">
+        <Section>
+          <h2 className="title-section">
             <span className="w-1 h-1 bg-yellow-500 rounded-full"></span>
             Hardware Designers
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <Grid cols={3}>
             {product.acf.designers.map(designer => (
-              <div key={designer.id} className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-5 p-6 border border-[var(--border)]/50 rounded-2xl bg-gradient-to-br from-[var(--bg)] to-[var(--surface)] shadow-sm hover:shadow-md transition-shadow">
-                <div className="rounded-full overflow-hidden" dangerouslySetInnerHTML={{ __html: designer.avatar }}></div>
+              <Card className="md:flex-row items-center sm:items-start text-center sm:text-left p-6 py-4 gap-4">
+                <Avatar>
+                  <Avatar.Image src={designer.avatar} alt="review.author" />
+                </Avatar>
+                {/* <div className="rounded-full overflow-hidden" dangerouslySetInnerHTML={{ __html: designer.avatar }}></div> */}
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold text-[var(--text)]">{designer.name}</h3>
-                  <p className="text-sm text-[var(--text-muted)] mt-2 leading-relaxed">{designer.bio || 'Core Hardware Engineer at Digicomp Technologies.'}</p>
+                  <h3 className="text-lg mb-2">{designer.name}</h3>
+                  <Card.Description>{designer.bio || 'Core Hardware Engineer at Digicomp Technologies.'}</Card.Description>
                 </div>
-              </div>
+              </Card>
             ))}
-          </div>
-        </div>
+          </Grid>
+        </Section>
       )}
 
       {/* R8: Reviews */}
-      <div id="reviews" className="mb-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <h2 className="flex items-center gap-2">
+      <Section id="reviews">
+        <FlexRow className="justify-between items-start">
+          <h2 className="title-section">
             <span className="w-1 h-1 bg-orange-500 rounded-full"></span>
             Customer Reviews
             <Chip variant="soft" size="md">
@@ -338,55 +352,57 @@ export default function Product() {
             </Chip>
           </h2>
           <Button>Write a Review</Button>
-        </div>
+        </FlexRow>
 
         {product.reviews && product.reviews.length > 0 ? (
-          <div className="flex flex-col gap-6">
+          <Stack>
             {product.reviews.map(review => (
-              <Card key={review.id} className="" shadow="none">
-                <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 pb-2 gap-4">
+              <Card key={review.id}>
+                <Card.Header className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 py-0 gap-4">
                   <div className="flex gap-3 items-center">
-                    <Avatar src={review.avatar} size="md" isBordered />
+                    <Avatar>
+                      <Avatar.Image src={review.avatar} alt="review.author" />
+                    </Avatar>
                     <div className="flex flex-col">
-                      <span className="font-bold text-[var(--text)]">{review.author}</span>
-                      <span className="text-xs text-[var(--text-muted)] mt-0.5">{new Date(review.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                      <span className="font-bold">{review.author}</span>
+                      <span className="text-xs text-(--text-muted) mt-0.5">{new Date(review.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                     </div>
                   </div>
-                  <Rating rating={review.rating} isReadOnly={true} />
-                </CardHeader>
-                <CardContent className="p-6 pt-2">
-                  <div className="text-[var(--text-secondary)] text-sm leading-relaxed prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: review.content }} />
-                </CardContent>
+                  <Rating rating={review.rating} isReadOnly={true} size="sm" />
+                </Card.Header>
+                <Card.Content className="p-4">
+                  <div className="text-(--text-secondary) text-sm leading-relaxed prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: review.content }} />
+                </Card.Content>
               </Card>
             ))}
-          </div>
+          </Stack>
         ) : (
-          <div className="text-center py-4">
-            <div className="w-16 h-16 bg-[var(--surface)] rounded-full flex items-center justify-center mx-auto mb-6 text-[var(--text-muted)]">
+          <Card className="text-center">
+            <div className="w-16 h-16 bg-(--default) rounded-full flex items-center justify-center mx-auto text-(--text-muted)">
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
             </div>
-            <h3 className="text-lg font-bold text-[var(--text)] mb-2">No reviews yet</h3>
-            <p className="text-[var(--text-muted)] max-w-sm mx-auto">Have you used this product? Be the first to share your experience with other engineers.</p>
-          </div>
+            <h3 className="text-lg font-bold mb-0">No reviews yet</h3>
+            <p className="text-(--text-muted) max-w-sm mx-auto">Have you used this product? Be the first to share your experience with other engineers.</p>
+          </Card>
         )}
-      </div>
+      </Section>
 
       {/* R9: Related Products */}
       {product.relatedProducts && product.relatedProducts.length > 0 && (
-        <div className="mb-12">
-          <div className="flex justify-between items-end mb-6">
-            <h2 className="flex items-center gap-2">
+        <Section>
+          <div>
+            <h2 className="title-section">
               <span className="w-1 h-1 bg-red-500 rounded-full"></span>
               You May Also Like
             </h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Grid cols={4}>
             {product.relatedProducts.map(related => (
               <ProductCard key={related.id} product={related} />
             ))}
-          </div>
-        </div>
+          </Grid>
+        </Section>
       )}
-    </div>
+    </Container>
   )
 }

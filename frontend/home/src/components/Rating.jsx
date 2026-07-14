@@ -32,13 +32,14 @@ const StarIcon = ({ fillPercentage }) => (
   </>
 );
 
-export default function Rating({ rating = 0, onChange, maxStars = 5, isReadOnly = false }) {
+export default function Rating({ rating = 0, onChange, maxStars = 5, isReadOnly = false, size = 'md' }) {
   const [hoverRating, setHoverRating] = useState(0);
+  const cls = `rating${ 'md' !== size ? ' rating--' + size : '' }`
 
   if (isReadOnly) {
     return (
       <div
-        className="rating"
+        className={ cls }
         role="img"
         aria-label={`Rating: ${rating} out of ${maxStars}`}
       >
@@ -62,7 +63,7 @@ export default function Rating({ rating = 0, onChange, maxStars = 5, isReadOnly 
 
   return (
     <div
-      className="rating"
+      className={ cls }
       role="radiogroup"
       aria-label="Rating"
       onMouseLeave={() => setHoverRating(0)}

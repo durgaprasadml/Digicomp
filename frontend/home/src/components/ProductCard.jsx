@@ -1,7 +1,9 @@
 import { useState, useRef } from 'react';
+import { Card } from "@heroui/react";
+
 import { CartStore } from '../stores/CartStore';
 import { PageStore } from '../stores/PageStore';
-import { Button } from "@heroui/react";
+import CustomButton from "../components/CustomButton";
 
 function badgeColor( badge ) {
   let color = 'bg-orange-500/20 text-orange-500'
@@ -87,9 +89,9 @@ export default function ProductCard({ product }) {
   };
 
   return (
-    <div
+    <Card
       id={`product-card-${product.id}`}
-      className="group relative flex flex-col rounded-xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden transition-all duration-200 shadow-sm hover:shadow-md h-full"
+      className="group relative flex flex-col overflow-hidden transition-all duration-200 hover:shadow-sm p-0"
     >
       <a href={`/product/${product.slug || product.id}`} className="absolute rounded-2xl inset-0 z-0"></a>
 
@@ -117,14 +119,14 @@ export default function ProductCard({ product }) {
           ref={imgRef}
           src={product.image}
           alt={product.name}
-          className="h-36 w-auto max-w-full object-contain drop-shadow-lg transition-transform duration-500 group-hover:scale-105"
+          className="h-36 w-auto max-w-full object-contain drop-shadow-lg transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
         />
       </div>
 
       {/* Info area */}
       <div className="flex flex-1 flex-col px-5 pt-4 pb-5 z-10 pointer-events-none">
-        <h3 className="text-sm font-semibold text-[var(--text)] leading-snug line-clamp-1">
+        <h3 className="text-sm mb-0 line-clamp-1">
           {product.name}
         </h3>
         <p className="mt-1 text-xs text-[var(--text-muted)] leading-relaxed line-clamp-1">
@@ -143,29 +145,29 @@ export default function ProductCard({ product }) {
           </div>
 
           {/* Add to cart */}
-          <Button
-            id={`add-to-cart-${product.id}`}
-            onPress={(e) => { handleAddToCart(); }}
-            color={addedToCart ? "success" : "default"}
-            variant={addedToCart ? "flat" : "bordered"}
-            className="w-full mt-4 font-semibold pointer-events-auto"
-          >
-            {addedToCart ? (
-              <>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                Added
-              </>
-            ) : (
-              <>
-                <CartPlusIcon />
-                Add to Cart
-              </>
-            )}
-          </Button>
+          <CustomButton variant="outline">
+            <button
+              id={`add-to-cart-${product.id}`}
+              onClick={(e) => { handleAddToCart(); }}
+              className={ `w-full mt-4 font-semibold pointer-events-auto${ addedToCart ? ' bg-(--color-success-soft-hover)' : '' }` }
+            >
+              { addedToCart ? (
+                <>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  Added
+                </>
+              ) : (
+                <>
+                  <CartPlusIcon />
+                  Add to Cart
+                </>
+              ) }
+            </button>
+          </CustomButton>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

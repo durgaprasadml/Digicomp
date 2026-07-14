@@ -93,7 +93,7 @@ function dc_api_get_product( \WP_REST_Request $request ) {
 				if ( is_array( $designer ) && isset( $designer['ID'] ) ) {
 					$designer_id = $designer['ID'];
 					$name = ! empty( $designer['display_name'] ) ? $designer['display_name'] : '';
-					$avatar = ! empty( $designer['user_avatar'] ) ? $designer['user_avatar'] : '';
+					// $avatar = ! empty( $designer['user_avatar'] ) ? $designer['user_avatar'] : '';
 					$bio = ! empty( $designer['user_description'] ) ? $designer['user_description'] : '';
 				} elseif ( $designer instanceof WP_User ) {
 					$designer_id = $designer->ID;
@@ -111,9 +111,7 @@ function dc_api_get_product( \WP_REST_Request $request ) {
 							$bio = empty( $bio ) ? $user_data->description : $bio;
 						}
 					}
-					if ( empty( $avatar ) ) {
-						$avatar = get_avatar_url( $designer_id, [ 'size' => 96 ] );
-					}
+					$avatar = get_avatar_url( $designer_id );
 					$designers[] = [
 						'id'     => $designer_id,
 						'name'   => $name,
@@ -162,7 +160,7 @@ function dc_api_get_product( \WP_REST_Request $request ) {
 			'date'    => get_comment_date( 'c', $comment->comment_ID ),
 			'content' => $comment->comment_content,
 			'rating'  => $rating,
-			'avatar'  => get_avatar_url( $comment->comment_author_email, [ 'size' => 64 ] ),
+			'avatar'  => get_avatar_url( $comment->user_id ),
 		];
 	}
 
