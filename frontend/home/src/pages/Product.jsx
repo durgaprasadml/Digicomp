@@ -82,26 +82,31 @@ export default function Product() {
       <Section>
         <Grid cols={2} className="gap-8">
           {/* R2 C1: Image Slider */}
-          <div className="relative rounded-3xl overflow-hidden bg-[var(--surface)] border border-[var(--border)] h-[400px] md:h-[600px] flex items-center justify-center">
+          <div className="relative">
           {product.gallery && product.gallery.length > 0 ? (
-            <Slider className="w-full h-full" showDots={true}>
+            <Slider
+              className="w-full"
+              slideClassName="bg-[var(--surface)] border border-[var(--border)] rounded-3xl overflow-hidden h-[400px] md:h-[600px]"
+              showDots={false}
+              thumbnails={product.gallery}
+            >
               {product.gallery.map(img => (
-                <div key={img.id} className="w-full h-full flex items-center justify-center p-8 md:p-12">
+                <div key={img.id} className="w-full h-full flex items-center justify-center p-8 md:p-12 relative">
                   <img src={img.url} alt={product.name} className="max-w-full max-h-full object-contain drop-shadow-2xl" draggable="false" />
                 </div>
               ))}
             </Slider>
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-[var(--text-muted)]">
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-3xl overflow-hidden h-[400px] md:h-[600px] w-full flex items-center justify-center text-[var(--text-muted)]">
               No Image Available
             </div>
           )}
           { product.acf?.badge && (
-            <Chip color="accent" variant="soft" className="absolute top-4 left-4 uppercase font-bold tracking-wider" size="sm">
+            <Chip color="accent" variant="soft" className="absolute top-4 left-4 uppercase font-bold tracking-wider z-10" size="sm">
               {product.acf.badge}
             </Chip>
           ) }
-        </div>
+          </div>
 
         {/* R2 C2: Product Info */}
         <Stack>
@@ -381,7 +386,7 @@ export default function Product() {
             <div className="w-16 h-16 bg-(--default) rounded-full flex items-center justify-center mx-auto text-(--text-muted)">
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
             </div>
-            <h3 className="text-lg font-bold mb-0">No reviews yet</h3>
+            <h3 className="text-lg font-bold">No reviews yet</h3>
             <p className="text-(--text-muted) max-w-sm mx-auto">Have you used this product? Be the first to share your experience with other engineers.</p>
           </Card>
         )}

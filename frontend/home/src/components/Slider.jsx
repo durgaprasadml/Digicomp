@@ -6,13 +6,14 @@ export default function Slider({
   children,
   autoPlayInterval = 0,
   showDots = true,
+  thumbnails = [],
   className = '',
   slideClassName = '',
 }) {
   const slides = React.Children.toArray(children);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  
+
   const carouselRef = useRef(null);
   const trackRef = useRef(null);
 
@@ -42,10 +43,10 @@ export default function Slider({
         const slideWidth = carouselRef.current.offsetWidth;
         const baseTx = -activeIndex * slideWidth;
         let currentTx = baseTx + deltaX;
-        
+
         // Add resistance if dragging past the ends
         if (currentTx > 0) {
-           currentTx = currentTx * 0.2; 
+           currentTx = currentTx * 0.2;
         } else if (currentTx < -(slides.length - 1) * slideWidth) {
            const over = currentTx - (-(slides.length - 1) * slideWidth);
            currentTx = -(slides.length - 1) * slideWidth + over * 0.2;
@@ -71,7 +72,7 @@ export default function Slider({
       } else {
         if (trackRef.current) trackRef.current.style.transform = `translateX(-${activeIndex * 100}%)`;
       }
-      
+
       setIsPaused(false);
     }
   });
@@ -99,24 +100,24 @@ export default function Slider({
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <div 
+      <div
         ref={carouselRef}
         className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing select-none"
       >
-        <div 
+        <div
           ref={trackRef}
           className="flex w-full h-full"
           style={{ transform: `translateX(0%)` }}
         >
           {slides.map((slide, index) => (
-            <div key={index} className={`w-full h-full flex-shrink-0 ${slideClassName}`}>
+            <div key={index} className={`w-full h-full shrink-0 ${slideClassName}`}>
               {slide}
             </div>
           ))}
         </div>
       </div>
 
-      {showDots && slides.length > 1 && (
+      {showDots && slides.length > 1 && (!thumbnails || thumbnails.length === 0) && (
         <div className="flex justify-center gap-3 mt-8" role="tablist" aria-label="Slider navigation">
           {slides.map((_, index) => (
             <button
@@ -139,6 +140,24 @@ export default function Slider({
                   transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                 />
               )}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {thumbnails && thumbnails.length > 1 && (
+        <div className="flex gap-4 mt-6 overflow-x-auto pb-2 custom-scrollbar">
+          {thumbnails.map((thumb, index) => (
+            <button
+              key={thumb.id || index}
+              onClick={() => goTo(index)}
+              className={`relative shrink-0 w-24 h-24 rounded-2xl overflow-hidden border-2 transition-colors cursor-pointer bg-surface ${
+                index === activeIndex
+                  ? 'border-accent'
+                  : 'border-border hover:border-(--color-accent-hover) opacity-70 hover:opacity-100'
+              }`}
+            >
+              <img src={thumb.thumb || thumb.url} alt={`Thumbnail ${index + 1}`} className="w-full h-full object-cover" draggable="false" />
             </button>
           ))}
         </div>

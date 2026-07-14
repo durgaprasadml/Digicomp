@@ -370,13 +370,13 @@ input[type="range"]::-webkit-slider-thumb:hover, input[type="range"]::-moz-range
 /* This is not Tree shakable. Delete or comment this if the component is not being used. */
 @layer base {
   h1 {
-    @apply text-3xl font-semibold text-[var(--text)] leading-tight mb-6;
+    @apply text-3xl font-semibold text-[var(--text)] leading-tight;
   }
   h2 {
-    @apply text-2xl font-semibold text-[var(--text)] leading-tight mb-6;
+    @apply text-2xl font-semibold text-[var(--text)] leading-tight;
   }
   h3 {
-    @apply text-xl font-semibold text-[var(--text)] leading-tight mb-4;
+    @apply text-xl font-semibold text-[var(--text)] leading-tight;
   }
   /* ===== Global Layout System ===== */
   .container {
@@ -400,7 +400,7 @@ input[type="range"]::-webkit-slider-thumb:hover, input[type="range"]::-moz-range
   }
 
   .title-section {
-    @apply flex items-center gap-2;
+    @apply flex items-center gap-2 mb-6;
   }
 }
 

@@ -125,7 +125,7 @@ export default function ProductCard({ product }) {
       </div>
 
       {/* Info area */}
-      <div className="flex flex-1 flex-col px-5 pt-4 pb-5 z-10 pointer-events-none">
+      <div className="flex flex-1 flex-col px-5 pt-2 pb-5 z-10 pointer-events-none">
         <h3 className="text-sm mb-0 line-clamp-1">
           {product.name}
         </h3>

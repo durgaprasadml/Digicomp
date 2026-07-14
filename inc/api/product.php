@@ -33,17 +33,22 @@ function dc_api_get_product( \WP_REST_Request $request ) {
 	$gallery_ids = $product->get_gallery_image_ids();
 	$gallery = [];
 	if ( $img_id ) {
+		$img_data = wp_get_attachment_image_src( $img_id, 'large' );
+		$thumb_data = wp_get_attachment_image_src( $img_id, 'thumbnail' );
 		$gallery[] = [
-			'id'  => $img_id,
-			'url' => $img_data ? $img_data[0] : '',
+			'id'    => $img_id,
+			'url'   => $img_data ? $img_data[0] : '',
+			'thumb' => $thumb_data ? $thumb_data[0] : '',
 		];
 	}
 	foreach ( $gallery_ids as $g_id ) {
 		$g_data = wp_get_attachment_image_src( $g_id, 'large' );
+		$t_data = wp_get_attachment_image_src( $g_id, 'thumbnail' );
 		if ( $g_data ) {
 			$gallery[] = [
-				'id'  => $g_id,
-				'url' => $g_data[0],
+				'id'    => $g_id,
+				'url'   => $g_data[0],
+				'thumb' => $t_data ? $t_data[0] : '',
 			];
 		}
 	}
