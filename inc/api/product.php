@@ -130,7 +130,7 @@ function dc_api_get_product( \WP_REST_Request $request ) {
 	}
 
 	// Related Products
-	$related_ids = wc_get_related_products( $product->get_id(), 4 );
+	$related_ids = wc_get_related_products( $product->get_id(), 5 );
 	$related_products = [];
 	foreach ( $related_ids as $r_id ) {
 		$r_prod = wc_get_product( $r_id );

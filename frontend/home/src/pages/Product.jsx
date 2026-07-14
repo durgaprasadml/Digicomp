@@ -401,7 +401,7 @@ export default function Product() {
               You May Also Like
             </h2>
           </div>
-          <Grid cols={4}>
+          <Grid cols={5}>
             {product.relatedProducts.map(related => (
               <ProductCard key={related.id} product={related} />
             ))}
