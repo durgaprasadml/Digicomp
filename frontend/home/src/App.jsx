@@ -11,7 +11,7 @@ function App() {
   }, [] )
 
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] transition-colors duration-300">
+    <div className="min-h-screen transition-colors duration-300">
       <Header />
       <main>
         <Suspense fallback={

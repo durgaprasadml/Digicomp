@@ -117,13 +117,13 @@ export default function Shop() {
       <Breadcrumb items={breadcrumbItems} />
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--border)]">
         <div className="flex gap-2 items-baseline">
-          <h1 className="text-2xl font-bold text-[var(--text)]">{heading}</h1>
+          <h1 className="text-2xl font-bold ">{heading}</h1>
           <p className="text-[var(--text-muted)] text-sm px-2 border border-[var(--border)] rounded">{filteredProducts.length} results</p>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={() => setIsMobileFiltersOpen(true)}
-            className="lg:hidden flex items-center gap-2 bg-[var(--surface)] border border-[var(--border)] px-4 py-2 rounded-lg text-sm font-semibold text-[var(--text)] hover:border-[var(--color-accent-start)] transition-colors"
+            className="lg:hidden flex items-center gap-2 bg-[var(--surface)] border border-[var(--border)] px-4 py-2 rounded-lg text-sm font-semibold  hover:border-[var(--color-accent-start)] transition-colors"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
@@ -157,8 +157,8 @@ export default function Shop() {
         {/* Mobile Filters Modal */}
         <Drawer isOpen={isMobileFiltersOpen} onClose={() => setIsMobileFiltersOpen(false)} position="left" className="w-80">
           <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
-            <h2 className="text-lg font-bold text-[var(--text)]">Filters</h2>
-            <button onClick={() => setIsMobileFiltersOpen(false)} className="p-2 text-[var(--text-muted)] hover:text-[var(--text)]">
+            <h2 className="text-lg font-bold ">Filters</h2>
+            <button onClick={() => setIsMobileFiltersOpen(false)} className="p-2 text-[var(--text-muted)] hover:">
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -192,8 +192,8 @@ export default function Shop() {
                   <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-[var(--text)] mb-2">No products found</h3>
-              <p className="text-[var(--text-muted)] max-w-sm">Try adjusting your filters or search terms to find what you're looking for.</p>
+              <h3 className="text-xl font-bold  mb-2">No products found</h3>
+              <p className="text-[var(--muted)] max-w-sm">Try adjusting your filters or search terms to find what you're looking for.</p>
               <button
                 onClick={() => setActiveFilters({ categories: [], tags: [], brands: [], attributes: {}, acf: {}, price: [priceMin, priceMax], inStockOnly: true })}
                 className="mt-6 text-sm font-semibold text-[var(--color-accent-start)] hover:underline cursor-pointer"

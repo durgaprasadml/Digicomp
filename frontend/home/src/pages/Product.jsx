@@ -2,14 +2,16 @@ import { useState } from 'react'
 import { useLocation } from '@typeroute/router'
 import { usePageData } from '../stores/PageStore'
 import { CartStore } from '../stores/CartStore'
+import { Link } from '@typeroute/router'
 import { home, shop } from '../routes'
-import { Button, NumberField, Breadcrumbs, BreadcrumbsItem, Chip, Avatar, Card, CardHeader, CardContent, Separator, Table } from "@heroui/react"
+import { Button, NumberField, Breadcrumbs, Chip, Avatar, Card, CardHeader, CardContent, Separator, Table } from "@heroui/react"
 
 import Breadcrumb from '../blocks/Breadcrumb'
 import Slider from '../components/Slider'
 import ProductCard from '../components/ProductCard'
 import Rating from '../components/Rating'
 import CustomButton from '../components/CustomButton'
+import { getCleanPath } from '../utils/helper'
 
 // Helper icons
 function HeartIcon({ filled }) {
@@ -47,7 +49,7 @@ export default function Product() {
     { label: 'Shop', route: shop }
   ]
   if (product.categories && product.categories.length > 0) {
-    breadcrumbItems.push({ label: product.categories[0] }) // We could make this a link in the future
+    breadcrumbItems.push({ label: product.categories[0], route: `/product-category/:cat`, params: { cat: getCleanPath(product.categories[0]) } })
   }
   breadcrumbItems.push({ label: product.name })
 
@@ -61,9 +63,12 @@ export default function Product() {
       <div>
         <Breadcrumbs>
           {breadcrumbItems.map((item, index) => (
-            <BreadcrumbsItem key={index} href={item.route ? item.route : undefined}>
+            ! item.route ? <Breadcrumbs.Item className="pointer-events-none">{item.label}</Breadcrumbs.Item> :
+            <Breadcrumbs.Item render={ (props) => (
+              <Link {...props} to={item.route} params={ item.params || undefined }></Link>
+            ) }>
               {item.label}
-            </BreadcrumbsItem>
+            </Breadcrumbs.Item>
           ))}
         </Breadcrumbs>
       </div>
@@ -71,7 +76,7 @@ export default function Product() {
       {/* R2: Product Top (Slider + Info) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         {/* R2 C1: Image Slider */}
-        <div className="lg:col-span-7 relative rounded-3xl overflow-hidden bg-[var(--surface)] border border-[var(--border)] h-[400px] md:h-[600px] flex items-center justify-center">
+        <div className="lg:col-span-6 relative rounded-3xl overflow-hidden bg-[var(--surface)] border border-[var(--border)] h-[400px] md:h-[600px] flex items-center justify-center">
           {product.gallery && product.gallery.length > 0 ? (
             <Slider className="w-full h-full" showDots={true}>
               {product.gallery.map(img => (
@@ -93,9 +98,9 @@ export default function Product() {
         </div>
 
         {/* R2 C2: Product Info */}
-        <div className="lg:col-span-5 flex flex-col gap-8">
+        <div className="lg:col-span-6 flex flex-col gap-4">
           <div>
-            <h1 className="text-3xl lg:text-4xl font-bold text-[var(--text)] mb-3 leading-tight">{product.name}</h1>
+            <h1 className="mb-2">{product.name}</h1>
             <div className="flex items-center gap-4 text-sm">
               <Rating rating={ product.averageRating || 0 } isReadOnly />
               <a href="#reviews" className="text-[var(--text-muted)] hover:text-[var(--color-accent-start)] transition-colors">
@@ -105,11 +110,11 @@ export default function Product() {
           </div>
 
           <div className="flex items-baseline gap-4">
-            <span className="text-3xl font-bold text-[var(--text)] bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-accent-start)] to-[var(--color-accent-end)]">
+            <span className="text-3xl font-bold text-[var(--text)] bg-clip-text text-transparent bg-gradient-to-r from-[var(--accent)] to-[var(--color-accent-hover)]">
               ₹{product.price || product.regPrice}
             </span>
             {product.regPrice && product.price !== product.regPrice && (
-              <span className="text-xl text-[var(--text-muted)] line-through decoration-[var(--border)] decoration-2">₹{product.regPrice}</span>
+              <span className="text-xl text-[var(--text-muted)] line-through">₹{product.regPrice}</span>
             )}
           </div>
 
@@ -142,19 +147,20 @@ export default function Product() {
               </NumberField.Group>
             </NumberField>
 
-            <div className="flex-1 flex gap-3">
+            <div className="flex flex-1 gap-3">
               <Button
+                size="lg"
                 onPress={handleAddToCart}
                 isDisabled={product.stockStatus !== 'instock'}
-                variant="secondary"
-                size="lg"
-                className="flex-1 font-bold"
+                className="flex-1 font-semibold"
               >
                 Add to Cart
               </Button>
               <Button
-                isDisabled={product.stockStatus !== 'instock'}
                 size="lg"
+                variant="secondary"
+                isDisabled={product.stockStatus !== 'instock'}
+                className="flex-1 font-semibold"
               >
                 Buy Now
               </Button>
@@ -212,10 +218,10 @@ export default function Product() {
 
       {/* R3: Description */}
       {product.description && (
-        <div className="glass-card p-8 lg:p-12 rounded-3xl relative overflow-hidden">
+        <div className="surface surface--default rounded-3xl p-6 relative overflow-hidden" variant="default">
           <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-accent-start)] opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
-          <h2 className="text-2xl lg:text-3xl font-bold text-[var(--text)] mb-8 flex items-center gap-4">
-            <span className="w-2 h-1 bg-[var(--color-accent-start)] rounded-full"></span>
+          <h2 className="flex items-center gap-2 mb-6">
+            <span className="w-1 h-1 bg-[var(--color-accent-start)] rounded-full"></span>
             Overview
           </h2>
           <div className="prose prose-invert prose-lg max-w-none text-[var(--text-secondary)]" dangerouslySetInnerHTML={{ __html: product.description }} />
@@ -224,10 +230,9 @@ export default function Product() {
 
       {/* R4: Specifications */}
       {product.attributes && Object.keys(product.attributes).length > 0 && (
-        <>
-          {/* <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500 opacity-5 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div> */}
-          <h2 className="text-2xl lg:text-3xl font-bold text-[var(--text)] flex items-center gap-4">
-            <span className="w-2 h-1 bg-blue-500 rounded-full"></span>
+        <div>
+          <h2 className="flex items-center gap-2 mb-6">
+            <span className="w-1 h-1 bg-blue-500 rounded-full"></span>
             Technical Specifications
           </h2>
           <Table aria-label="Technical Specifications" className="w-full" shadow="none">
@@ -248,21 +253,20 @@ export default function Product() {
               </Table.Content>
             </Table.ScrollContainer>
           </Table>
-        </>
+        </div>
       )}
 
       {/* R5: Files */}
       {product.acf && (product.acf.datasheet || product.acf.schematic) && (
         <>
-          <div className="glass-card p-8 lg:p-12 rounded-3xl">
           {product.acf.datasheet && (
-            <div className="flex flex-col gap-6">
-              <div className="flex justify-between items-end pb-4 border-b border-[var(--border)]">
-                <h3 className="text-2xl font-bold text-[var(--text)] flex items-center gap-3">
-                  <span className="w-2 h-1 bg-purple-500 rounded-full"></span>
+            <div className="flex flex-col">
+              <div className="flex justify-between items-end mb-6">
+                <h2 className="flex items-center gap-2">
+                  <span className="w-1 h-1 bg-purple-500 rounded-full"></span>
                   Datasheet
-                </h3>
-                <CustomButton variant="outline">
+                </h2>
+                <CustomButton variant="tertiary">
                   <a href={product.acf.datasheet.url} download>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                     Download
@@ -276,16 +280,14 @@ export default function Product() {
               )}
             </div>
           )}
-          </div>
-          <div className="glass-card p-8 lg:p-12 rounded-3xl">
           {product.acf.schematic && (
-            <div className="flex flex-col gap-6">
-              <div className="flex justify-between items-end pb-4 border-b border-[var(--border)]">
-                <h3 className="text-2xl font-bold text-[var(--text)] flex items-center gap-3">
-                  <span className="w-2 h-1 bg-green-500 rounded-full"></span>
+            <div className="flex flex-col mb-6">
+              <div className="flex justify-between items-end mb-6">
+                <h2 className="flex items-center gap-2">
+                  <span className="w-1 h-1 bg-green-500 rounded-full"></span>
                   Schematic
-                </h3>
-                <CustomButton variant="outline">
+                </h2>
+                <CustomButton variant="tertiary">
                   <a href={product.acf.schematic.url} download>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                     Download
@@ -301,15 +303,14 @@ export default function Product() {
               )}
             </div>
           )}
-          </div>
         </>
       )}
 
       {/* R7: Designers */}
       {product.acf && product.acf.designers && product.acf.designers.length > 0 && (
-        <div className="glass-card p-8 lg:p-12 rounded-3xl">
-          <h2 className="text-2xl lg:text-3xl font-bold text-[var(--text)] mb-8 flex items-center gap-4">
-            <span className="w-2 h-1 bg-yellow-500 rounded-full"></span>
+        <div className="mb-6">
+          <h2 className="flex items-center gap-2 mb-6">
+            <span className="w-1 h-1 bg-yellow-500 rounded-full"></span>
             Hardware Designers
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -327,22 +328,22 @@ export default function Product() {
       )}
 
       {/* R8: Reviews */}
-      <div id="reviews" className="glass-card p-8 lg:p-12 rounded-3xl">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10 pb-6 border-b border-[var(--border)]">
-          <h2 className="text-2xl lg:text-3xl font-bold text-[var(--text)] flex items-center gap-4">
-            <span className="w-2 h-1 bg-orange-500 rounded-full"></span>
+      <div id="reviews" className="mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <h2 className="flex items-center gap-2">
+            <span className="w-1 h-1 bg-orange-500 rounded-full"></span>
             Customer Reviews
             <Chip variant="soft" size="md">
               {product.reviewCount || 0}
             </Chip>
           </h2>
-          <Button variant="outline" size="lg">Write a Review</Button>
+          <Button>Write a Review</Button>
         </div>
 
         {product.reviews && product.reviews.length > 0 ? (
           <div className="flex flex-col gap-6">
             {product.reviews.map(review => (
-              <Card key={review.id} className="bg-[var(--bg)] border border-[var(--border)] shadow-sm rounded-2xl" shadow="none">
+              <Card key={review.id} className="" shadow="none">
                 <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 pb-2 gap-4">
                   <div className="flex gap-3 items-center">
                     <Avatar src={review.avatar} size="md" isBordered />
@@ -360,8 +361,8 @@ export default function Product() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-[var(--surface)] rounded-full flex items-center justify-center mx-auto mb-4 text-[var(--text-muted)]">
+          <div className="text-center py-4">
+            <div className="w-16 h-16 bg-[var(--surface)] rounded-full flex items-center justify-center mx-auto mb-6 text-[var(--text-muted)]">
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
             </div>
             <h3 className="text-lg font-bold text-[var(--text)] mb-2">No reviews yet</h3>
@@ -372,10 +373,10 @@ export default function Product() {
 
       {/* R9: Related Products */}
       {product.relatedProducts && product.relatedProducts.length > 0 && (
-        <div className="pt-8 mb-12">
-          <div className="flex justify-between items-end mb-8">
-            <h2 className="text-2xl lg:text-3xl font-bold text-[var(--text)] flex items-center gap-4">
-              <span className="w-2 h-1 bg-red-500 rounded-full"></span>
+        <div className="mb-12">
+          <div className="flex justify-between items-end mb-6">
+            <h2 className="flex items-center gap-2">
+              <span className="w-1 h-1 bg-red-500 rounded-full"></span>
               You May Also Like
             </h2>
           </div>

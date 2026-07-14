@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Input, Button } from '@heroui/react';
 
 const footerLinks = {
   'Shop Hardware': [
@@ -100,7 +101,7 @@ function Footer() {
           transition={{ duration: 0.6 }}
         >
           <div className="md:max-w-md">
-            <h3 className="text-2xl font-bold text-[var(--text)] mb-3">
+            <h3 className="mb-4">
               Join the Engineering Inner Circle
             </h3>
             <p className="text-[var(--text-secondary)]">
@@ -114,20 +115,17 @@ function Footer() {
             onSubmit={handleSubscribe}
             className="flex flex-col sm:flex-row gap-3 w-full md:w-auto"
           >
-            <input
-              id="newsletter-email"
+            <Input
+              variant="secondary"
+              aria-label="Email"
+              className="w-64"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
+              onChange={(e) => setEmail(e.target.value)}
               required
-              className="bg-[var(--elevated)] border border-[var(--border)] rounded-xl px-4 py-3 text-[var(--text)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--color-accent-start)] transition-colors sm:min-w-[280px]"
             />
-            <button
-              id="newsletter-submit"
-              type="submit"
-              className="btn-primary whitespace-nowrap"
-            >
+            <Button size="lg" onPress={() => {}}>
               {subscribed ? (
                 <>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -144,7 +142,7 @@ function Footer() {
                   </svg>
                 </>
               )}
-            </button>
+            </Button>
           </form>
         </motion.div>
       </div>
