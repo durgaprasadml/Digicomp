@@ -1,9 +1,5 @@
-import Container from '../components/layout/Container';
-import Section from '../components/layout/Section';
-import Grid from '../components/layout/Grid';
-import FlexRow from '../components/layout/FlexRow';
-import Stack from '../components/layout/Stack';
 
+import { Container, FlexRow, Grid, Section, Stack } from '../components'
 export const LayoutDemo = () => {
   return (
     <div className="min-h-screen bg-[var(--bg)] text-[var(--text)]">

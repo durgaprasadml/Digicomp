@@ -3,7 +3,7 @@ import { Card } from "@heroui/react";
 
 import { CartStore } from '../stores/CartStore';
 import { PageStore } from '../stores/PageStore';
-import CustomButton from "../components/CustomButton";
+import { CustomButton } from '.'
 
 function badgeColor( badge ) {
   let color = 'bg-orange-500/20 text-orange-500'

@@ -1,15 +1,12 @@
 import { useState, useMemo } from 'react'
 import { useLocation, Link } from '@typeroute/router'
-import { usePageData } from '../stores/PageStore'
-import { home, shop } from '../routes'
-
-import Drawer from '../components/Drawer'
 import { Breadcrumbs, BreadcrumbsItem, Select, Button, Card, ListBox, Chip } from '@heroui/react'
 
+import { home, shop } from '../routes'
+import { usePageData } from '../stores/PageStore'
+import { Container, Drawer, FlexRow } from '../components'
 import VirtualizedProductGrid from '../blocks/VirtualizedProductGrid'
 import ShopFilters from '../blocks/ShopFilters'
-import Container from '../components/layout/Container'
-import FlexRow from '../components/layout/FlexRow'
 
 const sortOptions = [
  { value: 'newest', label: 'Newest Arrivals' },
@@ -189,7 +186,7 @@ export default function Shop() {
     >
       <div className="flex flex-col h-full bg-[var(--surface)]">
         <div className="p-4">
-          <Button variant="ghost" isIconOnly onPress={() => setIsMobileFiltersOpen(false)} aria-label="Close" className="absolute top-0 right-0">✗</Button>
+          <Button variant="ghost" isIconOnly onPress={() => setIsMobileFiltersOpen(false)} aria-label="Close" className="absolute top-0 right-0">✕</Button>
         </div>
         <div className="flex-1 custom-scrollbar py-4 px-2 overflow-y-auto">
           <ShopFilters

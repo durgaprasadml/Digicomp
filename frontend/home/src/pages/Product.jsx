@@ -1,22 +1,14 @@
 import { useState } from 'react'
 import { useLocation } from '@typeroute/router'
+import { Link } from '@typeroute/router'
+
+import { home, shop } from '../routes'
 import { usePageData } from '../stores/PageStore'
 import { CartStore } from '../stores/CartStore'
-import { Link } from '@typeroute/router'
-import { home, shop } from '../routes'
-import { Button, NumberField, Breadcrumbs, Chip, Avatar, Card, Separator, Table } from "@heroui/react"
-
-import Breadcrumb from '../blocks/Breadcrumb'
-import Slider from '../components/Slider'
-import ProductCard from '../components/ProductCard'
-import Rating from '../components/Rating'
-import CustomButton from '../components/CustomButton'
-import Container from '../components/layout/Container'
-import Section from '../components/layout/Section'
-import Grid from '../components/layout/Grid'
-import Stack from '../components/layout/Stack'
-import FlexRow from '../components/layout/FlexRow'
 import { getCleanPath } from '../utils/helper'
+import { Button, NumberField, Breadcrumbs, Chip, Avatar, Card, Separator, Table } from "@heroui/react"
+import { Container, CustomButton, FlexRow, Grid, ProductCard, Rating, Section, Slider, Stack } from '../components'
+import Breadcrumb from '../blocks/Breadcrumb'
 
 // Helper icons
 function HeartIcon({ filled }) {
@@ -86,14 +78,13 @@ export default function Product() {
           {product.gallery && product.gallery.length > 0 ? (
             <Slider
               className="w-full"
-              slideClassName="bg-[var(--surface)] border border-[var(--border)] rounded-3xl overflow-hidden h-[400px] md:h-[600px]"
+              wrapClassName="w-full bg-[var(--surface)] border border-[var(--border)] rounded-3xl overflow-hidden"
+              slideClassName="flex items-center justify-center h-[400px] md:h-[600px]"
               showDots={false}
               thumbnails={product.gallery}
             >
               {product.gallery.map(img => (
-                <div key={img.id} className="w-full h-full flex items-center justify-center p-8 md:p-12 relative">
                   <img src={img.url} alt={product.name} className="max-w-full max-h-full object-contain drop-shadow-2xl" draggable="false" />
-                </div>
               ))}
             </Slider>
           ) : (
@@ -276,7 +267,7 @@ export default function Product() {
           <Stack className="gap-8">
           {product.acf.datasheet && (
             <div className="flex flex-col">
-              <FlexRow className="justify-between items-start">
+              <div className="flex justify-between items-start">
                 <h2 className="title-section">
                   <span className="w-1 h-1 bg-purple-500 rounded-full"></span>
                   Datasheet
@@ -287,9 +278,9 @@ export default function Product() {
                     Download
                   </a>
                 </CustomButton>
-              </FlexRow>
+              </div>
               {product.acf.datasheet.mime === 'application/pdf' ? (
-                <iframe src={product.acf.datasheet.url} className="w-full h-[800px] border border-[var(--border)] rounded-3xl bg-white shadow-sm" title="Datasheet" />
+                <iframe src={product.acf.datasheet.url} className="w-full h-96 md:h-[800px] border border-[var(--border)] rounded-3xl bg-white shadow-sm" title="Datasheet" />
               ) : (
                 <div className="p-12 text-center text-[var(--text-muted)] border border-dashed border-[var(--border)] rounded-3xl bg-[var(--surface)]">Preview not available</div>
               )}
@@ -297,7 +288,7 @@ export default function Product() {
           )}
           {product.acf.schematic && (
             <div className="flex flex-col">
-              <FlexRow className="justify-between items-start">
+              <div className="flex justify-between items-start">
                 <h2 className="title-section">
                   <span className="w-1 h-1 bg-green-500 rounded-full"></span>
                   Schematic
@@ -308,9 +299,9 @@ export default function Product() {
                     Download
                   </a>
                 </CustomButton>
-              </FlexRow>
+              </div>
               {product.acf.schematic.mime === 'application/pdf' ? (
-                <iframe src={product.acf.schematic.url} className="w-full h-[800px] border border-[var(--border)] rounded-3xl bg-white shadow-sm" title="Schematic" />
+                <iframe src={product.acf.schematic.url} className="w-full h-96 md:h-[800px] border border-[var(--border)] rounded-3xl bg-white shadow-sm" title="Schematic" />
               ) : (
                 <Card className="items-center">
                   <img src={product.acf.schematic.url} alt="Schematic" className="max-w-full max-h-full object-contain" />
@@ -329,7 +320,7 @@ export default function Product() {
             <span className="w-1 h-1 bg-yellow-500 rounded-full"></span>
             Hardware Designers
           </h2>
-          <Grid cols={3}>
+          <Grid cols={3} className="gap-8">
             {product.acf.designers.map(designer => (
               <Card className="md:flex-row items-center sm:items-start text-center sm:text-left p-6 py-4 gap-4">
                 <Avatar>
@@ -348,7 +339,7 @@ export default function Product() {
 
       {/* R8: Reviews */}
       <Section id="reviews">
-        <FlexRow className="justify-between items-start">
+        <div className="flex justify-between items-start">
           <h2 className="title-section">
             <span className="w-1 h-1 bg-orange-500 rounded-full"></span>
             Customer Reviews
@@ -357,7 +348,7 @@ export default function Product() {
             </Chip>
           </h2>
           <Button>Write a Review</Button>
-        </FlexRow>
+        </div>
 
         {product.reviews && product.reviews.length > 0 ? (
           <Stack>

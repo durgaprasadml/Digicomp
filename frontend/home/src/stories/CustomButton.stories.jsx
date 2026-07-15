@@ -1,5 +1,5 @@
-import CustomButton from '../components/CustomButton'
 
+import { CustomButton } from '../components'
 export const Default = () => (
   <div className="p-4 flex gap-4">
     <CustomButton color="primary">

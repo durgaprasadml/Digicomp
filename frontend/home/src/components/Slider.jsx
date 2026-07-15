@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, Children } from 'react';
 import { motion } from 'framer-motion';
 import { useSwipeDrag } from '../utils/swipeHook';
 
@@ -8,9 +8,10 @@ export default function Slider({
   showDots = true,
   thumbnails = [],
   className = '',
+  wrapClassName = '',
   slideClassName = '',
 }) {
-  const slides = React.Children.toArray(children);
+  const slides = Children.toArray(children);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -102,7 +103,7 @@ export default function Slider({
     >
       <div
         ref={carouselRef}
-        className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing select-none"
+        className={`w-full h-full overflow-hidden select-none ${ wrapClassName }`}
       >
         <div
           ref={trackRef}
@@ -110,7 +111,7 @@ export default function Slider({
           style={{ transform: `translateX(0%)` }}
         >
           {slides.map((slide, index) => (
-            <div key={index} className={`w-full h-full shrink-0 ${slideClassName}`}>
+            <div key={index} className={`w-full h-full shrink-0${ activeIndex === index ? ' gallery-active' : '' } ${slideClassName}`}>
               {slide}
             </div>
           ))}
@@ -118,7 +119,7 @@ export default function Slider({
       </div>
 
       {showDots && slides.length > 1 && (!thumbnails || thumbnails.length === 0) && (
-        <div className="flex justify-center gap-3 mt-8" role="tablist" aria-label="Slider navigation">
+        <div className="flex justify-center gap-3 mt-6" role="tablist" aria-label="Slider navigation">
           {slides.map((_, index) => (
             <button
               key={index}
@@ -146,7 +147,7 @@ export default function Slider({
       )}
 
       {thumbnails && thumbnails.length > 1 && (
-        <div className="flex gap-4 mt-6 overflow-x-auto pb-2 custom-scrollbar">
+        <div className="flex gap-4 mt-4 overflow-x-auto pb-2 custom-scrollbar">
           {thumbnails.map((thumb, index) => (
             <button
               key={thumb.id || index}

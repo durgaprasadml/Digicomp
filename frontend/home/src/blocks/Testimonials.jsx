@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import Slider from '../components/Slider';
+
+import { Slider } from '../components'
 
 const testimonials = [
   {
@@ -87,8 +88,8 @@ function Testimonials() {
 
         {/* Carousel */}
         <div className="max-w-3xl mx-auto">
-          <Slider 
-            autoPlayInterval={5000} 
+          <Slider
+            autoPlayInterval={5000}
             className="min-h-[320px] md:min-h-[280px]"
             slideClassName="px-2 md:px-4"
           >

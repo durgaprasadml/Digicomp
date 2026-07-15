@@ -6,6 +6,8 @@ import { Link } from '@typeroute/router';
 import { home } from '../routes';
 import { ThemeStore } from '../stores/ThemeStore';
 import { CartStore } from '../stores/CartStore';
+
+import { Drawer } from '../components'
 import SearchBox from './SearchBox';
 
 import Logo from "../assets/digicomp.svg?react";
@@ -197,7 +199,6 @@ function MegaMenu() {
   );
 }
 
-import Drawer from '../components/Drawer';
 
 /* ── Header ── */
 export default function Header() {

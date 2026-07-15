@@ -3,7 +3,7 @@ import { useWindowVirtualizer } from '@tanstack/react-virtual';
 import { CartStore } from '../stores/CartStore';
 import { PageStore } from '../stores/PageStore';
 
-import ProductCard from '../components/ProductCard';
+import { ProductCard } from '../components'
 
 export default function VirtualizedProductGrid({ products }) {
   const listRef = useRef(null)

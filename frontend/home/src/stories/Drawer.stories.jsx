@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import Drawer from '../components/Drawer';
 import { Button } from '@heroui/react';
 
+import { Drawer } from '../components'
 const DrawerContent  = () => <div className="p-6 flex flex-col h-full bg-[var(--surface)]">
   <div className="flex-1">
     <h2 className="text-xl font-bold mb-4">Drawer Content</h2>

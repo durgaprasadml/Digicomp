@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Rating from '../components/Rating';
 
+import { Rating } from '../components'
 export const Default = () => {
   const [rating, setRating] = useState(3);
   return (
