@@ -21,21 +21,16 @@
 @import "@heroui/styles/components/table.css" layer(components);
 @import "@heroui/styles/components/surface.css" layer(components);
 @import "@heroui/styles/components/input.css" layer(components);
-@import "@heroui/styles/components/drawer.css" layer(components);
 @import "@heroui/styles/components/accordion.css" layer(components);
 @import "@heroui/styles/components/checkbox.css" layer(components);
 @import "@heroui/styles/components/checkbox-group.css" layer(components);
-/* @import "@heroui/styles/components/slider.css" layer(components); */
 @import "@heroui/styles/components/switch.css" layer(components);
 @import "@heroui/styles/components/select.css" layer(components);
 @import "@heroui/styles/components/list-box.css" layer(components);
 @import "@heroui/styles/components/list-box-item.css" layer(components);
-@import "@heroui/styles/components/popover.css" layer(components);
-@import "@heroui/styles/components/scroll-shadow.css" layer(components);
 
 /* Utilities and Variants (Required for some component features) */
 @import "@heroui/styles/utilities";
-@import "@heroui/styles/variants";
 
 /* ===== DESIGN SYSTEM TOKENS ===== */
 @theme {
