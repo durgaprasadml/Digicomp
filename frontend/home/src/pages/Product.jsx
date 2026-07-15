@@ -121,7 +121,7 @@ export default function Product() {
           </div>
 
           <div className="flex items-baseline gap-4">
-            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--accent)] to-[var(--color-accent-hover)]">
+            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-accent to-(--color-accent-hover)">
               ₹{product.price || product.regPrice}
             </span>
             {product.regPrice && product.price !== product.regPrice && (

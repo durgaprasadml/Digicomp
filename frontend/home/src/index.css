@@ -3,6 +3,7 @@
 
 /* Base requirements */
 @import "tailwindcss";
+@plugin "tailwindcss-animate";
 @import "@heroui/styles/base" layer(base);
 
 /* Theme variables */
@@ -20,6 +21,17 @@
 @import "@heroui/styles/components/table.css" layer(components);
 @import "@heroui/styles/components/surface.css" layer(components);
 @import "@heroui/styles/components/input.css" layer(components);
+@import "@heroui/styles/components/drawer.css" layer(components);
+@import "@heroui/styles/components/accordion.css" layer(components);
+@import "@heroui/styles/components/checkbox.css" layer(components);
+@import "@heroui/styles/components/checkbox-group.css" layer(components);
+/* @import "@heroui/styles/components/slider.css" layer(components); */
+@import "@heroui/styles/components/switch.css" layer(components);
+@import "@heroui/styles/components/select.css" layer(components);
+@import "@heroui/styles/components/list-box.css" layer(components);
+@import "@heroui/styles/components/list-box-item.css" layer(components);
+@import "@heroui/styles/components/popover.css" layer(components);
+@import "@heroui/styles/components/scroll-shadow.css" layer(components);
 
 /* Utilities and Variants (Required for some component features) */
 @import "@heroui/styles/utilities";
@@ -157,7 +169,7 @@ body {
 }
 
 ::selection {
-  background: var(--color-accent-start);
+  background: var(--accent);
   color: white;
 }
 
@@ -354,7 +366,7 @@ input[type="range"]::-webkit-slider-thumb, input[type="range"]::-moz-range-thumb
   width: 16px;
   height: 16px;
   background: white;
-  border: 3px solid var(--color-accent-mid);
+  border: 3px solid var(--accent);
   border-radius: 50%;
   cursor: pointer;
   pointer-events: auto;

@@ -1,13 +1,14 @@
 import { useState, useMemo } from 'react'
-import { useLocation } from '@typeroute/router'
+import { useLocation, Link } from '@typeroute/router'
 import { usePageData } from '../stores/PageStore'
 import { home, shop } from '../routes'
 
+import { Breadcrumbs, BreadcrumbsItem, Select, Drawer, Button, Card, ListBox, Chip } from '@heroui/react'
+
 import VirtualizedProductGrid from '../blocks/VirtualizedProductGrid'
 import ShopFilters from '../blocks/ShopFilters'
-import Breadcrumb from '../blocks/Breadcrumb'
-import Select from '../components/Select'
-import Drawer from '../components/Drawer'
+import Container from '../components/layout/Container'
+import FlexRow from '../components/layout/FlexRow'
 
 const sortOptions = [
   { value: 'newest', label: 'Newest Arrivals' },
@@ -111,36 +112,58 @@ export default function Shop() {
   }, [products, activeFilters, sortOrder])
 
   return (
-    <div className="page-container relative max-w-7xl mx-auto px-4 lg:px-8 py-8 lg:py-12">
+    <Container className="relative max-w-7xl py-4">
 
       {/* Top Bar */}
-      <Breadcrumb items={breadcrumbItems} />
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--border)]">
-        <div className="flex gap-2 items-baseline">
-          <h1 className="text-2xl font-bold ">{heading}</h1>
-          <p className="text-[var(--text-muted)] text-sm px-2 border border-[var(--border)] rounded">{filteredProducts.length} results</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setIsMobileFiltersOpen(true)}
-            className="lg:hidden flex items-center gap-2 bg-[var(--surface)] border border-[var(--border)] px-4 py-2 rounded-lg text-sm font-semibold  hover:border-[var(--color-accent-start)] transition-colors"
+      <Breadcrumbs className="mb-4">
+        {breadcrumbItems.map((item, index) => (
+          ! item.route ? <BreadcrumbsItem key={index} className="pointer-events-none">{item.label}</BreadcrumbsItem> :
+          <BreadcrumbsItem key={index} render={ (props) => (
+            <Link {...props} to={item.route} params={ item.params || undefined }></Link>
+          ) }>
+            {item.label}
+          </BreadcrumbsItem>
+        ))}
+      </Breadcrumbs>
+
+      <FlexRow className="sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--border)]">
+        <FlexRow className="flex-row items-center gap-2">
+          <h1 className="text-2xl font-semibold">{heading}</h1>
+          <Chip variant="primary" size="md" className="mt-1">
+            { filteredProducts.length } results
+          </Chip>
+        </FlexRow>
+        <FlexRow className="flex-row items-center gap-3 justify-between">
+          <Button
+            variant="outline"
+            onPress={() => setIsMobileFiltersOpen(true)}
+            className="lg:hidden bg-surface"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
             </svg>
             Filters
-          </button>
-
+          </Button>
           <Select
             value={sortOrder}
-            onChange={setSortOrder}
-            options={sortOptions}
+            onChange={(key) => setSortOrder(key)}
             className="w-48"
-          />
-        </div>
-      </div>
+            aria-label="Sort by"
+          >
+            <Select.Trigger>
+              <Select.Value />
+              <Select.Indicator />
+            </Select.Trigger>
+            <Select.Popover>
+              <ListBox items={sortOptions}>
+                {(opt) => <ListBox.Item id={opt.value} textValue={opt.label}>{opt.label}</ListBox.Item>}
+              </ListBox>
+            </Select.Popover>
+          </Select>
+        </FlexRow>
+      </FlexRow>
 
-      <div className="flex flex-col lg:flex-row gap-8 items-start relative">
+      <FlexRow className="items-start relative gap-8">
 
         {/* Desktop Sidebar */}
         <aside className="hidden lg:block w-64 shrink-0 sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pr-4 custom-scrollbar">
@@ -155,57 +178,55 @@ export default function Shop() {
         </aside>
 
         {/* Mobile Filters Modal */}
-        <Drawer isOpen={isMobileFiltersOpen} onClose={() => setIsMobileFiltersOpen(false)} position="left" className="w-80">
-          <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
-            <h2 className="text-lg font-bold ">Filters</h2>
-            <button onClick={() => setIsMobileFiltersOpen(false)} className="p-2 text-[var(--text-muted)] hover:">
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </button>
-          </div>
-          <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-            <ShopFilters
-              filtersData={filters}
-              activeFilters={activeFilters}
-              setActiveFilters={setActiveFilters}
-              minPrice={priceMin}
-              maxPrice={priceMax}
-              disabledFilters={disabledFilters}
-            />
-          </div>
-          <div className="p-4 border-t border-[var(--border)]">
-            <button onClick={() => setIsMobileFiltersOpen(false)} className="w-full bg-[var(--color-accent-start)] text-[var(--bg)] font-bold py-3 rounded-xl hover:opacity-90 transition-opacity">
-              Show {filteredProducts.length} Results
-            </button>
-          </div>
+        <Drawer isOpen={isMobileFiltersOpen} onOpenChange={setIsMobileFiltersOpen}>
+          <Drawer.Backdrop>
+            <Drawer.Content placement="left" className="w-80">
+              <Drawer.Dialog>
+                <Drawer.CloseTrigger />
+                <Drawer.Body className="custom-scrollbar py-4">
+                  <ShopFilters
+                    filtersData={filters}
+                    activeFilters={activeFilters}
+                    setActiveFilters={setActiveFilters}
+                    minPrice={priceMin}
+                    maxPrice={priceMax}
+                    disabledFilters={disabledFilters}
+                  />
+                </Drawer.Body>
+                <Drawer.Footer className="border-t border-[var(--border)]">
+                  <Button slot="close" color="primary" className="w-full font-bold">
+                    Show {filteredProducts.length} Results
+                  </Button>
+                </Drawer.Footer>
+              </Drawer.Dialog>
+            </Drawer.Content>
+          </Drawer.Backdrop>
         </Drawer>
 
         {/* Product Grid Area */}
         <div className="flex-1 w-full min-w-0">
           {filteredProducts.length === 0 ? (
             <div className="py-20 text-center flex flex-col items-center justify-center">
-              <div className="w-16 h-16 rounded-full bg-[var(--surface)] flex items-center justify-center text-[var(--text-muted)] mb-4">
+              <div className="w-16 h-16 rounded-full bg-surface flex items-center justify-center text--muted mb-4">
                 <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8"></circle>
                   <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
               </div>
-              <h3 className="text-xl font-bold  mb-2">No products found</h3>
-              <p className="text-[var(--muted)] max-w-sm">Try adjusting your filters or search terms to find what you're looking for.</p>
-              <button
-                onClick={() => setActiveFilters({ categories: [], tags: [], brands: [], attributes: {}, acf: {}, price: [priceMin, priceMax], inStockOnly: true })}
-                className="mt-6 text-sm font-semibold text-[var(--color-accent-start)] hover:underline cursor-pointer"
+              <h3 className="text-xl font-bold mb-2">No products found</h3>
+              <p className="text-muted max-w-sm mb-4">Try adjusting your filters or search terms to find what you're looking for.</p>
+              <Button
+                variant="outline"
+                onPress={() => setActiveFilters({ categories: [], tags: [], brands: [], attributes: {}, acf: {}, price: [priceMin, priceMax], inStockOnly: true })}
               >
                 Clear all filters
-              </button>
+              </Button>
             </div>
           ) : (
             <VirtualizedProductGrid products={filteredProducts} />
           )}
         </div>
-      </div>
-    </div>
+      </FlexRow>
+    </Container>
   )
 }
