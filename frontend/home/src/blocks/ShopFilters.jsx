@@ -15,7 +15,11 @@ function DualRangeSlider({ min, max, value, onChange }) {
   const percentMax = ((value[1] - min) / (max - min)) * 100 || 0;
 
   return (
-    <div className="mt-6 px-2 pb-4 -mx-1.5">
+    <div
+      className="mt-6 px-2 pb-4 -mx-1.5"
+      onTouchStart={(e) => e.stopPropagation()} // To prevent mobile drawer close
+      onMouseDown={(e) => e.stopPropagation()}
+    >
       <div className="relative mt-4 h-4">
         <input
           type="range"
