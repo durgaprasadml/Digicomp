@@ -13,7 +13,7 @@ function extractImageUrl(imgHtml) {
   return url;
 }
 
-const SearchIcon = () => (
+export const SearchIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="11" cy="11" r="8" />
     <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -39,12 +39,20 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
   const wordCount = searchTerm.trim().split(/\s+/).filter(Boolean).length;
   const showAskAI = (wordCount > 1) || ( results.length === 1 && results?.[0]?.type === 'no-results' );
 
-  // Focus with ⌘K shortcut
+  // Global Keyboard shortcuts
   useEffect(() => {
     const handleGlobalKey = (event) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
-        searchRef.current?.focus();
+        if ( isMobile ) return
+        if (document.activeElement === searchRef.current) {
+          searchRef.current?.blur();
+        } else {
+          searchRef.current?.focus();
+        }
+      }
+      if (event.key === 'Escape' && document.activeElement === searchRef.current) {
+        searchRef.current?.blur();
       }
     };
     window.addEventListener('keydown', handleGlobalKey);
@@ -125,6 +133,7 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             autoComplete="off"
           />
 

@@ -8,7 +8,7 @@ import { ThemeStore } from '../stores/ThemeStore';
 import { CartStore } from '../stores/CartStore';
 
 import { Logo, LogoDefs, Drawer } from '../components'
-import SearchBox from './SearchBox';
+import SearchBox, { SearchIcon } from './SearchBox';
 
 const navLinks = [
   { id: 'products', label: 'Products', hasMega: true },
@@ -336,6 +336,14 @@ export default function Header() {
           >
             <UserIcon />
           </a>
+
+          <button
+            onClick={() => setDrawerOpen(true)}
+            className="rounded-lg p-2 text-[var(--text-secondary)] transition-colors hover:bg-[var(--elevated)] hover:text-[var(--text)] lg:hidden"
+            aria-label="Search"
+          >
+            <SearchIcon />
+          </button>
 
           <a
             id="wishlist-link"
