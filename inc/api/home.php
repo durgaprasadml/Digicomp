@@ -40,7 +40,7 @@ function dc_api_get_home( \WP_REST_Request $request ) {
 		$featured[] = array(
 			'id'       => $featprod_id,
 			'name'     => $featprod->get_name(),
-			'subtitle' => $featprod->get_short_description(),
+			'excerpt' => $featprod->get_short_description(),
 			'price'    => $featprod->get_sale_price(),
 			'regPrice' => $featprod->get_regular_price(),
 			'image'    => $featimg_url,

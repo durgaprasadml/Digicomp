@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useLocation } from '@typeroute/router'
 import { Link } from '@typeroute/router'
 
@@ -7,7 +7,7 @@ import { usePageData } from '../stores/PageStore'
 import { CartStore } from '../stores/CartStore'
 import { getCleanPath } from '../utils/helper'
 import { Button, NumberField, Breadcrumbs, Chip, Avatar, Card, Separator, Table } from "@heroui/react"
-import { Container, CustomButton, FlexRow, Grid, ProductCard, Rating, Section, Slider, Stack } from '../components'
+import { AddToCart, Container, CustomButton, FlexRow, Grid, ProductCard, Rating, Section, Slider, Stack } from '../components'
 import Breadcrumb from '../blocks/Breadcrumb'
 
 // Helper icons
@@ -34,9 +34,10 @@ function ShareIcon() {
 export default function Product() {
   const { path } = useLocation()
   const product = usePageData(path) || {}
-
   const [qty, setQty] = useState(1)
   const [wishlisted, setWishlisted] = useState(false)
+  const imgRef = useRef(null)
+  const imgRefs = useRef([])
 
   if (!product.id) return <div className="p-8 text-center text-[var(--text-muted)] min-h-[50vh] flex items-center justify-center">Loading product data...</div>
 
@@ -82,9 +83,20 @@ export default function Product() {
               slideClassName="flex items-center justify-center h-[400px] md:h-[600px]"
               showDots={false}
               thumbnails={product.gallery}
+              onSlideChange={i => { imgRef.current = imgRefs.current[i] }}
             >
-              {product.gallery.map(img => (
-                  <img src={img.url} alt={product.name} className="max-w-full max-h-full object-contain drop-shadow-2xl" draggable="false" />
+              {product.gallery.map((img, k) => (
+                <img
+                  key={k}
+                  src={img.url}
+                  alt={product.name}
+                  className="max-w-full max-h-full object-contain drop-shadow-2xl"
+                  draggable="false"
+                  ref={el => {
+                    imgRef.current = el;
+                    imgRefs.current[k] = el;
+                  }}
+                />
               ))}
             </Slider>
           ) : (
@@ -92,9 +104,9 @@ export default function Product() {
               No Image Available
             </div>
           )}
-          { product.acf?.badge && (
+          { product?.badge && (
             <Chip color="accent" variant="soft" className="absolute top-4 left-4 uppercase font-bold tracking-wider z-10" size="sm">
-              {product.acf.badge}
+              {product.badge}
             </Chip>
           ) }
           </div>
@@ -104,7 +116,7 @@ export default function Product() {
           <div>
             <h1 className="mb-2">{product.name}</h1>
             <div className="flex items-center gap-4 text-sm">
-              <Rating rating={ product.averageRating || 0 } isReadOnly size="sm" />
+              <Rating rating={ product.avgRating || 0 } isReadOnly size="sm" />
               <a href="#reviews" className="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">
                 {product.reviewCount || 0} customer review{ 1 !== product?.reviewCount && 's' }
               </a>
@@ -120,12 +132,12 @@ export default function Product() {
             )}
           </div>
 
-          <div className="text-[var(--text-secondary)] leading-relaxed" dangerouslySetInnerHTML={{ __html: product.shortDescription }} />
+          <div className="text-[var(--text-secondary)] leading-relaxed" dangerouslySetInnerHTML={{ __html: product.excerpt }} />
 
-          <Chip color={ product.stockStatus === 'instock' ? 'success' : 'warning' } size="lg" variant="secondary">
-            <div className={`w-2 h-2 mr-1 rounded-full shadow-md ${product.stockStatus === 'instock' ? 'bg-(--success)' : 'bg-(--warning)'}`}></div>
-            { product.stockStatus === 'instock' ? (
-              <Chip.Label>{product.stockQuantity ? `${product.stockQuantity} items in stock` : 'In Stock - Ready to ship'}</Chip.Label>
+          <Chip color={ product.stock === 'instock' ? 'success' : 'warning' } size="lg" variant="secondary">
+            <div className={`w-2 h-2 mr-1 rounded-full shadow-md ${product.stock === 'instock' ? 'bg-(--success)' : 'bg-(--warning)'}`}></div>
+            { product.stock === 'instock' ? (
+              <Chip.Label>{product.stockQty ? `${product.stockQty} items in stock` : 'In Stock - Ready to ship'}</Chip.Label>
             ) : (
               <Chip.Label>Out of Stock</Chip.Label>
             ) }
@@ -136,7 +148,7 @@ export default function Product() {
             <NumberField
               value={qty}
               onChange={setQty}
-              maxValue={product.stockQuantity || undefined}
+              maxValue={product.stockQty || undefined}
               minValue={1}
               aria-label="Quantity"
               size="lg"
@@ -150,18 +162,19 @@ export default function Product() {
             </NumberField>
 
             <div className="flex flex-1 gap-3">
-              <Button
-                size="lg"
-                onPress={handleAddToCart}
-                isDisabled={product.stockStatus !== 'instock'}
-                className="flex-1 font-semibold"
-              >
-                Add to Cart
-              </Button>
+              <AddToCart
+                variant='primary'
+                size='lg'
+                handleAdd={ handleAddToCart }
+                inStock={ product.stock === 'instock' }
+                imgRef={ imgRef }
+                className='flex-1'
+                qty={ qty }
+              />
               <Button
                 size="lg"
                 variant="secondary"
-                isDisabled={product.stockStatus !== 'instock'}
+                isDisabled={product.stock !== 'instock'}
                 className="flex-1 font-semibold"
               >
                 Buy Now
@@ -244,7 +257,7 @@ export default function Product() {
             <Table.ScrollContainer>
               <Table.Content>
                 <Table.Header>
-                  <Table.Column>Feature</Table.Column>
+                  <Table.Column isRowHeader>Feature</Table.Column>
                   <Table.Column>Specification</Table.Column>
                 </Table.Header>
                 <Table.Body>
@@ -384,7 +397,7 @@ export default function Product() {
       </Section>
 
       {/* R9: Related Products */}
-      {product.relatedProducts && product.relatedProducts.length > 0 && (
+      {product.related && product.related.length > 0 && (
         <Section>
           <div>
             <h2 className="title-section">
@@ -393,7 +406,7 @@ export default function Product() {
             </h2>
           </div>
           <Grid cols={5}>
-            {product.relatedProducts.map(related => (
+            {product.related.map(related => (
               <ProductCard key={related.id} product={related} />
             ))}
           </Grid>

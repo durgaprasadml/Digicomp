@@ -75,6 +75,7 @@ function dc_api_get_product( \WP_REST_Request $request ) {
 	}
 
 	// ACF Fields
+	$badge = null;
 	$acf = [];
 	if ( function_exists( 'get_field' ) ) {
 		$datasheet = get_field( 'datasheet', $product->get_id() );
@@ -83,9 +84,11 @@ function dc_api_get_product( \WP_REST_Request $request ) {
 		$badges = get_field( 'badges', $product->get_id() );
 
 		// Helper from acf-product-fields.php
-		$acf['badge'] = dc_get_top_badge( $badges ); // Todo: Semantically wrong
+		$acf['badges'] = get_field( 'badges', $product->get_id() );
 		$acf['datasheet'] = function_exists( 'sk_get_acf_file_info' ) ? sk_get_acf_file_info( $datasheet ) : null;
 		$acf['schematic'] = function_exists( 'sk_get_acf_file_info' ) ? sk_get_acf_file_info( $schematic ) : null;
+
+		$badge = dc_get_top_badge( $acf['badges'] );
 
 		$designers = [];
 		if ( ! empty( $designers_raw ) ) {
@@ -141,10 +144,11 @@ function dc_api_get_product( \WP_REST_Request $request ) {
 				'id'       => $r_prod->get_id(),
 				'slug'     => $r_prod->get_slug(),
 				'name'     => $r_prod->get_name(),
-				'subtitle' => $r_prod->get_short_description(),
+				'excerpt'  => $r_prod->get_short_description(),
 				'price'    => $r_prod->get_price(),
 				'regPrice' => $r_prod->get_regular_price(),
 				'image'    => $r_img_data ? $r_img_data[0] : '',
+				'stock'    => $product->get_stock_status(),
 				'badge'    => null, // simplify for related
 			];
 		}
@@ -170,28 +174,29 @@ function dc_api_get_product( \WP_REST_Request $request ) {
 	}
 
 	$payload = [
-		'id'               => $product->get_id(),
-		'name'             => $product->get_name(),
-		'slug'             => $product->get_slug(),
-		'shortDescription' => $product->get_short_description(),
-		'description'      => $product->get_description(),
-		'price'            => $product->get_price(),
-		'regPrice'         => $product->get_regular_price(),
-		'salePrice'        => $product->get_sale_price(),
-		'sku'              => $product->get_sku(),
-		'stockStatus'      => $product->get_stock_status(),
-		'stockQuantity'    => $product->get_stock_quantity(),
-		'categories'       => $cats,
-		'tags'             => $tags,
-		'brands'           => $brands,
-		'attributes'       => $attrs,
-		'gallery'          => $gallery,
-		'acf'              => $acf,
-		'reviews'          => $reviews,
-		'reviewCount'      => $product->get_review_count(),
-		'averageRating'    => $product->get_average_rating(),
-		'relatedProducts'  => $related_products,
-		'head'             => dc_api_product_head( $request, $product ),
+		'id'          => $product->get_id(),
+		'name'        => $product->get_name(),
+		'slug'        => $product->get_slug(),
+		'excerpt'     => $product->get_short_description(),
+		'description' => $product->get_description(),
+		'price'       => $product->get_price(),
+		'regPrice'    => $product->get_regular_price(),
+		'salePrice'   => $product->get_sale_price(),
+		'sku'         => $product->get_sku(),
+		'stock'       => $product->get_stock_status(),
+		'stockQty'    => $product->get_stock_quantity(),
+		'categories'  => $cats,
+		'tags'        => $tags,
+		'brands'      => $brands,
+		'attributes'  => $attrs,
+		'gallery'     => $gallery,
+		'acf'         => $acf,
+		'badge'       => $badge,
+		'reviews'     => $reviews,
+		'reviewCount' => $product->get_review_count(),
+		'avgRating'   => $product->get_average_rating(),
+		'related'     => $related_products,
+		'head'        => dc_api_product_head( $request, $product ),
 	];
 
 	return rest_ensure_response( $payload );

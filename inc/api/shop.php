@@ -110,9 +110,10 @@ function dc_api_get_shop( \WP_REST_Request $request ) {
 		$products[] = [
 			'id'         => $prod->get_id(),
 			'name'       => $prod->get_name(),
-			'subtitle'   => $prod->get_short_description(),
+			'excerpt'    => $prod->get_short_description(),
 			'price'      => $prod->get_price(),
 			'regPrice'   => $prod->get_regular_price(),
+			'stock'      => $prod->get_stock_status(),
 			'image'      => $img_data ? $img_data[0] : '',
 			'categories' => $cats,
 			'tags'       => $tags,
@@ -120,7 +121,6 @@ function dc_api_get_shop( \WP_REST_Request $request ) {
 			'attributes' => $attrs,
 			'acf'        => $acf_values,
 			'badge'      => $badge,
-			'stock'      => $prod->get_stock_status(),
 			'date'       => $prod->get_date_created() ? $prod->get_date_created()->getOffsetTimestamp() : 0,
 		];
 

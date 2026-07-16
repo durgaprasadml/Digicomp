@@ -10,6 +10,7 @@ export default function Slider({
   className = '',
   wrapClassName = '',
   slideClassName = '',
+  onSlideChange,
 }) {
   const slides = Children.toArray(children);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -84,7 +85,10 @@ export default function Slider({
       trackRef.current.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)';
       trackRef.current.style.transform = `translateX(-${activeIndex * 100}%)`;
     }
-  }, [activeIndex]);
+    if (onSlideChange) {
+      onSlideChange(activeIndex);
+    }
+  }, [activeIndex, onSlideChange]);
 
   // Auto-play logic
   useEffect(() => {

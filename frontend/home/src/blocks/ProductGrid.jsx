@@ -148,7 +148,7 @@ function ProductCard({ product, index }) {
           {product.name}
         </h3>
         <p className="mt-1 text-xs text-[var(--text-muted)] leading-relaxed line-clamp-1">
-          {product.subtitle}
+          {product.excerpt}
         </p>
 
         {/* Price row */}

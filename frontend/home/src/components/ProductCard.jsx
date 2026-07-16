@@ -3,7 +3,7 @@ import { Card } from "@heroui/react";
 
 import { CartStore } from '../stores/CartStore';
 import { PageStore } from '../stores/PageStore';
-import { CustomButton } from '.'
+import { AddToCart, CustomButton } from '.'
 
 function badgeColor( badge ) {
   let color = 'bg-orange-500/20 text-orange-500'
@@ -46,45 +46,7 @@ export default function ProductCard({ product }) {
   const { cartRef } = CartStore.use()
   const { currency = '₹' } = PageStore.use() || {}
 
-  const animate = () => {
-    if (!imgRef.current || !cartRef?.current) return;
-    const imgRect = imgRef.current.getBoundingClientRect();
-    const cartRect = cartRef.current.getBoundingClientRect();
-    const flyingImg = imgRef.current.cloneNode(true);
-
-    Object.assign(flyingImg.style, {
-      position: "fixed",
-      left: `${imgRect.left}px`,
-      top: `${imgRect.top}px`,
-      width: `${imgRect.width}px`,
-      height: `${imgRect.height}px`,
-      zIndex: 9999,
-      pointerEvents: "none",
-      opacity: 0.8,
-      transition: "transform 500ms ease-in-out, opacity 500ms",
-      transform: "translate(0,0) scale(0.9)",
-    });
-
-    document.body.appendChild(flyingImg);
-
-    requestAnimationFrame(() => {
-      const dx = cartRect.left + cartRect.width / 2 - (imgRect.left + imgRect.width / 2);
-      const dy = cartRect.top + cartRect.height / 2 - (imgRect.top + imgRect.height / 2);
-
-      flyingImg.style.transform = `translate(${dx}px, ${dy}px) scale(0.1)`;
-      flyingImg.style.opacity = "0.1";
-    });
-
-    flyingImg.addEventListener( 'transitionend', () => {
-        flyingImg.remove();
-      }, { once: true }
-    );
-  };
-
   const handleAddToCart = async () => {
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 1500);
-    animate();
     await CartStore.addToCart( product.id )
   };
 
@@ -130,7 +92,7 @@ export default function ProductCard({ product }) {
           {product.name}
         </h3>
         <p className="mt-1 text-xs text-[var(--text-muted)] leading-relaxed line-clamp-1">
-          {product.subtitle}
+          {product.excerpt}
         </p>
 
         <div className="mt-auto pt-3">
@@ -145,27 +107,13 @@ export default function ProductCard({ product }) {
           </div>
 
           {/* Add to cart */}
-          <CustomButton variant="outline">
-            <button
-              id={`add-to-cart-${product.id}`}
-              onClick={(e) => { handleAddToCart(); }}
-              className={ `w-full mt-4 font-semibold pointer-events-auto${ addedToCart ? ' bg-(--color-success-soft-hover)' : '' }` }
-            >
-              { addedToCart ? (
-                <>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  Added
-                </>
-              ) : (
-                <>
-                  <CartPlusIcon />
-                  Add to Cart
-                </>
-              ) }
-            </button>
-          </CustomButton>
+          <AddToCart
+            variant='outline'
+            handleAdd={handleAddToCart}
+            inStock={product.stock === 'instock'}
+            imgRef={imgRef}
+            className='flex-1'
+          />
         </div>
       </div>
     </Card>
