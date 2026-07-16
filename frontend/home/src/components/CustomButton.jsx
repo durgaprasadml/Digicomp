@@ -9,6 +9,6 @@ export default function CustomButton({
 	const generatedClasses = buttonVariants( { ...props } )
 	return cloneElement( children, {
 		...props,
-		className: `${ generatedClasses } ${ className } ${ children.props.className || '' }`.trim(),
+		className: `${ generatedClasses } button--dc ${ className } ${ children.props.className || '' }`.trim(),
 	} )
 }

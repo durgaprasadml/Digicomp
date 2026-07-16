@@ -7,7 +7,7 @@ import { home } from '../routes';
 import { ThemeStore } from '../stores/ThemeStore';
 import { CartStore } from '../stores/CartStore';
 
-import { Logo, LogoDefs, Drawer } from '../components'
+import { Logo, LogoDefs, Drawer, CustomButton } from '../components'
 import SearchBox, { SearchIcon } from './SearchBox';
 
 const navLinks = [
@@ -160,6 +160,70 @@ const ChevronDown = () => (
   </svg>
 );
 
+function MegaMenu() {
+  return (
+    <div className="popover w-full left-0">
+      <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+        {megaColumns.map((col) => (
+          <div key={col.title}>
+            <div className="mb-3 flex items-center gap-2 text-accent">
+              {col.icon}
+              <span className="text-sm font-semibold">{col.title}</span>
+            </div>
+            <ul className="space-y-2">
+              {col.links.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    className="block rounded-lg px-3 py-1.5 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--elevated)] hover:text-[var(--text)]"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function UserMenu() {
+  return <div className="popover shadow-2xl w-56 right-0 p-4">
+    <h4 className="mb-3 font-semibold text-[var(--text)]">My Account</h4>
+    <ul className="space-y-2 text-sm text-[var(--text-secondary)]">
+      <li><a href="#login" className="hover:text-accent transition-colors">Login</a></li>
+      <li><a href="#register" className="hover:text-accent transition-colors">Register</a></li>
+      <li><a href="#orders" className="hover:text-accent transition-colors">My Orders</a></li>
+      <li><a href="#settings" className="hover:text-accent transition-colors">Settings</a></li>
+    </ul>
+  </div>
+}
+
+function WishlistMenu() {
+  return <div className="popover shadow-2xl w-64 right-0 p-4">
+    <h4 className="mb-2 font-semibold text-[var(--text)]">Wishlist</h4>
+    <p className="text-sm text-[var(--text-secondary)]">Your wishlist is currently empty.</p>
+    <a href="/shop" className="mt-4 block w-full rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-4 py-2 text-center text-sm font-medium text-[var(--text)] hover:bg-[var(--border)] transition-colors">
+      Explore Products
+    </a>
+  </div>
+}
+
+function CartMenu( { cart } ) {
+  return <div className="popover shadow-2xl w-64 right-0 p-4">
+    <h4 className="mb-2 font-semibold text-[var(--text)]">Shopping Cart</h4>
+    {cart.lineCount === 0 ? (
+      <p className="text-sm text-[var(--text-secondary)]">Your cart is currently empty.</p>
+    ) : (
+      <p className="text-sm text-[var(--text-secondary)]">You have {cart.lineCount} items in your cart.</p>
+    )}
+    <a href={cart.url} className="mt-4 block w-full rounded-lg bg-accent px-4 py-2.5 text-center text-sm font-bold text-white hover:bg-[var(--color-accent-hover)] transition-colors">
+      View Checkout
+    </a>
+  </div>
+}
 
 /* ── Header ── */
 export default function Header() {
@@ -211,7 +275,7 @@ export default function Header() {
           </Link>
           <button
             onClick={() => setDrawerOpen(true)}
-            className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]"
+            className="p-2"
             aria-label="Open menu"
           >
             <HamburgerIcon />
@@ -240,42 +304,19 @@ export default function Header() {
           <nav className="flex items-center gap-1">
             {navLinks.map((link) =>
               link.hasMega ? (
-                <div key={link.id} className="group flex h-16 items-center popover-wrap">
+                <div key={link.id} className="popover-wrap">
                   <Button variant='ghost'>
                     {link.label}
                     <ChevronDown />
                   </Button>
-                  <div className="popover shadow-2xl">
-                    <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-                      {megaColumns.map((col) => (
-                        <div key={col.title}>
-                          <div className="mb-3 flex items-center gap-2 text-accent">
-                            {col.icon}
-                            <span className="text-sm font-semibold">{col.title}</span>
-                          </div>
-                          <ul className="space-y-2">
-                            {col.links.map((link) => (
-                              <li key={link.label}>
-                                <a
-                                  href={link.href}
-                                  className="block rounded-lg px-3 py-1.5 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--elevated)] hover:text-[var(--text)]"
-                                >
-                                  {link.label}
-                                </a>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  <MegaMenu />
                 </div>
               ) : (
                 <a
                   key={link.id}
                   id={`nav-${link.id}`}
                   href={link.href}
-                  className="rounded-lg px-3 py-2 text-sm font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--text)]"
+                  className="popover"
                 >
                   {link.label}
                 </a>
@@ -289,70 +330,79 @@ export default function Header() {
 
         {/* ── Right: Utilities (desktop) & Bottom Nav (mobile) ── */}
         <div className="flex w-full justify-around lg:w-auto lg:justify-end items-center gap-1 text-[var(--text-secondary)]">
-          <Button
-            id="theme-toggle"
-            isIconOnly
-            variant="light"
-            onPress={toggleTheme}
-            aria-label="Toggle theme"
-            className="text-[var(--text-secondary)] hover:text-[var(--text)] data-[hover=true]:bg-[var(--elevated)]"
-          >
-            {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
-          </Button>
+          <div className="icon-nav flex">
+            <CustomButton isIconOnly variant='ghost'>
+              <button
+                onClick={toggleTheme}
+                aria-label="Toggle theme"
+                className="icon-btn"
+              >
+                {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+              </button>
+            </CustomButton>
+          </div>
 
-          <Button
-            id="login-link"
-            as="a"
-            href="#login"
-            isIconOnly
-            variant="light"
-            aria-label="Account"
-            className="text-[var(--text-secondary)] hover:text-[var(--text)] data-[hover=true]:bg-[var(--elevated)]"
-          >
-            <UserIcon />
-          </Button>
+          <div className="popover-wrap icon-nav">
+            <CustomButton isIconOnly variant='ghost'>
+              <a
+                id="login-link"
+                href="#login"
+                className="icon-btn"
+                aria-label="Account"
+              >
+                <UserIcon />
+              </a>
+            </CustomButton>
+            <UserMenu />
+          </div>
 
-          <Button
-            isIconOnly
-            variant="light"
-            onPress={() => setDrawerOpen(true)}
-            aria-label="Search"
-            className="lg:hidden text-[var(--text-secondary)] hover:text-[var(--text)] data-[hover=true]:bg-[var(--elevated)]"
-          >
-            <SearchIcon />
-          </Button>
+          <div className="icon-nav flex lg:hidden">
+            <CustomButton isIconOnly variant='ghost'>
+              <button
+                onClick={() => setDrawerOpen(true)}
+                aria-label="Search"
+                className="icon-btn"
+              >
+                <SearchIcon />
+              </button>
+            </CustomButton>
+          </div>
 
-          <Button
-            id="wishlist-link"
-            as="a"
-            href="#wishlist"
-            isIconOnly
-            variant="light"
-            aria-label="Wishlist"
-            className="text-[var(--text-secondary)] hover:text-[var(--text)] data-[hover=true]:bg-[var(--elevated)]"
-          >
-            <HeartIcon />
-          </Button>
+          <div className="popover-wrap icon-nav">
+            <CustomButton isIconOnly variant='ghost'>
+              <a
+                id="wishlist-link"
+                href="#wishlist"
+                className="icon-btn"
+                aria-label="Wishlist"
+              >
+                <HeartIcon />
+              </a>
+            </CustomButton>
+            <WishlistMenu />
+          </div>
 
-          <Badge.Anchor>
-            <Button
-              id="cart-link"
-              as="a"
-              href={cart.url}
-              isIconOnly
-              variant="light"
-              aria-label="Cart"
-              ref={cartRef}
-              className="text-[var(--text-secondary)] hover:text-[var(--text)] data-[hover=true]:bg-[var(--elevated)]"
-            >
-              <CartIcon />
-            </Button>
-            {cart.lineCount > 0 && (
-              <Badge size="sm" className="bg-gradient-to-r from-accent to-(--color-accent-hover) text-white border-none shadow-sm" placement="top-right">
-                {cart.lineCount}
-              </Badge>
-            )}
-          </Badge.Anchor>
+          <div className="popover-wrap icon-nav">
+            <Badge.Anchor>
+              <CustomButton isIconOnly variant='ghost'>
+                <a
+                  id="cart-link"
+                  href={cart.url}
+                  className="icon-btn"
+                  aria-label="Cart"
+                  ref={cartRef}
+                >
+                  <CartIcon />
+                </a>
+              </CustomButton>
+              {cart.lineCount > 0 && (
+                <Badge size="sm" className="bg-gradient-to-r from-accent to-(--color-accent-hover) text-white border-none shadow-sm" placement="top-right">
+                  {cart.lineCount}
+                </Badge>
+              )}
+            </Badge.Anchor>
+            <CartMenu cart={ cart } />
+          </div>
         </div>
 
       </div>

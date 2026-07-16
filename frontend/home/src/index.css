@@ -266,28 +266,31 @@ body {
   padding-bottom: 120px;
 }
 
+.button--dc:focus {
+  @apply status-focused;
+}
+
+/* Main Icon Nav */
+.icon-nav {
+  @apply items-center justify-center grow h-16;
+
+  svg {
+    width: initial;
+    height: initial;
+  }
+}
+
 /* Mega menu */
 .popover-wrap {
+  @apply static flex items-center justify-center;
+
   .popover {
-    position: absolute;
-    left: 0;
-    top: 100%;
-    width: 100%;
-    padding: 1.5rem;
-    z-index: 50;
-    pointer-events: none;
-    opacity: 0;
-    background: var(--surface);
-    visibility: hidden;
-    transform: translateY(-1rem);
     transition: all 200ms ease-out;
-    border-radius: 0 0 calc(var(--radius) * 2) calc(var(--radius) * 2);
+    @apply absolute top-full p-4 z-50 pointer-events-none opacity-0 invisible shadow-2xl rounded-2xl -translate-y-4 bg-surface;
   }
+
   &:hover .popover, &:focus-within .popover {
-    pointer-events: auto;
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
+    @apply pointer-events-auto opacity-100 visible translate-y-0;
   }
 }
 
