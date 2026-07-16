@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
 import { Link } from '@typeroute/router';
+import { Button, Badge } from '@heroui/react';
 
 import { home } from '../routes';
 import { ThemeStore } from '../stores/ThemeStore';
@@ -160,43 +160,6 @@ const ChevronDown = () => (
   </svg>
 );
 
-/* ── Mega Menu Panel ── */
-function MegaMenu() {
-  return (
-    <motion.div
-      id="mega-menu"
-      initial={{ opacity: 0, y: -8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
-      transition={{ duration: 0.2, ease: 'easeOut' }}
-      className="absolute left-0 top-full w-full border-b border-[var(--border)] bg-[var(--surface)] shadow-2xl py-8"
-    >
-      <div className="section-container grid grid-cols-2 gap-6 py-8 md:grid-cols-4">
-        {megaColumns.map((col) => (
-          <div key={col.title}>
-            <div className="mb-3 flex items-center gap-2 text-[var(--color-accent-start)]">
-              {col.icon}
-              <span className="text-sm font-semibold">{col.title}</span>
-            </div>
-            <ul className="space-y-2">
-              {col.links.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="block rounded-lg px-3 py-1.5 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--elevated)] hover:text-[var(--text)]"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </motion.div>
-  );
-}
-
 
 /* ── Header ── */
 export default function Header() {
@@ -205,10 +168,8 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [showTopBar, setShowTopBar] = useState(true);
   const lastScrollY = useRef(0);
-  const [megaOpen, setMegaOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { cart } = CartStore.use()
-  const megaRef = useRef(null);
   const cartRef = useRef(null);
 
   useEffect(() => {
@@ -231,17 +192,6 @@ export default function Header() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  /* Close mega-menu on outside click */
-  useEffect(() => {
-    const handleClick = (e) => {
-      if (megaRef.current && !megaRef.current.contains(e.target)) {
-        setMegaOpen(false);
-      }
-    };
-    if (megaOpen) document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, [megaOpen]);
 
   /* Lock body scroll when drawer is open */
   useEffect(() => {
@@ -273,7 +223,7 @@ export default function Header() {
       id="site-header"
       className={`fixed bottom-0 lg:sticky lg:bottom-auto lg:top-0 z-50 w-full transition-all duration-300 backdrop-blur-xl bg-[var(--surface)]/80 border-t lg:border-t-0 lg:border-b border-[var(--border)] ${ scrolled ? 'shadow-sm' : '' }`}
     >
-      <div className="section-container flex h-16 items-center justify-between gap-4 border-none">
+      <div className="section-container relative flex h-16 items-center justify-between gap-4 border-none">
         {/* ── Left: Brand ── */}
         <Link
           id="header-brand"
@@ -287,19 +237,39 @@ export default function Header() {
 
         {/* ── Center: Navigation + Search (desktop) ── */}
         <div className="hidden flex-1 items-center justify-center gap-6 lg:flex">
-          <nav className="flex items-center gap-1" ref={megaRef}>
+          <nav className="flex items-center gap-1">
             {navLinks.map((link) =>
               link.hasMega ? (
-                <button
-                  key={link.id}
-                  id={`nav-${link.id}`}
-                  className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--text)]"
-                  onClick={() => setMegaOpen((prev) => !prev)}
-                  onMouseEnter={() => setMegaOpen(true)}
-                >
-                  {link.label}
-                  <ChevronDown />
-                </button>
+                <div key={link.id} className="group flex h-16 items-center popover-wrap">
+                  <Button variant='ghost'>
+                    {link.label}
+                    <ChevronDown />
+                  </Button>
+                  <div className="popover shadow-2xl">
+                    <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+                      {megaColumns.map((col) => (
+                        <div key={col.title}>
+                          <div className="mb-3 flex items-center gap-2 text-accent">
+                            {col.icon}
+                            <span className="text-sm font-semibold">{col.title}</span>
+                          </div>
+                          <ul className="space-y-2">
+                            {col.links.map((link) => (
+                              <li key={link.label}>
+                                <a
+                                  href={link.href}
+                                  className="block rounded-lg px-3 py-1.5 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--elevated)] hover:text-[var(--text)]"
+                                >
+                                  {link.label}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               ) : (
                 <a
                   key={link.id}
@@ -318,67 +288,74 @@ export default function Header() {
         </div>
 
         {/* ── Right: Utilities (desktop) & Bottom Nav (mobile) ── */}
-        <div className="flex w-full justify-around lg:w-auto lg:justify-end items-center gap-1">
-          <button
+        <div className="flex w-full justify-around lg:w-auto lg:justify-end items-center gap-1 text-[var(--text-secondary)]">
+          <Button
             id="theme-toggle"
-            onClick={toggleTheme}
-            className="rounded-lg p-2 text-[var(--text-secondary)] transition-colors hover:bg-[var(--elevated)] hover:text-[var(--text)] cursor-pointer"
+            isIconOnly
+            variant="light"
+            onPress={toggleTheme}
             aria-label="Toggle theme"
+            className="text-[var(--text-secondary)] hover:text-[var(--text)] data-[hover=true]:bg-[var(--elevated)]"
           >
             {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
-          </button>
+          </Button>
 
-          <a
+          <Button
             id="login-link"
+            as="a"
             href="#login"
-            className="rounded-lg p-2 text-[var(--text-secondary)] transition-colors hover:bg-[var(--elevated)] hover:text-[var(--text)]"
+            isIconOnly
+            variant="light"
             aria-label="Account"
+            className="text-[var(--text-secondary)] hover:text-[var(--text)] data-[hover=true]:bg-[var(--elevated)]"
           >
             <UserIcon />
-          </a>
+          </Button>
 
-          <button
-            onClick={() => setDrawerOpen(true)}
-            className="rounded-lg p-2 text-[var(--text-secondary)] transition-colors hover:bg-[var(--elevated)] hover:text-[var(--text)] lg:hidden"
+          <Button
+            isIconOnly
+            variant="light"
+            onPress={() => setDrawerOpen(true)}
             aria-label="Search"
+            className="lg:hidden text-[var(--text-secondary)] hover:text-[var(--text)] data-[hover=true]:bg-[var(--elevated)]"
           >
             <SearchIcon />
-          </button>
+          </Button>
 
-          <a
+          <Button
             id="wishlist-link"
+            as="a"
             href="#wishlist"
-            className="rounded-lg p-2 text-[var(--text-secondary)] transition-colors hover:bg-[var(--elevated)] hover:text-[var(--text)]"
+            isIconOnly
+            variant="light"
             aria-label="Wishlist"
+            className="text-[var(--text-secondary)] hover:text-[var(--text)] data-[hover=true]:bg-[var(--elevated)]"
           >
             <HeartIcon />
-          </a>
+          </Button>
 
-          <a
-            id="cart-link"
-            href={ cart.url }
-            className="relative rounded-lg p-2 text-[var(--text-secondary)] transition-colors hover:bg-[var(--elevated)] hover:text-[var(--text)]"
-            aria-label="Cart"
-            ref={ cartRef }
-          >
-            <CartIcon />
-            <span className="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-r from-accent to-(--color-accent-hover) text-[10px] font-bold leading-none text-white">
-              { cart.lineCount }
-            </span>
-          </a>
-
+          <Badge.Anchor>
+            <Button
+              id="cart-link"
+              as="a"
+              href={cart.url}
+              isIconOnly
+              variant="light"
+              aria-label="Cart"
+              ref={cartRef}
+              className="text-[var(--text-secondary)] hover:text-[var(--text)] data-[hover=true]:bg-[var(--elevated)]"
+            >
+              <CartIcon />
+            </Button>
+            {cart.lineCount > 0 && (
+              <Badge size="sm" className="bg-gradient-to-r from-accent to-(--color-accent-hover) text-white border-none shadow-sm" placement="top-right">
+                {cart.lineCount}
+              </Badge>
+            )}
+          </Badge.Anchor>
         </div>
 
       </div>
-
-      {/* ── Mega Menu (desktop) ── */}
-      <AnimatePresence>
-        {megaOpen && (
-          <div ref={megaRef} onMouseLeave={() => setMegaOpen(false)}>
-            <MegaMenu />
-          </div>
-        )}
-      </AnimatePresence>
 
       {/* ── Mobile Drawer ── */}
       <Drawer

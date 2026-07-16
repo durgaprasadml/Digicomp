@@ -28,6 +28,7 @@
 @import "@heroui/styles/components/select.css" layer(components);
 @import "@heroui/styles/components/list-box.css" layer(components);
 @import "@heroui/styles/components/list-box-item.css" layer(components);
+@import "@heroui/styles/components/badge.css" layer(components);
 
 /* Utilities and Variants (Required for some component features) */
 @import "@heroui/styles/utilities";
@@ -263,6 +264,31 @@ body {
 .section-padding {
   padding-top: 120px;
   padding-bottom: 120px;
+}
+
+/* Mega menu */
+.popover-wrap {
+  .popover {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    width: 100%;
+    padding: 1.5rem;
+    z-index: 50;
+    pointer-events: none;
+    opacity: 0;
+    background: var(--surface);
+    visibility: hidden;
+    transform: translateY(-1rem);
+    transition: all 200ms ease-out;
+    border-radius: 0 0 calc(var(--radius) * 2) calc(var(--radius) * 2);
+  }
+  &:hover .popover, &:focus-within .popover {
+    pointer-events: auto;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
 }
 
 /* Dot grid pattern for backgrounds */
