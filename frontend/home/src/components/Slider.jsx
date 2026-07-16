@@ -111,7 +111,7 @@ export default function Slider({
       >
         <div
           ref={trackRef}
-          className="flex w-full h-full"
+          className="flex w-full h-full items-center"
           style={{ transform: `translateX(0%)` }}
         >
           {slides.map((slide, index) => (

@@ -7,10 +7,8 @@ import { home } from '../routes';
 import { ThemeStore } from '../stores/ThemeStore';
 import { CartStore } from '../stores/CartStore';
 
-import { Drawer } from '../components'
+import { Logo, LogoDefs, Drawer } from '../components'
 import SearchBox from './SearchBox';
-
-import Logo from "../assets/digicomp.svg?react";
 
 const navLinks = [
   { id: 'products', label: 'Products', hasMega: true },
@@ -205,6 +203,8 @@ export default function Header() {
   const { theme } = ThemeStore.use()
   const toggleTheme = () => ThemeStore.toggleTheme()
   const [scrolled, setScrolled] = useState(false);
+  const [showTopBar, setShowTopBar] = useState(true);
+  const lastScrollY = useRef(0);
   const [megaOpen, setMegaOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { cart } = CartStore.use()
@@ -218,7 +218,16 @@ export default function Header() {
 
   /* Scroll detection */
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10);
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setScrolled(currentScrollY > 10);
+      if (currentScrollY > lastScrollY.current + 10) {
+        setShowTopBar(false);
+      } else if (currentScrollY < lastScrollY.current - 10 || currentScrollY < 50) {
+        setShowTopBar(true);
+      }
+      lastScrollY.current = currentScrollY;
+    };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -241,20 +250,39 @@ export default function Header() {
   }, [drawerOpen]);
 
   return (
+    <>
+      <LogoDefs />
+      {/* ── Mobile Top Header ── */}
+      <div className={`sticky top-0 z-40 w-full lg:hidden transition-all bg-surface border-b border-[var(--border)] ${ showTopBar ? 'translate-y-0' : '-translate-y-full' }`}>
+        <div className="section-container flex h-14 items-center justify-between">
+          <Link to={home} aria-label="Digicomp Technologies">
+            <span className="sr-only">Digicomp Technologies</span>
+            <Logo className="h-6 w-auto" />
+          </Link>
+          <button
+            onClick={() => setDrawerOpen(true)}
+            className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]"
+            aria-label="Open menu"
+          >
+            <HamburgerIcon />
+          </button>
+        </div>
+      </div>
+
     <header
       id="site-header"
-      className={`sticky top-0 z-50 w-full transition-all duration-300 backdrop-blur-xl bg-[var(--surface)]/80 border-b border-[var(--border)] ${ scrolled ? '' : '' }`}
+      className={`fixed bottom-0 lg:sticky lg:bottom-auto lg:top-0 z-50 w-full transition-all duration-300 backdrop-blur-xl bg-[var(--surface)]/80 border-t lg:border-t-0 lg:border-b border-[var(--border)] ${ scrolled ? 'shadow-sm' : '' }`}
     >
       <div className="section-container flex h-16 items-center justify-between gap-4 border-none">
         {/* ── Left: Brand ── */}
         <Link
           id="header-brand"
           to={ home }
-          className="flex-shrink-0"
+          className="hidden lg:flex flex-shrink-0"
           alt="Digicomp Technologies"
         >
           <span className="sr-only">Digicomp Technologies</span>
-          <Logo className="h-8" />
+          <Logo className="h-8 w-auto" />
         </Link>
 
         {/* ── Center: Navigation + Search (desktop) ── */}
@@ -289,8 +317,8 @@ export default function Header() {
           <SearchBox id="header-search-input" />
         </div>
 
-        {/* ── Right: Utilities (desktop) ── */}
-        <div className="hidden items-center gap-1 lg:flex">
+        {/* ── Right: Utilities (desktop) & Bottom Nav (mobile) ── */}
+        <div className="flex w-full justify-around lg:w-auto lg:justify-end items-center gap-1">
           <button
             id="theme-toggle"
             onClick={toggleTheme}
@@ -330,17 +358,9 @@ export default function Header() {
               { cart.lineCount }
             </span>
           </a>
+
         </div>
 
-        {/* ── Hamburger (mobile) ── */}
-        <button
-          id="mobile-menu-toggle"
-          onClick={() => setDrawerOpen(true)}
-          className="rounded-lg p-2 text-[var(--text-secondary)] hover:text-[var(--text)] lg:hidden"
-          aria-label="Open menu"
-        >
-          <HamburgerIcon />
-        </button>
       </div>
 
       {/* ── Mega Menu (desktop) ── */}
@@ -389,28 +409,8 @@ export default function Header() {
             </a>
           ))}
         </nav>
-
-        {/* Utilities */}
-        <div className="border-t border-[var(--border)] px-5 py-5">
-          <div className="flex items-center justify-around">
-            <button id="mobile-theme-toggle" onClick={toggleTheme} className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]">
-              {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
-            </button>
-            <a id="mobile-login-link" href="#login" className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]">
-              <UserIcon />
-            </a>
-            <a id="mobile-wishlist-link" href="#wishlist" className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]">
-              <HeartIcon />
-            </a>
-            <a id="mobile-cart-link" href={ cart.url } className="relative rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--elevated)] hover:text-[var(--text)]">
-              <CartIcon />
-              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-r from-accent to-(--color-accent-hover) text-[10px] font-bold text-white">
-                { cart.lineCount }
-              </span>
-            </a>
-          </div>
-        </div>
       </Drawer>
     </header>
+    </>
   );
 }

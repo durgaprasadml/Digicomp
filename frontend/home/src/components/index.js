@@ -6,6 +6,7 @@ export { default as Section } from './layout/Section'
 export { default as Grid } from './layout/Grid'
 
 // UI
+export { default as Logo, LogoDefs } from './Logo'
 export { default as CustomButton } from './CustomButton'
 export { default as Rating } from './Rating'
 export { default as Slider } from './Slider'
