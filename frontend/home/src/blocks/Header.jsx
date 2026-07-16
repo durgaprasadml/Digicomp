@@ -305,7 +305,7 @@ export default function Header() {
             {navLinks.map((link) =>
               link.hasMega ? (
                 <div key={link.id} className="popover-wrap">
-                  <Button variant='ghost'>
+                  <Button variant='outline'>
                     {link.label}
                     <ChevronDown />
                   </Button>

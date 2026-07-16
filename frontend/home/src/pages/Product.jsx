@@ -112,7 +112,7 @@ export default function Product() {
           </div>
 
         {/* R2 C2: Product Info */}
-        <Stack>
+        <Stack className='gap-6 lg:gap-4'>
           <div>
             <h1 className="mb-2">{product.name}</h1>
             <div className="flex items-center gap-4 text-sm">
@@ -144,7 +144,7 @@ export default function Product() {
           </Chip>
 
           {/* Actions */}
-          <FlexRow className="flex-wrap items-stretch mt-2">
+          <FlexRow className="flex-wrap flex-row items-center mt-2">
             <NumberField
               value={qty}
               onChange={setQty}
@@ -152,7 +152,7 @@ export default function Product() {
               minValue={1}
               aria-label="Quantity"
               size="lg"
-              className="w-32"
+              className="w-28 lg:w-32"
             >
               <NumberField.Group>
                 <NumberField.DecrementButton />
@@ -161,27 +161,25 @@ export default function Product() {
               </NumberField.Group>
             </NumberField>
 
-            <div className="flex flex-1 gap-3">
-              <AddToCart
-                variant='primary'
-                size='lg'
-                handleAdd={ handleAddToCart }
-                inStock={ product.stock === 'instock' }
-                imgRef={ imgRef }
-                className='flex-1'
-                qty={ qty }
-              />
-              <Button
-                size="lg"
-                variant="secondary"
-                isDisabled={product.stock !== 'instock'}
-                className="flex-1 font-semibold"
-              >
-                Buy Now
-              </Button>
-            </div>
+            <AddToCart
+              variant='primary'
+              size='lg'
+              handleAdd={ handleAddToCart }
+              inStock={ product.stock === 'instock' }
+              imgRef={ imgRef }
+              className='flex-1'
+              qty={ qty }
+            />
+            <Button
+              size="lg"
+              variant="secondary"
+              isDisabled={product.stock !== 'instock'}
+              className="flex-1 font-semibold"
+            >
+              Buy Now
+            </Button>
           </FlexRow>
-          <FlexRow className="flex-wrap items-stretch">
+          <FlexRow className="flex-wrap flex-row">
             <Button
               variant="ghost"
               color={wishlisted ? "danger" : "default"}
