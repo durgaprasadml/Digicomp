@@ -6,6 +6,7 @@ import { Button, Badge } from '@heroui/react';
 import { home } from '../routes';
 import { ThemeStore } from '../stores/ThemeStore';
 import { CartStore } from '../stores/CartStore';
+import { PageStore } from '../stores/PageStore';
 
 import { Logo, LogoDefs, Drawer, CustomButton } from '../components'
 import SearchBox, { SearchIcon } from './SearchBox';
@@ -205,24 +206,53 @@ function WishlistMenu() {
   return <div className="popover shadow-2xl w-64 right-0 p-4">
     <h4 className="mb-2 font-semibold text-[var(--text)]">Wishlist</h4>
     <p className="text-sm text-[var(--text-secondary)]">Your wishlist is currently empty.</p>
-    <a href="/shop" className="mt-4 block w-full rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-4 py-2 text-center text-sm font-medium text-[var(--text)] hover:bg-[var(--border)] transition-colors">
-      Explore Products
-    </a>
+    <CustomButton size="lg" className="mt-4 w-full">
+      <Link to="/shop">Explore Products</Link>
+    </CustomButton>
   </div>
 }
 
 function CartMenu( { cart } ) {
-  return <div className="popover shadow-2xl w-64 right-0 p-4">
-    <h4 className="mb-2 font-semibold text-[var(--text)]">Shopping Cart</h4>
-    {cart.lineCount === 0 ? (
-      <p className="text-sm text-[var(--text-secondary)]">Your cart is currently empty.</p>
-    ) : (
-      <p className="text-sm text-[var(--text-secondary)]">You have {cart.lineCount} items in your cart.</p>
-    )}
-    <a href={cart.url} className="mt-4 block w-full rounded-lg bg-accent px-4 py-2.5 text-center text-sm font-bold text-white hover:bg-[var(--color-accent-hover)] transition-colors">
-      View Checkout
-    </a>
-  </div>
+  const { currency } = PageStore.use();
+
+  return (
+    <div className="popover w-80 right-0 p-5">
+      <h4 className="mb-3 font-semibold border-b border-border pb-2">Shopping Cart</h4>
+      {cart.lineCount === 0 ? (
+        <p className="text-sm py-4">Your cart is currently empty.</p>
+      ) : (
+        <>
+          <div className="flex flex-col gap-4 max-h-60 overflow-y-auto pr-1 my-3 scrollbar-thin">
+            {cart.items.map((item, index) => (
+              <div key={item.id || index} className="flex gap-3 items-center">
+                {item.image ? (
+                  <img src={item.image} alt={item.name || 'Product'} className="h-12 w-12 rounded object-cover border border-border bg-surface" />
+                ) : (
+                  <div className="h-12 w-12 rounded flex justify-center items-center text-muted text-xs">IMG</div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate" title={item.name || `Product #${item.id}`}>
+                    {item.name || `Product #${item.id}`}
+                  </p>
+                  <p className="text-xs mt-0.5">
+                    {item.qty} × {item.price ? `${currency}${item.price}` : 'N/A'}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="flex items-center gap-2 border-t border-border pt-4 mt-2">
+            <CustomButton variant='secondary' className="w-full">
+              <Link to='/cart'>View Cart</Link>
+            </CustomButton>
+            <CustomButton className="w-full">
+              <Link to='/cart'>Checkout</Link>
+            </CustomButton>
+          </div>
+        </>
+      )}
+    </div>
+  )
 }
 
 /* ── Header ── */

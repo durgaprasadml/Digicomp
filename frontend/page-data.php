@@ -95,7 +95,7 @@ function dc_user_data() {
 			'qty'   => $cart_item['quantity'],
 			'name'  => $cartprod ? $cartprod->get_name() : '',
 			'price' => $cartprod ? $cartprod->get_price(): '',
-			'img'   => $imgs ? $imgs[0] : '',
+			'image' => $imgs ? $imgs[0] : '',
 		];
 	}
 
