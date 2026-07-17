@@ -11,9 +11,9 @@ function App() {
   }, [] )
 
   return (
-    <div className="min-h-screen pb-16 lg:pb-0 transition-colors duration-300">
+    <div className="min-h-screen flex flex-col pb-16 lg:pb-0 transition-colors duration-300">
       <Header />
-      <main>
+      <main className="flex-1">
         <Suspense fallback={
           <div className="pt-6 min-h-screen flex items-center justify-center">
             <div class="w-28 h-5 rounded-4xl border-2 relative overflow-hidden text-[var(--text-secondary)]">

@@ -51,13 +51,54 @@ export async function fetchPageData(path) {
 	}
 }
 
-export async function postToCart( id, qty = 1 ) {
-	return await postWPAjax( { id, qty, action: 'add_to_cart' } )
+async function storeApiFetch(endpoint, options = {}) {
+	const { stApiUrl } = PageStore.get()
+	const { nonce } = UserStore.get()
+	const url = `${ stApiUrl }${ endpoint }`
+	const headers = { 'Content-Type': 'application/json', ...options.headers }
+
+	if ( nonce ) { headers['Nonce'] = nonce }
+
+	try {
+		const response = await fetch( url, { ...options, headers } )
+		if ( ! response.ok) {
+			throw new Error( `Store API error: ${ response.statusText }` )
+		}
+		return await response.json()
+	} catch ( error ) {
+		console.error( `Error in Store API (${ endpoint }):`, error )
+		return null
+	}
 }
 
-export async function fetchSearchResults(searchTerm) {
-  if (!searchTerm || searchTerm.length < 3) {
-    return [];
+export async function fetchCart() {
+	return await storeApiFetch( 'cart' )
+}
+
+export async function addCartItem(id, qty = 1) {
+	return await storeApiFetch( 'cart/add-item', {
+		method: 'POST',
+		body: JSON.stringify( { id, quantity: qty } )
+	} )
+}
+
+export async function updateCartItem( key, qty ) {
+	return await storeApiFetch( 'cart/update-item', {
+		method: 'POST',
+		body: JSON.stringify( { key, quantity: qty } )
+	} )
+}
+
+export async function removeCartItem( key ) {
+	return await storeApiFetch( 'cart/remove-item', {
+		method: 'POST',
+		body: JSON.stringify( { key } )
+	} )
+}
+
+export async function fetchSearchResults( searchTerm ) {
+  if ( ! searchTerm || searchTerm.length < 3 ) {
+    return []
   }
 
   const { searchUrl } = PageStore.get()

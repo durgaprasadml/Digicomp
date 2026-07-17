@@ -334,7 +334,7 @@ export default function Header() {
           <nav className="flex items-center gap-1">
             {navLinks.map((link) =>
               link.hasMega ? (
-                <div key={link.id} className="popover-wrap">
+                <div key={link.id} className="popover-wrap h-16">
                   <Button variant='outline'>
                     {link.label}
                     <ChevronDown />

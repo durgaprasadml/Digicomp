@@ -414,6 +414,9 @@ input[type="range"]::-webkit-slider-thumb:hover, input[type="range"]::-moz-range
   h3 {
     @apply text-xl font-semibold text-[var(--text)] leading-tight;
   }
+  a {
+    @apply hover:text-accent transition-colors;
+  }
   /* ===== Global Layout System ===== */
   .container {
     @apply mx-auto px-4;

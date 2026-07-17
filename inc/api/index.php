@@ -34,6 +34,21 @@ function dc_api_routes() {
 			'callback' => 'dc_api_get_product',
 			'get_head' => 'dc_api_product_head',
 		],
+		'cart' => [
+			'callback' => 'dc_api_cart_data',
+			'get_head' => 'dc_api_cart_head',
+		],
+	];
+}
+
+function dc_api_cart_data() {
+	return new \WP_REST_Response( [ 'head' => dc_api_cart_head() ] );
+}
+
+function dc_api_cart_head() {
+	return [
+		'title' => 'Shopping Cart - Digicomp Technologies',
+		'desc'  => 'Review your items and proceed to checkout.',
 	];
 }
 
