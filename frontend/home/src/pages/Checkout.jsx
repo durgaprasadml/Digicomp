@@ -338,7 +338,7 @@ export default function Checkout() {
           <div className="lg:col-span-1 p-6 lg:p-8 rounded-3xl sticky top-24 border border-border">
             <h3 className="mb-4">Order Summary</h3>
 
-            <div className="space-y-4 mb-4 max-h-[45vh] overflow-y-auto pr-2 custom-scrollbar">
+            <div className="space-y-4 mb-4 max-h-[45vh] overflow-y-auto">
               {items.map(item => (
                 <div key={item.key} className="flex gap-4 items-center">
                   <div className="w-10 h-10 rounded-lg border border-border flex items-center justify-center shrink-0">

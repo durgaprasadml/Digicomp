@@ -8,7 +8,6 @@ import { CartStore } from '../stores/CartStore'
 import { getCleanPath } from '../utils/helper'
 import { Button, NumberField, Breadcrumbs, Chip, Avatar, Card, Separator, Table } from "@heroui/react"
 import { AddToCart, Container, CustomButton, FlexRow, Grid, ProductCard, Rating, Section, Slider, Stack } from '../components'
-import Breadcrumb from '../blocks/Breadcrumb'
 
 // Helper icons
 function HeartIcon({ filled }) {

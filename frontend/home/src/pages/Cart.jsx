@@ -162,7 +162,7 @@ export default function Cart() {
 
                   {totals && parseInt(totals.total_tax) > 0 && (
                     <div className="flex justify-between items-center">
-                      <span>Tax</span>
+                      <span>GST</span>
                       <span>₹{(parseInt(totals.total_tax) / 100).toFixed(2)}</span>
                     </div>
                   )}

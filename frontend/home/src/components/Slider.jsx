@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef, Children } from 'react';
-import { motion } from 'framer-motion';
+
 import { useSwipeDrag } from '../utils/swipeHook';
 
 export default function Slider({
@@ -131,27 +131,21 @@ export default function Slider({
               aria-selected={index === activeIndex}
               aria-label={`Slide ${index + 1}`}
               onClick={() => goTo(index)}
-              className="relative w-3 h-3 rounded-full cursor-pointer border-none outline-none bg-[var(--border)] transition-colors duration-300"
-            >
-              {index === activeIndex && (
-                <motion.div
-                  layoutId="slider-active-dot"
-                  className="absolute inset-0 rounded-full"
-                  style={{
-                    background: 'linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end))',
-                  }}
-                  initial={{ scale: 0.8 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                />
-              )}
-            </button>
+              className={`relative w-3 h-3 rounded-full cursor-pointer border-none outline-none transition-all duration-300 ${
+                index === activeIndex 
+                  ? 'scale-[1.15] shadow-sm' 
+                  : 'bg-[var(--border)] hover:bg-[var(--text-muted)]'
+              }`}
+              style={index === activeIndex ? {
+                background: 'linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end))'
+              } : undefined}
+            />
           ))}
         </div>
       )}
 
       {thumbnails && thumbnails.length > 1 && (
-        <div className="flex gap-4 mt-4 overflow-x-auto pb-2 custom-scrollbar">
+        <div className="flex gap-4 mt-4 overflow-x-auto pb-2">
           {thumbnails.map((thumb, index) => (
             <button
               key={thumb.id || index}

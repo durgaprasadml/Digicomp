@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { Link } from '@typeroute/router';
 import { Button, Badge } from '@heroui/react';
 
-import { home } from '../routes';
+import { home, cart as cartRoute, checkout } from '../routes';
 import { ThemeStore } from '../stores/ThemeStore';
 import { CartStore } from '../stores/CartStore';
 import { PageStore } from '../stores/PageStore';
@@ -243,10 +243,10 @@ function CartMenu( { cart } ) {
           </div>
           <div className="flex items-center gap-2 border-t border-border pt-4 mt-2">
             <CustomButton variant='secondary' className="w-full">
-              <Link to='/cart'>View Cart</Link>
+              <Link to={cartRoute}>View Cart</Link>
             </CustomButton>
             <CustomButton className="w-full">
-              <Link to='/cart'>Checkout</Link>
+              <Link to={checkout}>Checkout</Link>
             </CustomButton>
           </div>
         </>
@@ -415,15 +415,7 @@ export default function Header() {
           <div className="popover-wrap icon-nav">
             <Badge.Anchor>
               <CustomButton isIconOnly variant='ghost'>
-                <a
-                  id="cart-link"
-                  href={cart.url}
-                  className="icon-btn"
-                  aria-label="Cart"
-                  ref={cartRef}
-                >
-                  <CartIcon />
-                </a>
+                <Link to={cartRoute} className="icon-btn" aria-label="Cart"><CartIcon /></Link>
               </CustomButton>
               {cart.lineCount > 0 && (
                 <Badge size="sm" className="bg-gradient-to-r from-accent to-(--color-accent-hover) text-white border-none shadow-sm" placement="top-right">

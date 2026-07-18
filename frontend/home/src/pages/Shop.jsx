@@ -12,7 +12,8 @@ const sortOptions = [
  { value: 'newest', label: 'Newest Arrivals' },
  { value: 'priceAsc', label: 'Price: Low to High' },
  { value: 'priceDesc', label: 'Price: High to Low' },
- { value: 'nameAsc', label: 'Name: A to Z' }
+ { value: 'nameAsc', label: 'Name: A to Z' },
+ { value: 'nameDesc', label: 'Name: Z to A' },
 ]
 
 export default function Shop() {
@@ -99,11 +100,12 @@ export default function Shop() {
 
   // Sort
   result.sort((a, b) => {
-   if (sortOrder === 'priceAsc') return parseFloat(a.price || 0) - parseFloat(b.price || 0)
-   if (sortOrder === 'priceDesc') return parseFloat(b.price || 0) - parseFloat(a.price || 0)
-   if (sortOrder === 'nameAsc') return a.name.localeCompare(b.name)
-   // default: newest
-   return (b.date || 0) - (a.date || 0)
+    if (sortOrder === 'priceAsc') return parseFloat(a.price || 0) - parseFloat(b.price || 0)
+    if (sortOrder === 'priceDesc') return parseFloat(b.price || 0) - parseFloat(a.price || 0)
+    if (sortOrder === 'nameAsc') return a.name.localeCompare(b.name)
+    if (sortOrder === 'nameDesc') return b.name.localeCompare(a.name)
+    // default: newest
+    return (b.date || 0) - (a.date || 0)
   })
 
   return result
@@ -164,7 +166,7 @@ export default function Shop() {
    <FlexRow className="items-start relative gap-8">
 
     {/* Desktop Sidebar */}
-    <aside className="hidden lg:block w-64 shrink-0 sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pr-4 custom-scrollbar">
+    <aside className="hidden lg:block w-64 shrink-0 sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
      <ShopFilters
       filtersData={filters}
       activeFilters={activeFilters}
@@ -188,7 +190,7 @@ export default function Shop() {
         <div className="p-4">
           <Button variant="ghost" isIconOnly onPress={() => setIsMobileFiltersOpen(false)} aria-label="Close" className="absolute top-0 right-0">✕</Button>
         </div>
-        <div className="flex-1 custom-scrollbar py-4 px-2 overflow-y-auto">
+        <div className="flex-1 py-4 px-2 overflow-y-auto">
           <ShopFilters
             filtersData={filters}
             activeFilters={activeFilters}
