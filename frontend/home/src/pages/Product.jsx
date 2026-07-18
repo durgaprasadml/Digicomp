@@ -251,9 +251,9 @@ export default function Product() {
             <span className="w-1 h-1 bg-blue-500 rounded-full"></span>
             Technical Specifications
           </h2>
-          <Table aria-label="Technical Specifications" className="w-full" shadow="none">
+          <Table className="w-full" shadow="none">
             <Table.ScrollContainer>
-              <Table.Content>
+              <Table.Content aria-label="Technical Specifications">
                 <Table.Header>
                   <Table.Column isRowHeader>Feature</Table.Column>
                   <Table.Column>Specification</Table.Column>

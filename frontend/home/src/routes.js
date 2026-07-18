@@ -10,4 +10,5 @@ export const category = app.route( '/product-category/:cat' ).component( lazy( (
 export const tag = app.route( '/product-tag/:tag' ).component( lazy( () => import( './pages/Shop' ) ) )
 export const brand = app.route( '/brand/:brand' ).component( lazy( () => import( './pages/Shop' ) ) )
 export const product = app.route( '/product/:slug' ).component( lazy( () => import( './pages/Product' ) ) )
-export const cart = app.route( '/cart' ).component( lazy( () => import( './pages/Cart' ) ) )
+export const cart = app.route( '/cart' ).lazy( () => import( './pages/Cart' ) )
+export const checkout = app.route( '/checkout' ).lazy( () => import( './pages/Checkout' ) )

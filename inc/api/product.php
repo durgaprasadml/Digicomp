@@ -17,11 +17,11 @@ function dc_api_get_product( \WP_REST_Request $request ) {
 	}
 
 	$product_obj = get_page_by_path( $slug, OBJECT, 'product' );
-	if ( ! $product_obj ) {
+	if ( ! $product_obj && ! ctype_digit( $slug ) ) {
 		return new \WP_Error( 'not_found', 'Product not found', [ 'status' => 404 ] );
 	}
 
-	$product = wc_get_product( $product_obj->ID );
+	$product = wc_get_product( $product_obj->ID ?? (int) $slug );
 	if ( ! $product ) {
 		return new \WP_Error( 'not_found', 'Product not found', [ 'status' => 404 ] );
 	}

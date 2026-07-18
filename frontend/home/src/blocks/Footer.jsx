@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Input, Button } from '@heroui/react';
+import { useState } from 'react'
+import { Input, Button } from '@heroui/react'
+import { useMatch } from '@typeroute/router'
+import { cart, checkout } from '../routes'
 
 const footerLinks = {
   'Shop Hardware': [
@@ -76,7 +77,7 @@ const socialLinks = [
   },
 ];
 
-function Footer() {
+function NewsLetter() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -89,17 +90,14 @@ function Footer() {
     }
   };
 
-  return (
-    <footer id="footer" className="bg-[var(--surface)] border-t border-[var(--border)]">
+  const match1 = useMatch({ from: cart })
+  const match2 = useMatch({ from: checkout })
+
+  return ( match1 || match2 ) ? null : (
+    <>
       {/* Newsletter Section */}
       <div className="section-container">
-        <motion.div
-          className="py-16 md:py-20 flex flex-col md:flex-row md:items-center md:justify-between gap-8"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
-        >
+        {<div className="py-16 md:py-20 flex flex-col md:flex-row md:items-center md:justify-between gap-8">
           <div className="md:max-w-md">
             <h3 className="mb-4">
               Join the Engineering Inner Circle
@@ -125,7 +123,7 @@ function Footer() {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <Button size="lg" onPress={() => {}}>
+            <Button size="lg" onPress={() => { }}>
               {subscribed ? (
                 <>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -144,12 +142,19 @@ function Footer() {
               )}
             </Button>
           </form>
-        </motion.div>
+        </div>}
       </div>
 
       {/* Divider */}
       <div className="border-t border-[var(--border)]" />
+    </>
+  )
+}
 
+function Footer() {
+  return (
+    <footer id="footer" className="bg-[var(--surface)] border-t border-[var(--border)]">
+      <NewsLetter />
       {/* Link Grid */}
       <div className="section-container">
         <div className="py-16 grid grid-cols-2 md:grid-cols-4 gap-8">

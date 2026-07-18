@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useLocation, Link } from '@typeroute/router'
 import { Breadcrumbs, BreadcrumbsItem, Button, Card, NumberField, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Chip, Separator } from '@heroui/react'
-import { home, shop, cart as cartRoute } from '../routes'
-import { Container, FlexRow, Section, Stack } from '../components'
+import { home, shop, cart as cartRoute, product, checkout } from '../routes'
+import { Container, CustomButton, FlexRow, Section, Stack } from '../components'
 import { CartStore, useStore } from '../stores/CartStore'
 import { PageStore } from '../stores/PageStore'
 
@@ -84,9 +84,9 @@ export default function Cart() {
           <div className="grid lg:grid-cols-3 gap-8 items-start">
             {/* Left Column: Cart Items */}
             <div className="lg:col-span-2">
-              <Table aria-label="Cart Items" shadow="none" className="w-full ">
+              <Table shadow="none" className="w-full ">
                 <Table.ScrollContainer>
-                  <Table.Content>
+                  <Table.Content aria-label="Cart Items">
                     <TableHeader>
                       <TableColumn isRowHeader>Product</TableColumn>
                       <TableColumn>Price</TableColumn>
@@ -106,9 +106,9 @@ export default function Cart() {
                                   <span className="text-xs text-muted">No Img</span>
                                 )}
                               </div>
-                              <a href={`/product/${item.slug || item.id}`} className="font-semibold line-clamp-2" target='_blank'>
+                              <Link to={ product } params={{ slug: item.slug || item.id}} className="font-semibold line-clamp-2">
                                 <span dangerouslySetInnerHTML={{ __html: item.name }} />
-                              </a>
+                              </Link>
                             </div>
                           </TableCell>
                           <TableCell>
@@ -189,16 +189,9 @@ export default function Cart() {
                     </div>
                   </div>
                 </Stack>
-
-                <Button
-                  href="/checkout"
-                  variant="primary"
-                  size="lg"
-                  className="w-full mt-6 font-bold"
-                  isLoading={isFetching}
-                >
-                  Proceed to Checkout
-                </Button>
+                <CustomButton  size="lg" className="mt-4 w-full" isPending={isFetching}>
+                  <Link to={ checkout } preload="intent">Proceed to Checkout</Link>
+                </CustomButton>
               </Card>
             </div>
           </div>
