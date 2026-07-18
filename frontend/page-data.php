@@ -100,9 +100,24 @@ function dc_user_data() {
 		];
 	}
 
+	$user_id = get_current_user_id();
+	$user = [ 'is_logged_in' => false ];
+	if ( $user_id ) {
+		$customer = new WC_Customer( $user_id );
+		$user = [
+			'is_logged_in' => true,
+			'id'           => $user_id,
+			'email'        => $customer->get_email(),
+			'first_name'   => $customer->get_first_name(),
+			'last_name'    => $customer->get_last_name(),
+		];
+	}
+
 	wp_send_json_success( [
-		'nonce'     => wp_create_nonce( get_user_nonce_name() ),
-		'cart'      => $cart,
+		'nonce'   => wp_create_nonce( get_user_nonce_name() ),
+		'wpNonce' => wp_create_nonce( 'wp_rest' ),
+		'cart'    => $cart,
+		'user'    => $user,
 	] );
 	die();
 }

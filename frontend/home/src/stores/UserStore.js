@@ -10,11 +10,11 @@ class UserClass extends Store {
 	}
 }
 
-const UserStore = new UserClass( { nonce: '', cart: {
+const UserStore = new UserClass( { nonce: '', wpNonce: '', cart: {
 	items: [],
 	count: 0,
 	lineCount: 0,
 	url: '/cart',
-} } )
+}, user: { is_logged_in: false }, payment_methods: [] } )
 
 export { UserStore, useStore }

@@ -44,7 +44,7 @@ export default function Cart() {
   const breadcrumbItems = [
     { label: 'Home', route: home },
     { label: 'Shop', route: shop },
-    { label: 'Cart', route: cartRoute }
+    { label: 'Cart' }
   ]
 
   return (
@@ -53,8 +53,9 @@ export default function Cart() {
           <Stack spacing={6}>
             <Breadcrumbs>
               {breadcrumbItems.map((item, index) => (
+                ! item.route ? <BreadcrumbsItem key={index} className="pointer-events-none">{item.label}</BreadcrumbsItem> :
                 <BreadcrumbsItem key={index}>
-                  <Link to={item.route} className="hover:text-[var(--accent)] transition-colors">
+                  <Link to={item.route}>
                     {item.label}
                   </Link>
                 </BreadcrumbsItem>
@@ -76,9 +77,9 @@ export default function Cart() {
             <CartIcon className='w-24' />
             <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
             <p className="mb-8 max-w-md">Looks like you haven't added anything to your cart yet. Browse our products and find something you like!</p>
-            <Button as={Link} to={shop} color="primary" size="lg" className="font-bold">
-              Start Shopping
-            </Button>
+            <CustomButton variant="primary" size="lg">
+              <Link to={shop}>Start Shopping</Link>
+            </CustomButton>
           </Card>
         ) : (
           <div className="grid lg:grid-cols-3 gap-8 items-start">
@@ -154,7 +155,7 @@ export default function Cart() {
                 <Stack className="gap-3 text-sm">
                   <div className="flex justify-between items-center">
                     <span>Subtotal ({cart.count} items)</span>
-                    <span className="">
+                    <span>
                       ₹{totals ? (parseInt(totals.total_items) / 100).toFixed(2) : items.reduce((sum, item) => sum + (item.price * item.qty), 0).toFixed(2)}
                     </span>
                   </div>
@@ -162,7 +163,7 @@ export default function Cart() {
                   {totals && parseInt(totals.total_tax) > 0 && (
                     <div className="flex justify-between items-center">
                       <span>Tax</span>
-                      <span className="">₹{(parseInt(totals.total_tax) / 100).toFixed(2)}</span>
+                      <span>₹{(parseInt(totals.total_tax) / 100).toFixed(2)}</span>
                     </div>
                   )}
 
@@ -170,22 +171,20 @@ export default function Cart() {
                     <div className="flex justify-between items-center">
                       <span>Shipping</span>
                       { parseInt(totals.total_shipping) > 0 ? (
-                        <span className="">₹{(parseInt(totals.total_shipping) / 100).toFixed(2)}</span>
+                        <span>₹{(parseInt(totals.total_shipping) / 100).toFixed(2)}</span>
                       ) : (
                         <span className="text-xs text-muted">(Next step)</span>
                       ) }
                     </div>
                   )}
 
-                  <div className="my-2 border-t pt-4">
-                    <div className="flex justify-between items-start">
-                      <span className="text-lg font-bold">Total</span>
-                      <div className="flex flex-col items-end">
-                        <span className="text-2xl font-bold text-accent">
-                          ₹{totals ? (parseInt(totals.total_price) / 100).toFixed(2) : items.reduce((sum, item) => sum + (item.price * item.qty), 0).toFixed(2)}
-                        </span>
-                        <span className="text-xs text-muted mt-1">Includes all taxes</span>
-                      </div>
+                  <div className="my-2 border-t pt-4 flex justify-between items-start">
+                    <span className="text-lg font-bold">Total</span>
+                    <div className="flex flex-col items-end">
+                      <span className="text-2xl font-bold text-accent">
+                        ₹{totals ? (parseInt(totals.total_price) / 100).toFixed(2) : items.reduce((sum, item) => sum + (item.price * item.qty), 0).toFixed(2)}
+                      </span>
+                      <span className="text-xs text-muted mt-1">Includes all taxes</span>
                     </div>
                   </div>
                 </Stack>

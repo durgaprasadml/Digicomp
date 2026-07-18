@@ -7,6 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once get_stylesheet_directory() . '/inc/api/home.php';
 require_once get_stylesheet_directory() . '/inc/api/shop.php';
 require_once get_stylesheet_directory() . '/inc/api/product.php';
+require_once get_stylesheet_directory() . '/inc/api/checkout.php';
 
 function dc_api_routes() {
 	return [
@@ -37,6 +38,10 @@ function dc_api_routes() {
 		'cart' => [
 			'callback' => 'dc_api_cart_data',
 			'get_head' => 'dc_api_cart_head',
+		],
+		'checkout' => [
+			'callback' => 'dc_api_checkout_data',
+			'get_head' => 'dc_api_checkout_head',
 		],
 	];
 }

@@ -119,3 +119,36 @@ export async function fetchSearchResults( searchTerm ) {
     return [];
   }
 }
+
+export async function fetchCheckout() {
+	const { dcApiUrl } = PageStore.get()
+	const { nonce, wpNonce } = UserStore.get()
+	const url = `${ dcApiUrl }checkout`
+	const headers = { 'Content-Type': 'application/json' }
+	if ( nonce ) { headers['Nonce'] = nonce }
+	if ( wpNonce ) { headers['X-WP-Nonce'] = wpNonce }
+
+	try {
+		const response = await fetch( url, { headers } )
+		if ( ! response.ok ) throw new Error( `DC API error: ${ response.statusText }` )
+		const data = await response.json()
+		return data.checkout || null
+	} catch ( error ) {
+		console.error( 'Error fetching unified checkout API:', error )
+		return null
+	}
+}
+
+export async function updateCustomer( data ) {
+	return await storeApiFetch( 'cart/update-customer', {
+		method: 'POST',
+		body: JSON.stringify( data )
+	} )
+}
+
+export async function processCheckout( data ) {
+	return await storeApiFetch( 'checkout', {
+		method: 'POST',
+		body: JSON.stringify( data )
+	} )
+}
