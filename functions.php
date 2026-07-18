@@ -334,3 +334,11 @@ function dc_get_top_badge( $badges ) {
 	$badge = is_array( $badges ) ? current( array_intersect( $priority, $badges ) ) : null;
 	return $badge ? $badge : null;
 }
+
+function dc_login_expiration($expiration, $user_id, $remember) {
+	if ( $remember ) { // If "Remember Me" is checked
+		$expiration = 7776000; // 90 days
+	}
+	return $expiration;
+}
+add_filter('auth_cookie_expiration', 'dc_login_expiration', 99, 3);
