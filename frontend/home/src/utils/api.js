@@ -30,7 +30,12 @@ export async function fetchUserData() {
 export async function fetchPageData(path) {
 	try {
 		const { homeUrl, dcApiUrl } = PageStore.get();
-		const response = await fetch(`${ dcApiUrl }${ path }`);
+		const { nonce, wpNonce } = UserStore.get()
+		const headers = { 'Content-Type': 'application/json' }
+		if ( nonce ) { headers['Nonce'] = nonce }
+		if ( wpNonce ) { headers['X-WP-Nonce'] = wpNonce }
+
+		const response = await fetch( `${ dcApiUrl }${ path }`, { headers } );
 		if (!response.ok) throw new Error('REST API error');
 		const data = await response.json();
 
@@ -118,25 +123,6 @@ export async function fetchSearchResults( searchTerm ) {
     console.error('Search API error:', error);
     return [];
   }
-}
-
-export async function fetchCheckout() {
-	const { dcApiUrl } = PageStore.get()
-	const { nonce, wpNonce } = UserStore.get()
-	const url = `${ dcApiUrl }checkout`
-	const headers = { 'Content-Type': 'application/json' }
-	if ( nonce ) { headers['Nonce'] = nonce }
-	if ( wpNonce ) { headers['X-WP-Nonce'] = wpNonce }
-
-	try {
-		const response = await fetch( url, { headers } )
-		if ( ! response.ok ) throw new Error( `DC API error: ${ response.statusText }` )
-		const data = await response.json()
-		return data.checkout || null
-	} catch ( error ) {
-		console.error( 'Error fetching unified checkout API:', error )
-		return null
-	}
 }
 
 export async function updateCustomer( data ) {

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from '@typeroute/router'
+import { Link, useNavigate, useLocation } from '@typeroute/router'
 import { Breadcrumbs, BreadcrumbsItem, Button, Card, Input, RadioGroup, Radio, Description, Checkbox, toast, TextField } from '@heroui/react'
-import { fetchCheckout, processCheckout, updateCustomer } from '../utils/api'
+import { processCheckout, updateCustomer } from '../utils/api'
 import { CartStore } from '../stores/CartStore'
 import { UserStore } from '../stores/UserStore'
+import { PageStore } from '../stores/PageStore'
 import { Container, Section, Stack, FlexRow } from '../components'
 import { home, cart as cartRoute, checkout } from '../routes'
 
@@ -14,6 +15,8 @@ const ValidatedInput = ({ isInvalid, ...props }) => (
 )
 
 export default function Checkout() {
+  const { path } = useLocation()
+
   const { cart } = CartStore.use()
   const { user, nonce } = UserStore.use()
   const navigate = useNavigate()
@@ -57,7 +60,7 @@ export default function Checkout() {
 
     const initCheckout = async () => {
       //setLoading(true)
-      const data = await fetchCheckout()
+      const { checkout: data } = await PageStore.fetch( path )
       if (data) {
         setCheckoutData(data)
 
