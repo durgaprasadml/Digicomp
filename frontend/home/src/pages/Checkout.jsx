@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, use } from 'react'
 import { Link, useNavigate, useLocation } from '@typeroute/router'
 import { Breadcrumbs, BreadcrumbsItem, Button, Card, Input, RadioGroup, Radio, Description, Checkbox, toast, TextField } from '@heroui/react'
 import { processCheckout, updateCustomer } from '../utils/api'
@@ -6,7 +6,8 @@ import { CartStore } from '../stores/CartStore'
 import { UserStore } from '../stores/UserStore'
 import { PageStore } from '../stores/PageStore'
 import { Container, Section, Stack, FlexRow } from '../components'
-import { home, cart as cartRoute, checkout } from '../routes'
+import { home, cart as cartRoute } from '../routes'
+import { getCleanPath } from '../utils/helper'
 
 const ValidatedInput = ({ isInvalid, ...props }) => (
   <TextField isInvalid={isInvalid} className="w-full">
@@ -15,13 +16,25 @@ const ValidatedInput = ({ isInvalid, ...props }) => (
 )
 
 export default function Checkout() {
-  const { path } = useLocation()
-
   const { cart } = CartStore.use()
-  const { user, nonce } = UserStore.use()
+  const { user } = UserStore.use()
+  const { path } = useLocation()
   const navigate = useNavigate()
+  const page = getCleanPath( path )
 
-  const [checkoutData, setCheckoutData] = useState(null)
+  PageStore.use()
+  let { checkout } = PageStore.get().pages[page] || {}
+  if ( ! checkout ) {
+    checkout = use( PageStore.fetch( page, { waitNonce: true } ) )?.checkout
+  }
+
+  useEffect( () => {
+    return () => {
+      // Clear cache on unmount so the next visit forces a fresh fetch
+      PageStore.set( old => ( { ...old, pages: { ...old.pages, page: null } } ) )
+    }
+  }, [] )
+
   const [loading, setLoading] = useState(false)
   const [processing, setProcessing] = useState(false)
   const [formErrors, setFormErrors] = useState(false)
@@ -35,7 +48,8 @@ export default function Checkout() {
     state: '',
     postcode: '',
     country: 'IN',
-    phone: ''
+    phone: '',
+    ...checkout?.shipping_address // Initialize with fetched data if available
   })
 
   const [billingFormData, setBillingFormData] = useState({
@@ -46,44 +60,24 @@ export default function Checkout() {
     state: '',
     postcode: '',
     country: 'IN',
-    phone: ''
+    phone: '',
+    ...checkout?.billing_address // Initialize with fetched data if available
   })
 
   const [sameAsShipping, setSameAsShipping] = useState(true)
 
-  const [selectedShipping, setSelectedShipping] = useState('')
-  const [selectedPayment, setSelectedPayment] = useState('')
+  const sRates = checkout?.shipping_rates
+  const initialShipping = sRates?.length > 0 && sRates[0].shipping_rates?.length > 0
+    ? sRates[0].shipping_rates[0].rate_id
+    : ''
+
+  const [selectedShipping, setSelectedShipping] = useState(initialShipping)
+
+  const payment_methods = checkout?.payment_methods || []
+  const initialPayment = payment_methods?.length > 0 ? payment_methods[0].id : ''
+
+  const [selectedPayment, setSelectedPayment] = useState(initialPayment)
   const [showAddressForm, setShowAddressForm] = useState(false)
-
-  useEffect(() => {
-    if (!nonce) return;
-
-    const initCheckout = async () => {
-      //setLoading(true)
-      const { checkout: data } = await PageStore.fetch( path )
-      if (data) {
-        setCheckoutData(data)
-
-        if (data.billing_address || data.shipping_address) {
-          setFormData(prev => ({
-            ...prev,
-            ...data.shipping_address
-          }))
-          setBillingFormData(prev => ({
-            ...prev,
-            ...data.billing_address
-          }))
-        }
-
-        const sRates = data.shipping_rates
-        if (sRates?.length > 0 && sRates[0].shipping_rates?.length > 0) {
-          setSelectedShipping(sRates[0].shipping_rates[0].rate_id)
-        }
-      }
-      //setLoading(false)
-    }
-    initCheckout()
-  }, [nonce])
 
   useEffect(() => {
     if (cart?.items && cart.items.length === 0 && !loading) {
@@ -91,17 +85,9 @@ export default function Checkout() {
     }
   }, [cart, loading, navigate])
 
-  const payment_methods = checkoutData?.payment_methods || []
-
-  useEffect(() => {
-    if (payment_methods?.length > 0 && !selectedPayment) {
-      setSelectedPayment(payment_methods[0].id)
-    }
-  }, [payment_methods, selectedPayment])
-
   const { items = [] } = cart || {}
-  const totals = checkoutData?.totals || null
-  const shippingRates = checkoutData?.shipping_rates || []
+  const totals = checkout?.totals
+  const shipping_rates = checkout?.shipping_rates || []
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -119,7 +105,19 @@ export default function Checkout() {
       shipping_address: formData
     })
     if (updated) {
-      setCheckoutData(prev => ({ ...prev, ...updated }))
+      PageStore.set(old => ({
+        ...old,
+        pages: {
+          ...old.pages,
+          [page]: {
+            ...old.pages[page],
+            checkout: {
+              ...(old.pages[page]?.checkout || {}),
+              ...updated
+            }
+          }
+        }
+      }))
       const sRates = updated.shipping_rates
       if (sRates?.length > 0 && sRates[0].shipping_rates?.length > 0) {
           // Keep existing selection if valid, else fallback
@@ -131,7 +129,7 @@ export default function Checkout() {
   const handlePayNow = async () => {
     const required = ['first_name', 'last_name', 'address_1', 'city', 'state', 'postcode', 'phone']
     if (!user?.is_logged_in) required.push('email')
-    const isValid = (data) => required.every(f => data[f] && data[f].trim() !== '')
+    const isValid = (checkout) => required.every(f => checkout[f] && checkout[f].trim() !== '')
 
     if (!isValid(formData) || (!sameAsShipping && !isValid(billingFormData))) {
       setFormErrors(true)
@@ -284,7 +282,7 @@ export default function Checkout() {
               </div>
 
               {/* Shipping Method */}
-              {shippingRates.length > 0 && shippingRates[0].shipping_rates?.length > 0 && (
+              {shipping_rates.length > 0 && shipping_rates[0].shipping_rates?.length > 0 && (
                 <div>
                   <h3 className="mb-4">Shipping Method</h3>
                   <Card className="shadow-sm">
@@ -292,7 +290,7 @@ export default function Checkout() {
                         const v = typeof val === 'string' ? val : val?.target?.value;
                         if (v) setSelectedShipping(v);
                       }}>
-                      {shippingRates[0].shipping_rates.map( (rate, i) => (
+                      {shipping_rates[0].shipping_rates.map( (rate, i) => (
                         <Radio key={rate.rate_id} value={rate.rate_id} className={ i === 0 ? 'mt-0' : '' }>
                           <Radio.Content>
                             <Radio.Control>

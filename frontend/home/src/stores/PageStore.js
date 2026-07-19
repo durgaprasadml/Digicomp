@@ -1,5 +1,6 @@
 import { use } from 'react'
 import { Store, useStore } from './Store'
+import { UserStore } from './UserStore'
 import { fetchPageData } from '../utils/api'
 import { getCleanPath } from '../utils/helper'
 
@@ -19,14 +20,20 @@ class PageClass extends Store {
 		this.promises = {}
 	}
 
-	fetch( path ) {
+	fetch( path, options = {} ) {
 		const cleanPath = getCleanPath( path )
 
 		if ( this.promises[cleanPath] ) {
 			return this.promises[cleanPath]
 		}
 
-		const promise = fetchPageData( cleanPath ).then( ( data ) => {
+		const doFetch = async () => {
+			if ( options.waitNonce ) {
+				await UserStore.ensureData()
+			}
+
+			const data = await fetchPageData( cleanPath )
+
 			if ( data && data.ssd && data.ssd.pages && data.ssd.pages[cleanPath] ) {
 				if ( typeof window !== 'undefined' && window.dcSSD ) {
 					if (!window.dcSSD.pages) window.dcSSD.pages = {}
@@ -44,8 +51,9 @@ class PageClass extends Store {
 			}
 			delete this.promises[cleanPath]
 			return data?.ssd?.pages?.[cleanPath] || {}
-		} )
+		}
 
+		const promise = doFetch()
 		this.promises[cleanPath] = promise
 		return promise
 	}
@@ -59,7 +67,9 @@ function usePageData( path ) {
 
 	useStore( PageStore )
 
-	const existingData = PageStore.get().pages[cleanPath]
+	const state = PageStore.get()
+	const existingData = state.pages[cleanPath]
+
 	if ( existingData || import.meta.env.SSR ) {
 		return existingData || {}
 	}

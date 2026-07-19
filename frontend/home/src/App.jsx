@@ -8,7 +8,7 @@ import { Toast } from '@heroui/react'
 
 function App() {
   useEffect( () => {
-    UserStore.fetchData()
+    UserStore.ensureData()
   }, [] )
 
   return (

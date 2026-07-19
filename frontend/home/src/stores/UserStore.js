@@ -3,10 +3,22 @@ import { Store, useStore } from './Store'
 import { fetchUserData } from '../utils/api'
 
 class UserClass extends Store {
-	async fetchData() {
+	constructor( initialState ) {
+		super( initialState )
+		this.initPromise = null
+	}
+
+	ensureData() {
 		// Todo: Only fetch userData if user intends to.
-		const ud = await fetchUserData()
-		this.set( () => ( { ...ud } ) )
+		if ( this.get().nonce ) return Promise.resolve( this.get() )
+
+		if ( !this.initPromise ) {
+			this.initPromise = fetchUserData().then( ( ud ) => {
+				this.set( () => ( { ...ud } ) )
+				return ud
+			} )
+		}
+		return this.initPromise
 	}
 }
 
