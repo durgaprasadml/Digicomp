@@ -32,9 +32,8 @@ function get_specific_data( $path = 'home', $has_ssr = true ) {
 		}
 	}
 
-	// If has ssr content, or cart or checkout page only send head.
-	if ( $has_ssr || ( in_array( $path, [ 'cart', 'checkout' ] ) ) ) {
-		// Only return head data.
+	// If has ssr content, or ssr is explicitly set false (cart, checkout), only send head.
+	if ( $has_ssr || ! ( $matched_route['ssr'] ?? true ) ) {
 		return [ 'head' => isset( $matched_route['get_head'] ) ? call_user_func( $matched_route['get_head'], $request ) : [] ];
 	}
 

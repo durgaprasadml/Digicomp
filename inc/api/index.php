@@ -38,10 +38,12 @@ function dc_api_routes() {
 		'cart' => [
 			'callback' => 'dc_api_cart_data',
 			'get_head' => 'dc_api_cart_head',
+			'ssr'      => false,
 		],
 		'checkout' => [
 			'callback' => 'dc_api_checkout_data',
 			'get_head' => 'dc_api_checkout_head',
+			'ssr'      => false,
 		],
 	];
 }

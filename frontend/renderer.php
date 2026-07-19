@@ -42,19 +42,19 @@ function dc_render() {
 	$uri = trim( parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '', '/' );
 	$path = ( '' === $uri ) ? 'home' : $uri;
 	$routes = dc_api_routes();
-	$is_react = false;
+	$react_route = null;
 	foreach ( $routes as $route => $args ) {
 		if ( preg_match( '#^' . $route . '$#', $path ) ) {
-			$is_react = true;
+			$react_route = $args;
 			break;
 		}
 	}
-	if ( ! $is_react ) return;
+	if ( ! $react_route ) return;
 
 	$assets = get_react_assets();
 	$html = get_ssr_html( $path );
 	$data = get_page_data( $path, !! $html );
-	if ( ! $html ) {
+	if ( ! $html && ( $react_route['ssr'] ?? true ) ) {
 		add_ssr_job( $path, $data );
 	}
 	$head = $data['pages'][ $path ]['head'];
