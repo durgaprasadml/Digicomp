@@ -415,7 +415,7 @@ export default function Header() {
           <div className="popover-wrap icon-nav">
             <Badge.Anchor>
               <CustomButton isIconOnly variant='ghost'>
-                <Link to={cartRoute} className="icon-btn" aria-label="Cart"><CartIcon /></Link>
+                <Link to={cartRoute} className="icon-btn" aria-label="Cart" ref={ cartRef }><CartIcon /></Link>
               </CustomButton>
               {cart.lineCount > 0 && (
                 <Badge size="sm" className="bg-gradient-to-r from-accent to-(--color-accent-hover) text-white border-none shadow-sm" placement="top-right">
