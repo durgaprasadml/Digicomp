@@ -53,10 +53,9 @@ function dc_api_checkout_data( \WP_REST_Request $request ) {
 	}
 	$checkout_data['payment_methods'] = $payment_methods;
 
-	return new \WP_REST_Response( [
-		'head'     => dc_api_checkout_head(),
-		'checkout' => $checkout_data
-	] );
+	$checkout_data['head'] = dc_api_checkout_head();
+
+	return new \WP_REST_Response( $checkout_data );
 }
 
 function dc_api_checkout_head() {

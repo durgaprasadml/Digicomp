@@ -23,17 +23,17 @@ export default function Checkout() {
   const page = getCleanPath( path )
 
   PageStore.use()
-  let { checkout } = PageStore.get().pages[page] || {}
-  if ( ! checkout ) {
-    checkout = use( PageStore.fetch( page, { waitNonce: true } ) )?.checkout
+  let checkout = PageStore.get().pages[page]
+  if ( ! checkout?.payment_methods ) {
+    checkout = use( PageStore.fetch( page, { waitNonce: true } ) )
   }
 
   useEffect( () => {
     return () => {
       // Clear cache on unmount so the next visit forces a fresh fetch
-      PageStore.set( old => ( { ...old, pages: { ...old.pages, page: null } } ) )
+      PageStore.set( old => ( { ...old, pages: { ...old.pages, [page]: null } } ) )
     }
-  }, [] )
+  }, [page] )
 
   const [loading, setLoading] = useState(false)
   const [processing, setProcessing] = useState(false)
@@ -110,11 +110,8 @@ export default function Checkout() {
         pages: {
           ...old.pages,
           [page]: {
-            ...old.pages[page],
-            checkout: {
-              ...(old.pages[page]?.checkout || {}),
-              ...updated
-            }
+            ...(old.pages[page] || {}),
+            ...updated
           }
         }
       }))
