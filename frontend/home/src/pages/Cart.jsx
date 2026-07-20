@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation, Link } from '@typeroute/router'
-import { Breadcrumbs, BreadcrumbsItem, Button, Card, NumberField, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Chip, Separator } from '@heroui/react'
+import { Breadcrumbs, Button, Card, NumberField, Table, Chip, Separator } from '@heroui/react'
 import { home, shop, cart as cartRoute, product, checkout } from '../routes'
 import { Container, CustomButton, FlexRow, Section, Stack } from '../components'
 import { CartStore, useStore } from '../stores/CartStore'
@@ -53,12 +53,12 @@ export default function Cart() {
           <Stack spacing={6}>
             <Breadcrumbs>
               {breadcrumbItems.map((item, index) => (
-                ! item.route ? <BreadcrumbsItem key={index} className="pointer-events-none">{item.label}</BreadcrumbsItem> :
-                <BreadcrumbsItem key={index}>
+                ! item.route ? <Breadcrumbs.Item key={index} className="pointer-events-none">{item.label}</Breadcrumbs.Item> :
+                <Breadcrumbs.Item key={index}>
                   <Link to={item.route}>
                     {item.label}
                   </Link>
-                </BreadcrumbsItem>
+                </Breadcrumbs.Item>
               ))}
             </Breadcrumbs>
 
@@ -88,17 +88,17 @@ export default function Cart() {
               <Table shadow="none" className="w-full ">
                 <Table.ScrollContainer>
                   <Table.Content aria-label="Cart Items">
-                    <TableHeader>
-                      <TableColumn isRowHeader>Product</TableColumn>
-                      <TableColumn>Price</TableColumn>
-                      <TableColumn>Quantity</TableColumn>
-                      <TableColumn>Total</TableColumn>
-                      <TableColumn aria-label="Actions" />
-                    </TableHeader>
-                    <TableBody items={items}>
+                    <Table.Header>
+                      <Table.Column isRowHeader>Product</Table.Column>
+                      <Table.Column>Price</Table.Column>
+                      <Table.Column>Quantity</Table.Column>
+                      <Table.Column>Total</Table.Column>
+                      <Table.Column aria-label="Actions" />
+                    </Table.Header>
+                    <Table.Body items={items}>
                       {(item) => (
-                        <TableRow key={item.key}>
-                          <TableCell>
+                        <Table.Row key={item.key}>
+                          <Table.Cell>
                             <div className="flex items-center gap-4 py-2">
                               <div className="w-16 h-16 rounded-lg border flex items-center justify-center">
                                 {item.image ? (
@@ -111,11 +111,11 @@ export default function Cart() {
                                 <span dangerouslySetInnerHTML={{ __html: item.name }} />
                               </Link>
                             </div>
-                          </TableCell>
-                          <TableCell>
+                          </Table.Cell>
+                          <Table.Cell>
                             <span className="font-medium">₹{item.price}</span>
-                          </TableCell>
-                          <TableCell>
+                          </Table.Cell>
+                          <Table.Cell>
                             <NumberField
                               value={item.qty}
                               onChange={(val) => handleUpdateQty(item.key, val)}
@@ -130,18 +130,18 @@ export default function Cart() {
                                 <NumberField.IncrementButton />
                               </NumberField.Group>
                             </NumberField>
-                          </TableCell>
-                          <TableCell>
+                          </Table.Cell>
+                          <Table.Cell>
                             <span className="font-bold">
                               ₹{item.totals?.line_total ? (parseInt(item.totals.line_total) / 100).toFixed(2) : (item.price * item.qty).toFixed(2)}
                             </span>
-                          </TableCell>
-                          <TableCell>
+                          </Table.Cell>
+                          <Table.Cell>
                             <Button isIconOnly variant="ghost" aria-label="Remove item" onPress={() => handleRemove(item.key)}>✕</Button>
-                          </TableCell>
-                        </TableRow>
+                          </Table.Cell>
+                        </Table.Row>
                       )}
-                    </TableBody>
+                    </Table.Body>
                   </Table.Content>
                 </Table.ScrollContainer>
               </Table>

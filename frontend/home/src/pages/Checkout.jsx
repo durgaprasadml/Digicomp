@@ -169,12 +169,12 @@ export default function Checkout() {
       <Section>
           <Breadcrumbs>
             {breadcrumbItems.map((item, index) => (
-              ! item.route ? <BreadcrumbsItem key={index} className="pointer-events-none">{item.label}</BreadcrumbsItem> :
-              <BreadcrumbsItem key={index}>
+              ! item.route ? <Breadcrumbs.Item key={index} className="pointer-events-none">{item.label}</Breadcrumbs.Item> :
+              <Breadcrumbs.Item key={index}>
                 <Link to={item.route}>
                   {item.label}
                 </Link>
-              </BreadcrumbsItem>
+              </Breadcrumbs.Item>
             ))}
           </Breadcrumbs>
       </Section>

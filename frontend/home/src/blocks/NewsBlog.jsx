@@ -1,6 +1,8 @@
-import { motion } from 'framer-motion';
+import { motion } from 'framer-motion'
+import { Link } from '@typeroute/router'
 
-import { usePageData } from '../stores/PageStore';
+import { usePageData } from '../stores/PageStore'
+import { post } from '../routes'
 
 const container = {
   hidden: {},
@@ -230,6 +232,7 @@ function NewsBlog() {
               transition={{ type: 'spring', stiffness: 500, damping: 22 }}
               className="glass-card overflow-hidden rounded-2xl cursor-pointer group flex flex-col"
             >
+              <Link to={ post } params={{ slug: article.slug }}>
               {/* Card Image */}
               <CardImage article={article} />
 
@@ -274,6 +277,7 @@ function NewsBlog() {
                   </span>
                 </div>
               </div>
+              </Link>
             </motion.article>
           ))}
         </motion.div>
