@@ -8,6 +8,7 @@ require_once get_stylesheet_directory() . '/inc/api/home.php';
 require_once get_stylesheet_directory() . '/inc/api/shop.php';
 require_once get_stylesheet_directory() . '/inc/api/product.php';
 require_once get_stylesheet_directory() . '/inc/api/checkout.php';
+require_once get_stylesheet_directory() . '/inc/api/post.php';
 
 function dc_api_routes() {
 	return [
@@ -44,6 +45,16 @@ function dc_api_routes() {
 			'callback' => 'dc_api_checkout_data',
 			'get_head' => 'dc_api_checkout_head',
 			'ssr'      => false,
+		],
+		'blog/(?P<slug>[a-z0-9-]+)' => [
+			'callback' => 'dc_api_post_data',
+			'get_head' => 'dc_api_post_head',
+			'type'     => 'post',
+		],
+		'(?P<slug>[a-z0-9-]+)' => [
+			'callback' => 'dc_api_page_data',
+			'get_head' => 'dc_api_page_head',
+			'type'     => 'page',
 		],
 	];
 }

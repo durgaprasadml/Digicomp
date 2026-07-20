@@ -335,6 +335,11 @@ function dc_get_top_badge( $badges ) {
 	return $badge ? $badge : null;
 }
 
+function read_time( $content = '' ) {
+	$word_count = str_word_count( strip_tags( $content ) );
+	return ceil( $word_count / 200 ) . ' min read';
+}
+
 function dc_login_expiration($expiration, $user_id, $remember) {
 	if ( $remember ) { // If "Remember Me" is checked
 		$expiration = 7776000; // 90 days

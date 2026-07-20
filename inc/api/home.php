@@ -63,17 +63,16 @@ function dc_api_get_home( \WP_REST_Request $request ) {
 		foreach ( $stickyposts as $stickyp ) {
 			$stickyimg = has_post_thumbnail( $stickyp->ID ) ? get_the_post_thumbnail_url( $stickyp->ID, 'medium' ) : '';
 			$stckytags = get_the_tags( $stickyp->ID );
-			$word_count = str_word_count( strip_tags( $stickyp->post_content ) );
-			$read_time  = ceil( $word_count / 200 );
 			$sticky[] = [
 				'id'        => $stickyp->ID,
+				'slug'      => $stickyp->post_name,
 				'title'     => $stickyp->post_title,
 				'excerpt'   => $stickyp->post_excerpt,
 				'date'      => get_the_date( '', $stickyp->ID ),
 				'img'       => $stickyimg,
 				'permalink' => get_permalink( $stickyp->ID ),
 				'tags'      => empty( $stckytags ) ? [] : array_map( fn($tag) => $tag->name, $stckytags),
-				'readTime'  => $read_time . ' min read',
+				'readTime'  => read_time( $stickyp->post_content ),
 			];
 		}
 	}

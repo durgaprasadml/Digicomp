@@ -12,3 +12,5 @@ export const brand = app.route( '/brand/:brand' ).component( lazy( () => import(
 export const product = app.route( '/product/:slug' ).component( lazy( () => import( './pages/Product' ) ) )
 export const cart = app.route( '/cart' ).lazy( () => import( './pages/Cart' ) )
 export const checkout = app.route( '/checkout' ).lazy( () => import( './pages/Checkout' ) )
+export const post = app.route( '/blog/:slug' ).lazy( () => import( './pages/Post' ) )
+export const page = app.route( '/:slug' ).lazy( () => import( './pages/Post' ) )

@@ -49,7 +49,13 @@ function dc_render() {
 			break;
 		}
 	}
-	if ( ! $react_route ) return;
+
+	if ( ! $react_route
+		&& ! (
+			( 'page' === ( $react_route['type'] ?? null ) )
+			&& is_page()
+		)
+	) return;
 
 	$assets = get_react_assets();
 	$html = get_ssr_html( $path );

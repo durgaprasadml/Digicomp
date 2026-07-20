@@ -182,7 +182,7 @@ export default function Checkout() {
       <div className="grid lg:grid-cols-3 gap-8 items-start mt-6">
 
           {/* Left Column */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 max-w-3xl">
             <Stack spacing={8}>
 
               {/* Contact Information */}
