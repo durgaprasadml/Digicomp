@@ -2,12 +2,12 @@ import { useEffect, useState, use } from 'react'
 import { Link, useLocation, useNavigate } from '@typeroute/router'
 import { Card, Button, Table, Input, TextField, toast, Select, ListBox } from "@heroui/react"
 
-import { account, accountTab, accountViewOrder, home } from '../routes'
-import { PageStore } from '../stores/PageStore'
-import { UserStore } from '../stores/UserStore'
-import { Container, Section, FlexRow, Stack, CustomButton } from '../components'
-import { getCleanPath } from '../utils/helper'
-import { updateCustomer, updateAccountDetails } from '../utils/api'
+import { viewOrder } from '../../routes'
+import { PageStore } from '../../stores/PageStore'
+import { UserStore } from '../../stores/UserStore'
+import { FlexRow, Stack, CustomButton } from '../../components'
+import { getCleanPath } from '../../utils/helper'
+import { updateCustomer, updateAccountDetails } from '../../utils/api'
 
 const ValidatedInput = ({ isInvalid, ...props }) => (
   <TextField isInvalid={isInvalid} className="w-full">
@@ -70,7 +70,7 @@ function OrdersView({ orders }) {
                   </Table.Cell>
                   <Table.Cell>
                     <CustomButton size="sm">
-                      <Link to={accountViewOrder} params={{ id: order.id }}>View</Link>
+                      <Link to={viewOrder} params={{ id: order.id }}>View</Link>
                     </CustomButton>
                   </Table.Cell>
                 </Table.Row>
@@ -423,55 +423,14 @@ export default function MyAccount() {
     return null // Render nothing while redirecting
   }
 
-  const navItems = [
-    { id: 'dashboard', label: 'Dashboard', to: account },
-    { id: 'orders', label: 'Orders', to: accountTab, params: { tab: 'orders' } },
-    { id: 'downloads', label: 'Downloads', to: accountTab, params: { tab: 'downloads' } },
-    { id: 'edit-address', label: 'Addresses', to: accountTab, params: { tab: 'edit-address' } },
-    { id: 'edit-account', label: 'Account details', to: accountTab, params: { tab: 'edit-account' } },
-    { id: 'logout', label: 'Logout', to: home } // Placeholder
-  ]
-
   return (
-    <Container className="py-8 max-w-7xl">
-      <Section className="mb-8">
-        <h1 className="text-3xl font-semibold mt-4">My Account</h1>
-      </Section>
-
-      <div className="flex flex-col md:flex-row gap-8 lg:gap-12">
-        <aside className="w-full md:w-64 shrink-0">
-          <nav className="flex flex-col gap-1">
-            {navItems.map((item, index) => {
-              const isActive = tab === item.id;
-              if ( ( item.id === 'downloads' ) && ! accountData?.downloads ) return null
-              return (
-                <Link
-                  key={item.id}
-                  to={item.to}
-                  params={item.params}
-                  className={`
-                    px-4 py-2.5 rounded-lg font-medium
-                    ${isActive
-                      ? 'bg-surface text-primary-foreground border-l-4 border-accent'
-                      : 'hover:bg-(--color-background-secondary)'}
-                  `}
-                >
-                  {item.label}
-                </Link>
-              )
-            })}
-          </nav>
-        </aside>
-
-        <main className="flex-1 min-w-0">
-          {tab === 'dashboard' && <DashboardView user={accountData?.user} />}
-          {tab === 'orders' && <OrdersView orders={accountData?.orders} />}
-          {tab === 'view-order' && <OrderDetailsView order={accountData?.order} />}
-          {tab === 'downloads' && <DownloadsView downloads={accountData?.downloads} />}
-          {tab === 'edit-address' && <AddressesView billing={accountData?.billing_address} shipping={accountData?.shipping_address} />}
-          {tab === 'edit-account' && <AccountDetailsView user={accountData?.user} />}
-        </main>
-      </div>
-    </Container>
+    <main className="flex-1 min-w-0">
+      {tab === 'dashboard' && <DashboardView user={accountData?.user} />}
+      {tab === 'orders' && <OrdersView orders={accountData?.orders} />}
+      {tab === 'view-order' && <OrderDetailsView order={accountData?.order} />}
+      {tab === 'downloads' && <DownloadsView downloads={accountData?.downloads} />}
+      {tab === 'edit-address' && <AddressesView billing={accountData?.billing_address} shipping={accountData?.shipping_address} />}
+      {tab === 'edit-account' && <AccountDetailsView user={accountData?.user} />}
+    </main>
   )
 }
