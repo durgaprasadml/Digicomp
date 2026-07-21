@@ -138,3 +138,29 @@ export async function processCheckout( data ) {
 		body: JSON.stringify( data )
 	} )
 }
+
+export async function updateAccountDetails( data ) {
+	try {
+		const { dcApiUrl } = PageStore.get();
+		const { wpNonce } = UserStore.get();
+		
+		const response = await fetch(`${dcApiUrl}my-account/update`, {
+			method: 'POST',
+			credentials: 'same-origin',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-WP-Nonce': wpNonce
+			},
+			body: JSON.stringify(data)
+		});
+
+		if (!response.ok) {
+			throw new Error('Failed to update account');
+		}
+
+		return await response.json();
+	} catch (error) {
+		console.error('Error updating account details:', error);
+		return null;
+	}
+}

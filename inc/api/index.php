@@ -9,6 +9,7 @@ require_once get_stylesheet_directory() . '/inc/api/shop.php';
 require_once get_stylesheet_directory() . '/inc/api/product.php';
 require_once get_stylesheet_directory() . '/inc/api/checkout.php';
 require_once get_stylesheet_directory() . '/inc/api/post.php';
+require_once get_stylesheet_directory() . '/inc/api/my-account.php';
 
 function dc_api_routes() {
 	return [
@@ -46,6 +47,11 @@ function dc_api_routes() {
 			'get_head' => 'dc_api_checkout_head',
 			'ssr'      => false,
 		],
+		'my-account(?:/(?P<tab>[a-z0-9-]+)(?:/(?P<id>[0-9]+))?)?' => [
+			'callback' => 'dc_api_my_account_data',
+			'get_head' => 'dc_api_my_account_head',
+			'ssr'      => false,
+		],
 		'blog/(?P<slug>[a-z0-9-]+)' => [
 			'callback' => 'dc_api_post_data',
 			'get_head' => 'dc_api_post_head',
@@ -81,6 +87,11 @@ function dc_register_api_routes() {
 		] );
 	}
 	// Register other routes
+	register_rest_route('dc/v1', '/my-account/update', [
+		'methods'             => 'POST',
+		'callback'            => 'dc_api_my_account_update',
+		'permission_callback' => '__return_true'
+	] );
 }
 
 add_action( 'rest_api_init', 'dc_register_api_routes' );

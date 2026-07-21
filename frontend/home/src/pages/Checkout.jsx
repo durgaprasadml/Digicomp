@@ -329,6 +329,9 @@ export default function Checkout() {
                   )}
                 </Card>
               </div>
+              <div className="mt-4 text-sm text-muted">
+                By proceeding with your purchase you agree to our Terms and Conditions and Privacy Policy
+              </div>
             </Stack>
           </div>
 

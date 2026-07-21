@@ -5,6 +5,7 @@ import Product from './pages/Product'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
 import Post from './pages/Post'
+import MyAccount from './pages/MyAccount'
 
 // Server-side routes statically import components to avoid Suspense fallbacks during SSR
 export const home = route( '/' ).component( Home )
@@ -16,4 +17,7 @@ export const product = route( '/product/:slug' ).component( Product )
 export const cart = route( '/cart' ).component( Cart )
 export const checkout = route( '/checkout' ).component( Checkout )
 export const post = route( '/blog/:slug' ).component( Post )
+export const account = route( '/my-account' ).component( MyAccount )
+export const accountTab = route( '/my-account/:tab' ).component( MyAccount )
+export const accountViewOrder = route( '/my-account/view-order/:id' ).component( MyAccount )
 export const page = route( '/:slug' ).component( Post )
