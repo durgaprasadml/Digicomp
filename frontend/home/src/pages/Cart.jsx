@@ -4,7 +4,6 @@ import { Breadcrumbs, Button, Card, NumberField, Table, Chip, Separator } from '
 import { home, shop, cart as cartRoute, product, checkout } from '../routes'
 import { Container, CustomButton, FlexRow, Section, Stack } from '../components'
 import { CartStore, useStore } from '../stores/CartStore'
-import { PageStore } from '../stores/PageStore'
 
 const CartIcon = ( { className='w-5' } ) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={ className }>
@@ -17,7 +16,6 @@ const CartIcon = ( { className='w-5' } ) => (
 export default function Cart() {
   const { cart } = useStore(CartStore)
   const [isFetching, setIsFetching] = useState(true)
-  const pageData = PageStore.use()
 
   useEffect(() => {
     // Fetch fresh cart data on mount

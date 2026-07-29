@@ -32,6 +32,7 @@
 @import "@heroui/styles/components/radio-group.css" layer(components);
 @import "@heroui/styles/components/radio.css" layer(components);
 @import "@heroui/styles/components/toast.css" layer(components);
+@import "@heroui/styles/components/modal.css" layer(components);
 
 /* Utilities and Variants (Required for some component features) */
 @import "@heroui/styles/utilities";
@@ -285,7 +286,7 @@ body {
 
 /* Mega menu */
 .popover-wrap {
-  @apply static flex items-center justify-center;
+  @apply relative flex items-center justify-center;
 
   .popover {
     transition: all 200ms ease-out;
@@ -295,6 +296,9 @@ body {
   &:hover .popover, &:focus-within .popover {
     @apply pointer-events-auto opacity-100 visible translate-y-0;
   }
+}
+#site-header .popover-wrap {
+  position: static;
 }
 
 /* Dot grid pattern for backgrounds */

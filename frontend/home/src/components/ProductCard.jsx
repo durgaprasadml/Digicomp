@@ -1,8 +1,11 @@
 import { useState, useRef } from 'react';
-import { Card } from "@heroui/react";
+import { Card, toast } from "@heroui/react";
 
 import { CartStore } from '../stores/CartStore';
 import { PageStore } from '../stores/PageStore';
+import { UserStore } from '../stores/UserStore';
+import { WishlistStore } from '../stores/WishlistStore';
+import { animateFlyToTarget } from '../utils/animate'
 import { AddToCart, CustomButton } from '.'
 
 function badgeColor( badge ) {
@@ -40,11 +43,41 @@ function CartPlusIcon() {
 }
 
 export default function ProductCard({ product }) {
-  const [wishlisted, setWishlisted] = useState(false);
-  const [addedToCart, setAddedToCart] = useState(false);
   const imgRef = useRef( null );
   const { cartRef } = CartStore.use()
   const { currency = '₹' } = PageStore.use() || {}
+  const { user } = UserStore.use()
+  const { wishlists, wishlistRef } = WishlistStore.use()
+
+  const containingLists = (wishlists || []).filter(wl => wl.items && wl.items.includes(product.id));
+  const isWishlisted = containingLists.length > 0;
+
+  const handleWishlist = async (e) => {
+    e.preventDefault(); e.stopPropagation();
+    if (!user?.is_logged_in) {
+      toast.danger('Please login to use wishlists');
+      return;
+    }
+    if (isWishlisted) {
+      for (const wl of containingLists) {
+        await WishlistStore.removeFromWishlist(wl.id, product.id);
+      }
+      toast.success('Removed from wishlist');
+    } else {
+      let targetList = wishlists?.[0];
+      if (!targetList) {
+        const res = await WishlistStore.createList('My Wishlist');
+        if (res && res.success) {
+          targetList = { id: res.id, name: 'My Wishlist', items: [] };
+        }
+      }
+      if (targetList) {
+        animateFlyToTarget(imgRef, wishlistRef);
+        await WishlistStore.addToWishlist(targetList.id, product.id);
+        toast.success(`Added to ${targetList.name}`);
+      }
+    }
+  }
 
   const handleAddToCart = async () => {
     await CartStore.addToCart( product.id )
@@ -69,11 +102,11 @@ export default function ProductCard({ product }) {
         {/* Wishlist button */}
         <button
           id={`wishlist-${product.id}`}
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setWishlisted(!wishlisted) }}
+          onClick={handleWishlist}
           className="absolute top-2 right-3 p-1.5 rounded-full bg-[var(--bg)]/60 backdrop-blur-sm text-[var(--text-muted)] hover:text-[var(--color-accent-start)] transition-colors pointer-events-auto cursor-pointer"
-          aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+          aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
         >
-          <HeartIcon filled={wishlisted} />
+          <HeartIcon filled={isWishlisted} />
         </button>
 
         {/* Product image */}

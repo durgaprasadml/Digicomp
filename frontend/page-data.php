@@ -100,6 +100,7 @@ function dc_user_data() {
 		];
 	}
 
+	$wishlists = [];
 	$user_id = get_current_user_id();
 	$user = [ 'is_logged_in' => false ];
 	if ( $user_id ) {
@@ -111,6 +112,14 @@ function dc_user_data() {
 			'first_name'   => $customer->get_first_name(),
 			'last_name'    => $customer->get_last_name(),
 		];
+
+		global $wpdb;
+		$wishlist_table = $wpdb->prefix . 'dc_wishlists';
+		$wls = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wishlist_table WHERE user_id = %d ORDER BY created_at DESC", $user_id ) );
+		foreach ($wls as $wl) {
+			$wl->items = json_decode( $wl->items, true ) ?: [];
+			$wishlists[] = $wl;
+		}
 	}
 
 	wp_send_json_success( [
@@ -118,6 +127,7 @@ function dc_user_data() {
 		'wpNonce' => wp_create_nonce( 'wp_rest' ),
 		'cart'    => $cart,
 		'user'    => $user,
+		'wishlists' => $wishlists,
 	] );
 	die();
 }

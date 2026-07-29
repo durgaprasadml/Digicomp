@@ -10,6 +10,7 @@ require_once get_stylesheet_directory() . '/inc/api/product.php';
 require_once get_stylesheet_directory() . '/inc/api/checkout.php';
 require_once get_stylesheet_directory() . '/inc/api/post.php';
 require_once get_stylesheet_directory() . '/inc/api/my-account.php';
+require_once get_stylesheet_directory() . '/inc/api/wishlist.php';
 
 function dc_api_routes() {
 	return [
@@ -52,6 +53,11 @@ function dc_api_routes() {
 			'get_head' => 'dc_api_my_account_head',
 			'ssr'      => false,
 		],
+		'wishlist(?:/(?P<id>[0-9a-fA-F-]+))?' => [
+			'callback' => 'dc_api_wishlist_data',
+			'get_head' => '__return_empty_array',
+			'ssr'      => false,
+		],
 		'blog/(?P<slug>[a-z0-9-]+)' => [
 			'callback' => 'dc_api_post_data',
 			'get_head' => 'dc_api_post_head',
@@ -90,6 +96,26 @@ function dc_register_api_routes() {
 	register_rest_route('dc/v1', '/my-account/update', [
 		'methods'             => 'POST',
 		'callback'            => 'dc_api_my_account_update',
+		'permission_callback' => '__return_true'
+	] );
+	register_rest_route('dc/v1', '/wishlist/create', [
+		'methods'             => 'POST',
+		'callback'            => 'dc_api_wishlist_create',
+		'permission_callback' => '__return_true'
+	] );
+	register_rest_route('dc/v1', '/wishlist/delete/(?P<id>[0-9a-fA-F-]+)', [
+		'methods'             => 'POST, DELETE',
+		'callback'            => 'dc_api_wishlist_delete',
+		'permission_callback' => '__return_true'
+	] );
+	register_rest_route('dc/v1', '/wishlist/(?P<id>[0-9a-fA-F-]+)/add', [
+		'methods'             => 'POST',
+		'callback'            => 'dc_api_wishlist_add_item',
+		'permission_callback' => '__return_true'
+	] );
+	register_rest_route('dc/v1', '/wishlist/(?P<id>[0-9a-fA-F-]+)/remove', [
+		'methods'             => 'POST',
+		'callback'            => 'dc_api_wishlist_remove_item',
 		'permission_callback' => '__return_true'
 	] );
 }

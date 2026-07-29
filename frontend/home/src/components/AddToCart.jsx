@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button } from '@heroui/react'
 import { CustomButton } from '.'
 import { CartStore } from '../stores/CartStore'
+import { animateFlyToTarget } from '../utils/animate'
 
 export default function AddToCart( {
 	handleAdd,
@@ -15,50 +16,7 @@ export default function AddToCart( {
 	const [ added, setAdded ] = useState(false)
 	const { cartRef } = CartStore.use()
 	const animate = () => {
-		if ( ! imgRef.current || ! cartRef?.current ) return
-
-		const imgRect = imgRef.current.getBoundingClientRect()
-		const cartRect = cartRef.current.getBoundingClientRect()
-		const flyingImg = imgRef.current.cloneNode(true)
-
-		const startX = imgRect.left + imgRect.width / 2
-		const startY = imgRect.top + imgRect.height / 2
-		const endX = cartRect.left + cartRect.width / 2
-		const endY = cartRect.top + cartRect.height / 2
-
-		const controlX = (startX + endX) / 2
-		const controlY = Math.min(startY, endY) - 50 // raise curve
-
-		const time = Math.max(Math.floor(Math.hypot(endX - startX, endY - startY)*0.6), 600)
-
-		Object.assign( flyingImg.style, {
-			position: "fixed",
-			left: "0px",
-			top: "0px",
-			width: `${imgRect.width}px`,
-			height: `${imgRect.height}px`,
-			zIndex: 9999,
-			pointerEvents: "none",
-			opacity: 0.8,
-
-			offsetPath: `path("M ${startX} ${startY} Q ${controlX} ${controlY} ${endX} ${endY}")`,
-			offsetDistance: "0%",
-			offsetRotate: "0deg",
-			offsetAnchor: "50% 50%",
-
-			transform: "scale(1)",
-			transition: `offset-distance ${time}ms, transform ${time}ms, opacity ${time}ms`,
-		} )
-
-		document.body.appendChild( flyingImg )
-
-		requestAnimationFrame( () => {
-			flyingImg.style.offsetDistance = '100%'
-			flyingImg.style.transform = `scale(${30 / imgRect.width})`
-			flyingImg.style.opacity = '0.2'
-		} )
-
-		flyingImg.addEventListener( 'transitionend', () => flyingImg.remove(), { once: true } )
+		animateFlyToTarget(imgRef, cartRef)
 	}
 	const handleClick = () => {
 		handleAdd()

@@ -27,20 +27,31 @@ export async function fetchUserData() {
 	return ud?.data
 }
 
-export async function fetchPageData(path) {
+async function dcApiFetch( endpoint, options = {} ) {
 	try {
-		const { homeUrl, dcApiUrl } = PageStore.get();
+		const { dcApiUrl } = PageStore.get()
 		const { nonce, wpNonce } = UserStore.get()
-		const headers = { 'Content-Type': 'application/json' }
+
+		const headers = { 'Content-Type': 'application/json', ...options.headers }
 		if ( nonce ) { headers['Nonce'] = nonce }
 		if ( wpNonce ) { headers['X-WP-Nonce'] = wpNonce }
 
-		const response = await fetch( `${ dcApiUrl }${ path }`, { headers } );
-		if (!response.ok) throw new Error('REST API error');
-		const data = await response.json();
+		const response = await fetch( `${ dcApiUrl }${ endpoint }`, { ...options, headers } )
 
-		const { ...pageData } = data;
+		if ( ! response.ok ) {
+			throw new Error( `Failed to fetch ${ endpoint }` )
+		}
 
+		return await response.json()
+	} catch ( error ) {
+		console.error( `Error in dcApiFetch (${ endpoint }):`, error )
+		return null
+	}
+}
+
+export async function fetchPageData( path ) {
+	try {
+		const { ...pageData } = await dcApiFetch( path )
 		// Reconstruct the expected shape so components don't break
 		return {
 			ssd: {
@@ -141,26 +152,47 @@ export async function processCheckout( data ) {
 
 export async function updateAccountDetails( data ) {
 	try {
-		const { dcApiUrl } = PageStore.get();
-		const { wpNonce } = UserStore.get();
-		
-		const response = await fetch(`${dcApiUrl}my-account/update`, {
+		return await dcApiFetch( 'my-account/update', {
 			method: 'POST',
-			credentials: 'same-origin',
-			headers: {
-				'Content-Type': 'application/json',
-				'X-WP-Nonce': wpNonce
-			},
-			body: JSON.stringify(data)
-		});
-
-		if (!response.ok) {
-			throw new Error('Failed to update account');
-		}
-
-		return await response.json();
-	} catch (error) {
-		console.error('Error updating account details:', error);
+			body: JSON.stringify( data )
+		} )
+	} catch ( error ) {
+		console.error( 'Error updating account details:', error )
 		return null;
 	}
+}
+
+export async function fetchWishLists() {
+	return await dcApiFetch( 'wishlist' )
+}
+
+export async function fetchWishlist( id ) {
+	return await dcApiFetch( 'wishlist/' + id )
+}
+
+export async function createWishlist( name ) {
+	return await dcApiFetch( 'wishlist/create', {
+		method: 'POST',
+		body: JSON.stringify( { name } )
+	} )
+}
+
+export async function deleteWishlist( id ) {
+	return await dcApiFetch( `wishlist/delete/${ id }`, {
+		method: 'POST'
+	} )
+}
+
+export async function addWishlistItem( id, product_id ) {
+	return await dcApiFetch( `wishlist/${ id }/add`, {
+		method: 'POST',
+		body: JSON.stringify( { product_id } )
+	} )
+}
+
+export async function removeWishlistItem( id, product_id ) {
+	return await dcApiFetch(`wishlist/${ id }/remove`, {
+		method: 'POST',
+		body: JSON.stringify( { product_id } )
+	} )
 }

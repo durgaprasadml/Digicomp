@@ -1,18 +1,20 @@
 import { useState, useRef } from 'react'
-import { useLocation } from '@typeroute/router'
-import { Link } from '@typeroute/router'
+import { useLocation, Link } from '@typeroute/router'
+import { Button, NumberField, Breadcrumbs, Chip, Avatar, Card, Separator, Table, toast } from "@heroui/react"
 
 import { home, shop } from '../routes'
 import { usePageData } from '../stores/PageStore'
 import { CartStore } from '../stores/CartStore'
+import { UserStore } from '../stores/UserStore'
+import { WishlistStore } from '../stores/WishlistStore'
 import { getCleanPath } from '../utils/helper'
-import { Button, NumberField, Breadcrumbs, Chip, Avatar, Card, Separator, Table } from "@heroui/react"
+import { animateFlyToTarget } from '../utils/animate'
 import { AddToCart, Container, CustomButton, FlexRow, Grid, ProductCard, Rating, Section, Slider, Stack } from '../components'
 
 // Helper icons
-function HeartIcon({ filled }) {
+function HeartIcon({ filled, width = 24, height = 24 }) {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill={filled ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width={width} height={height} viewBox="0 0 24 24" fill={filled ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
     </svg>
   );
@@ -34,11 +36,14 @@ export default function Product() {
   const { path } = useLocation()
   const product = usePageData(path) || {}
   const [qty, setQty] = useState(1)
-  const [wishlisted, setWishlisted] = useState(false)
+  const { wishlists, wishlistRef } = WishlistStore.use()
   const imgRef = useRef(null)
   const imgRefs = useRef([])
 
   if (!product.id) return <div className="p-8 text-center text-[var(--text-muted)] min-h-[50vh] flex items-center justify-center">Loading product data...</div>
+
+  const containingLists = (wishlists || []).filter(wl => wl.items && wl.items.includes(product.id))
+  const wishlisted = containingLists.length > 0
 
   // Breadcrumbs
   const breadcrumbItems = [
@@ -52,6 +57,54 @@ export default function Product() {
 
   const handleAddToCart = async () => {
     await CartStore.addToCart(product.id, qty)
+  }
+
+  const handleWishlist = async (targetListId = null) => {
+    const ud = UserStore.get()
+    if (!ud?.user?.is_logged_in) {
+      toast.danger('Login required to add to wishlist')
+      return
+    }
+
+    const { wishlists } = WishlistStore.get()
+
+    // If already wishlisted and NO specific list requested, remove from all containing lists (default toggle behavior)
+    if (wishlisted && !targetListId) {
+      for (const wl of containingLists) {
+        await WishlistStore.removeFromWishlist(wl.id, product.id)
+      }
+      toast.success('Removed from wishlist')
+      return
+    }
+
+    // Add to specific list, or default to first list
+    let targetList = null;
+    if (targetListId) {
+      targetList = (wishlists || []).find(wl => wl.id === targetListId);
+    } else {
+      targetList = wishlists?.[0]
+    }
+
+    if (!targetList) {
+      const res = await WishlistStore.createList('My Wishlist')
+      if (res && res.success) {
+        targetList = { id: res.id, name: 'My Wishlist', items: [] }
+      }
+    }
+
+    if (targetList) {
+      // Avoid adding again if already in this specific list
+      if (targetList.items && targetList.items.includes(product.id)) {
+        toast.success(`Already in ${targetList.name}`);
+        return;
+      }
+
+      animateFlyToTarget(imgRef, wishlistRef)
+      await WishlistStore.addToWishlist(targetList.id, product.id)
+      toast.success(`Added to ${targetList.name}`)
+    } else {
+      toast.danger('Failed to add to wishlist')
+    }
   }
 
   return (
@@ -179,14 +232,53 @@ export default function Product() {
             </Button>
           </FlexRow>
           <FlexRow className="flex-wrap flex-row">
-            <Button
-              variant="ghost"
-              color={wishlisted ? "danger" : "default"}
-              onPress={() => setWishlisted(!wishlisted)}
-              aria-label="Wishlist"
-            >
-              <HeartIcon filled={wishlisted} /> { wishlisted ? 'In Wishlist' : 'Add to Wishlist' }
-            </Button>
+            <div className="flex">
+              <CustomButton
+                variant="ghost"
+                color={wishlisted ? "danger" : "default"}
+                className={wishlists && wishlists.length > 0 ? "pr-4 rounded-r-none" : ""}
+              >
+                <button onClick={() => handleWishlist()} aria-label="Wishlist" className="flex items-center gap-2">
+                  <HeartIcon filled={wishlisted} /> { wishlisted ? 'In Wishlist' : 'Add to Wishlist' }
+                </button>
+              </CustomButton>
+              <div className="flex popover-wrap relative">
+                {wishlists && wishlists.length > 0 && (
+                  <>
+                    <CustomButton
+                      variant="ghost"
+                      color={wishlisted ? "danger" : "default"}
+                      className="px-2 min-w-0 rounded-l-none border-l border-default-200/50"
+                      isIconOnly
+                    >
+                      <button aria-label="Select Wishlist">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                      </button>
+                    </CustomButton>
+                    <div className="popover shadow-xl right-0">
+                      <ul className="space-y-1 max-h-48 overflow-x-hidden overflow-y-auto scrollbar-thin">
+                        {wishlists.map(wl => {
+                          const inThisList = wl.items && wl.items.includes(product.id);
+                          return (
+                            <li key={wl.id}>
+                              <Button
+                                variant="ghost"
+                                className='w-full'
+                                aria-label={wl.name}
+                                onClick={() => handleWishlist(wl.id)}
+                              >
+                                {wl.name}
+                                {inThisList && <HeartIcon filled={true} width={14} height={14} />}
+                              </Button>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
             <Button
               variant="ghost"
               color="default"

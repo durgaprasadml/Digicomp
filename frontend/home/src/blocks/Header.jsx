@@ -3,10 +3,11 @@ import { createPortal } from 'react-dom';
 import { Link } from '@typeroute/router';
 import { Button, Badge } from '@heroui/react';
 
-import { home, cart as cartRoute, checkout } from '../routes';
+import { home, cart as cartRoute, checkout, wishlist, wishlistView, shop } from '../routes';
 import { ThemeStore } from '../stores/ThemeStore';
 import { CartStore } from '../stores/CartStore';
 import { PageStore } from '../stores/PageStore';
+import { WishlistStore } from '../stores/WishlistStore';
 
 import { Logo, LogoDefs, Drawer, CustomButton } from '../components'
 import SearchBox, { SearchIcon } from './SearchBox';
@@ -203,13 +204,39 @@ function UserMenu() {
 }
 
 function WishlistMenu() {
-  return <div className="popover shadow-2xl w-64 right-0 p-4">
-    <h4 className="mb-2 font-semibold text-[var(--text)]">Wishlist</h4>
-    <p className="text-sm text-[var(--text-secondary)]">Your wishlist is currently empty.</p>
-    <CustomButton size="lg" className="mt-4 w-full">
-      <Link to="/shop">Explore Products</Link>
-    </CustomButton>
-  </div>
+  const { wishlists = [] } = WishlistStore.use() || {};
+
+  return (
+    <div className="popover shadow-2xl w-64 right-0 p-4">
+      <h4 className="mb-2 font-semibold text-[var(--text)]">Wishlist</h4>
+      {wishlists.length === 0 ? (
+        <>
+          <p className="text-sm text-[var(--text-secondary)]">Your wishlist is currently empty.</p>
+          <CustomButton size="lg" className="mt-4 w-full">
+            <Link to={shop}>Explore Products</Link>
+          </CustomButton>
+        </>
+      ) : (
+        <>
+          <ul className="space-y-2 mb-4 max-h-48 overflow-y-auto scrollbar-thin">
+            {wishlists.map(wl => (
+              <li key={wl.id} className="flex justify-between items-center text-sm py-1">
+                <Link to={wishlistView} params={{ id: wl.id }} className="truncate pr-2">
+                  {wl.name}
+                </Link>
+                <span className="text-xs text-[var(--text-secondary)] whitespace-nowrap bg-default-100 px-2 py-0.5 rounded-full">
+                  {Array.isArray(wl.items) ? wl.items.length : 0} items
+                </span>
+              </li>
+            ))}
+          </ul>
+          <CustomButton size="md" className="w-full mt-2" variant="secondary">
+            <Link to={wishlist}>View All Lists</Link>
+          </CustomButton>
+        </>
+      )}
+    </div>
+  )
 }
 
 function CartMenu( { cart } ) {
@@ -264,11 +291,20 @@ export default function Header() {
   const lastScrollY = useRef(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { cart } = CartStore.use()
+  const { wishlists } = WishlistStore.use()
+
+  const wishlistItemsCount = wishlists?.reduce((total, list) => total + (list.items?.length || 0), 0) || 0;
+
   const cartRef = useRef(null);
+  const wishlistRef = useRef(null);
 
   useEffect(() => {
     CartStore.setRef( cartRef )
-    return () => CartStore.setRef( null )
+    WishlistStore.setRef( wishlistRef )
+    return () => {
+      CartStore.setRef( null )
+      WishlistStore.setRef( null )
+    }
   }, []);
 
   /* Scroll detection */
@@ -399,16 +435,16 @@ export default function Header() {
           </div>
 
           <div className="popover-wrap icon-nav">
-            <CustomButton isIconOnly variant='ghost'>
-              <a
-                id="wishlist-link"
-                href="#wishlist"
-                className="icon-btn"
-                aria-label="Wishlist"
-              >
-                <HeartIcon />
-              </a>
-            </CustomButton>
+            <Badge.Anchor>
+              <CustomButton isIconOnly variant='ghost'>
+                <Link to={wishlist} className="icon-btn" aria-label="Wishlist" ref={ wishlistRef }><HeartIcon /></Link>
+              </CustomButton>
+              {wishlistItemsCount > 0 && (
+                <Badge size="sm" className="bg-gradient-to-r from-accent to-(--color-accent-hover) text-white border-none shadow-sm" placement="top-right">
+                  {wishlistItemsCount}
+                </Badge>
+              )}
+            </Badge.Anchor>
             <WishlistMenu />
           </div>
 

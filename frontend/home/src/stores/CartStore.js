@@ -121,6 +121,7 @@ class CartClass extends Store {
 	}
 
 	async fetchCart() {
+		await UserStore.ensureData()
 		const storeCart = await fetchCart()
 		this.mapStoreCart(storeCart)
 		return storeCart
