@@ -416,9 +416,9 @@ export default function MyAccount() {
   // Redirect to login if user is not authenticated
   useEffect(() => {
     if (!user?.is_logged_in) {
-      navigate({ to: login })
+      navigate({ to: login, state: { from: path } })
     }
-  }, [user, navigate])
+  }, [user, navigate, path])
 
   if (!user?.is_logged_in) {
     return null // Render nothing while redirecting

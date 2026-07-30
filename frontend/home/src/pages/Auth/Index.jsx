@@ -127,20 +127,21 @@ export function AuthTabs({ defaultTab = 'login', onSuccess }) {
 
 // Dedicated Page Component
 export default function AuthPage() {
-  const { path } = useLocation()
+  const { path, state } = useLocation()
   const navigate = useNavigate()
   const { user } = UserStore.use()
 
   // If already logged in, redirect to home
   if (user?.is_logged_in) {
-    navigate({ to: '/' })
+    navigate({ to: home })
     return null
   }
 
   const activeTab = path.includes('/signup') ? 'signup' : 'login'
 
   const handleSuccess = () => {
-    navigate({ to: '/' })
+    const redirectTo = state?.from || home
+    navigate({ to: redirectTo })
   }
 
   return (
