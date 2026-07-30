@@ -17,7 +17,7 @@ function dc_api_auth_login( \WP_REST_Request $request ) {
 		'remember'      => $request->get_param( 'remember' ) === true,
 	);
 
-	$user = wp_signon( $creds, is_ssl() ? 'true' : 'false' );
+	$user = wp_signon( $creds, is_ssl() );
 
 	if ( is_wp_error( $user ) ) {
 		return new \WP_REST_Response( [
