@@ -1,5 +1,5 @@
 import { Modal } from '@heroui/react'
-import { AuthTabs } from '../pages/Auth/Index'
+import { AuthTabs } from '../pages/Auth'
 
 export default function AuthModalContent({ defaultTab }) {
   return (

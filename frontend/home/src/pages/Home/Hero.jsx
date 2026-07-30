@@ -1,9 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-// import NeonBackground from './NeonBackground';
 import DotGrid from './DotGrid';
 
-import { usePageData } from '../stores/PageStore';
+import { usePageData } from '../../stores/PageStore';
 
 const containerVariants = {
   hidden: {},

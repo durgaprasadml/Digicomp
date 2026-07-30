@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion'
 import { Link } from '@typeroute/router'
 
-import { usePageData } from '../stores/PageStore'
-import { post } from '../routes'
+import { usePageData } from '../../stores/PageStore'
+import { post } from '../../routes'
 
 const container = {
   hidden: {},

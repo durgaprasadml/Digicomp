@@ -2,10 +2,10 @@ import { useState } from 'react'
 import { useLocation, useNavigate, Link } from '@typeroute/router'
 import { Tabs, Button, toast, Checkbox, TextField, Label, Input, Card } from '@heroui/react'
 
-import { Container, Stack, Honeypot } from '../../components'
-import { UserStore } from '../../stores/UserStore'
-import { login, register } from '../../utils/api'
-import { login as loginRoute, signup as signupRoute, home } from '../../routes'
+import { Container, Stack, Honeypot } from '../components'
+import { UserStore } from '../stores/UserStore'
+import { login, register } from '../utils/api'
+import { login as loginRoute, signup as signupRoute, home } from '../routes'
 
 function LoginForm({ onSuccess }) {
   const [username, setUsername] = useState('')

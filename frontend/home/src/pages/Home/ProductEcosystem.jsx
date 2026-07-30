@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-import { usePageData } from '../stores/PageStore';
+import { usePageData } from '../../stores/PageStore';
 
 const container = {
   hidden: {},

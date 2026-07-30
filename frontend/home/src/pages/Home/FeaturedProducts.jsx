@@ -2,10 +2,10 @@ import { motion } from 'framer-motion';
 import { useState, useRef } from 'react';
 import { Link } from '@typeroute/router';
 
-import { shop } from '../routes';
-import { CartStore } from '../stores/CartStore';
-import { usePageData } from '../stores/PageStore';
-import ProductGrid from './ProductGrid';
+import { shop } from '../../routes';
+import { CartStore } from '../../stores/CartStore';
+import { usePageData } from '../../stores/PageStore';
+import ProductGrid from '../../blocks/ProductGrid';
 
 export default function FeaturedProducts() {
   const { featured: products = [] } = usePageData('/')

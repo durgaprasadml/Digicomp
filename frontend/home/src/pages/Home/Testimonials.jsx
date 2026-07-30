@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-import { Slider } from '../components'
+import { Slider } from '../../components'
 
 const testimonials = [
   {
