@@ -2,7 +2,7 @@ import { useEffect, useState, use } from 'react'
 import { Link, useLocation, useNavigate } from '@typeroute/router'
 import { Card, Button, Table, Input, TextField, toast, Select, ListBox } from "@heroui/react"
 
-import { viewOrder } from '../../routes'
+import { viewOrder, login } from '../../routes'
 import { PageStore } from '../../stores/PageStore'
 import { UserStore } from '../../stores/UserStore'
 import { FlexRow, Stack, CustomButton } from '../../components'
@@ -401,7 +401,8 @@ export default function MyAccount() {
   let accountData = PageStore.get().pages[page]
 
   // Conditional use() to fetch if we don't have the data
-  if ( ! accountData?.user ) {
+  // Checking againt undefined is important as logged out user returns null
+  if ( undefined === accountData?.user ) {
     accountData = use( PageStore.fetch( page, { waitNonce: true } ) )
   }
 
@@ -415,7 +416,7 @@ export default function MyAccount() {
   // Redirect to login if user is not authenticated
   useEffect(() => {
     if (!user?.is_logged_in) {
-      navigate({ to: '/login' })
+      navigate({ to: login })
     }
   }, [user, navigate])
 
