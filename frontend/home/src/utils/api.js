@@ -196,3 +196,21 @@ export async function removeWishlistItem( id, product_id ) {
 		body: JSON.stringify( { product_id } )
 	} )
 }
+
+export async function login( username, password, remember = false, phoneWebsite = '' ) {
+	return await dcApiFetch( 'auth/login', {
+		method: 'POST',
+		body: JSON.stringify( { username, password, remember, phone_website: phoneWebsite } )
+	} )
+}
+
+export async function logout() {
+	return await dcApiFetch( 'auth/logout', { method: 'POST' } )
+}
+
+export async function register( username, email, phoneWebsite = '' ) {
+	return await dcApiFetch( 'auth/register', {
+		method: 'POST',
+		body: JSON.stringify( { username, email, phone_website: phoneWebsite } )
+	} )
+}

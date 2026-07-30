@@ -1,13 +1,18 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { createPortal } from 'react-dom';
-import { Link } from '@typeroute/router';
-import { Button, Badge } from '@heroui/react';
+import { Link, useNavigate } from '@typeroute/router';
+import { Button, Badge, Modal } from '@heroui/react';
 
-import { home, cart as cartRoute, checkout, wishlist, wishlistView, shop } from '../routes';
+import { home, cart as cartRoute, checkout, wishlist, wishlistView, shop, account, accountTab } from '../routes';
 import { ThemeStore } from '../stores/ThemeStore';
 import { CartStore } from '../stores/CartStore';
 import { PageStore } from '../stores/PageStore';
 import { WishlistStore } from '../stores/WishlistStore';
+import { UserStore } from '../stores/UserStore';
+import { logout } from '../utils/api';
+
+const preloadAuthModal = () => import('./AuthModalContent');
+const AuthModalContent = lazy(preloadAuthModal);
 
 import { Logo, LogoDefs, Drawer, CustomButton } from '../components'
 import SearchBox, { SearchIcon } from './SearchBox';
@@ -192,15 +197,60 @@ function MegaMenu() {
 }
 
 function UserMenu() {
-  return <div className="popover shadow-2xl w-56 right-0 p-4">
-    <h4 className="mb-3 font-semibold text-[var(--text)]">My Account</h4>
-    <ul className="space-y-2 text-sm text-[var(--text-secondary)]">
-      <li><a href="#login" className="hover:text-accent transition-colors">Login</a></li>
-      <li><a href="#register" className="hover:text-accent transition-colors">Register</a></li>
-      <li><a href="#orders" className="hover:text-accent transition-colors">My Orders</a></li>
-      <li><a href="#settings" className="hover:text-accent transition-colors">Settings</a></li>
-    </ul>
-  </div>
+  const { user } = UserStore.use()
+  const navigate = useNavigate()
+
+  const [isOpenLogin, setIsOpenLogin] = useState(false);
+  const [isOpenSignup, setIsOpenSignup] = useState(false);
+
+  const handleLogout = async () => {
+    await logout()
+    await UserStore.refreshData()
+    navigate( { to: home } )
+  }
+
+  if ( user?.is_logged_in ) {
+    return (
+      <div className="popover shadow-2xl w-56 right-0 p-4">
+        <h4 className="mb-3 font-semibold text-[var(--text)]">My Account</h4>
+        <ul className="flex flex-col text-sm gap-1">
+          <li><Link to={account} className="block py-1">Dashboard</Link></li>
+          <li><Link to={accountTab} params={{ tab: 'orders' }} className="block py-1">My Orders</Link></li>
+          <li><Link to={accountTab} params={{ tab: 'edit-account' }} className="block py-1">Settings</Link></li>
+          <li><hr className="my-2 border-[var(--border)]" /></li>
+          <li><button onClick={ handleLogout } className="cursor-pointer hover:text-accent transition-colors py-1 w-full text-left">Logout</button></li>
+        </ul>
+      </div>
+    )
+  }
+
+  return (
+    <div className="popover shadow-2xl w-56 right-0 p-4">
+      <h4 className="mb-3 font-semibold text-[var(--text)]">Welcome</h4>
+      <ul className="space-y-2 text-sm text-[var(--text-secondary)]">
+        <li>
+          <Modal isOpen={isOpenLogin} onOpenChange={setIsOpenLogin}>
+            <Button variant='ghost' className='w-full justify-start' onPress={() => setIsOpenLogin(true)} onMouseEnter={preloadAuthModal} onFocus={preloadAuthModal}>Login</Button>
+            {isOpenLogin && (
+              <Suspense fallback={null}>
+                <AuthModalContent defaultTab="login" />
+              </Suspense>
+            )}
+          </Modal>
+        </li>
+        <li>
+          <Modal isOpen={isOpenSignup} onOpenChange={setIsOpenSignup}>
+            <Button variant='ghost' className='w-full justify-start' onPress={() => setIsOpenSignup(true)} onMouseEnter={preloadAuthModal} onFocus={preloadAuthModal}>Register</Button>
+            {isOpenSignup && (
+              <Suspense fallback={null}>
+                <AuthModalContent defaultTab="signup" />
+              </Suspense>
+            )}
+          </Modal>
+        </li>
+      </ul>
+    </div>
+  )
 }
 
 function WishlistMenu() {
@@ -410,14 +460,7 @@ export default function Header() {
 
           <div className="popover-wrap icon-nav">
             <CustomButton isIconOnly variant='ghost'>
-              <a
-                id="login-link"
-                href="#login"
-                className="icon-btn"
-                aria-label="Account"
-              >
-                <UserIcon />
-              </a>
+              <Link to={account} className="icon-btn" aria-label="Account" ref={ wishlistRef }><UserIcon /></Link>
             </CustomButton>
             <UserMenu />
           </div>

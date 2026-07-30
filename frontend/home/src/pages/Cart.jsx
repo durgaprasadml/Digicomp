@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation, Link } from '@typeroute/router'
-import { Breadcrumbs, Button, Card, NumberField, Table, Chip, Separator } from '@heroui/react'
+import { Breadcrumbs, Button, Card, NumberField, Table, Chip } from '@heroui/react'
 import { home, shop, cart as cartRoute, product, checkout } from '../routes'
 import { Container, CustomButton, FlexRow, Section, Stack } from '../components'
 import { CartStore, useStore } from '../stores/CartStore'

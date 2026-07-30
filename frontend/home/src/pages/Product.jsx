@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { useLocation, Link } from '@typeroute/router'
-import { Button, NumberField, Breadcrumbs, Chip, Avatar, Card, Separator, Table, toast } from "@heroui/react"
+import { Button, NumberField, Breadcrumbs, Chip, Avatar, Card, Table, toast } from "@heroui/react"
 
 import { home, shop } from '../routes'
 import { usePageData } from '../stores/PageStore'

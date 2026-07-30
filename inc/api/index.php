@@ -11,6 +11,16 @@ require_once get_stylesheet_directory() . '/inc/api/checkout.php';
 require_once get_stylesheet_directory() . '/inc/api/post.php';
 require_once get_stylesheet_directory() . '/inc/api/my-account.php';
 require_once get_stylesheet_directory() . '/inc/api/wishlist.php';
+require_once get_stylesheet_directory() . '/inc/api/auth.php';
+
+/**
+ * Helper to check for honeypot field to reduce spam.
+ * Reusable for comments and other future forms.
+ */
+function dc_api_is_spam( \WP_REST_Request $request, $field = 'phone_website' ) {
+	$value = $request->get_param( $field );
+	return ! empty( $value );
+}
 
 function dc_api_routes() {
 	return [
@@ -58,6 +68,16 @@ function dc_api_routes() {
 			'get_head' => '__return_empty_array',
 			'ssr'      => false,
 		],
+		'login' => [
+			'callback' => 'dc_api_auth_page_data',
+			'get_head' => 'dc_api_auth_page_head',
+			'ssr'      => false,
+		],
+		'signup' => [
+			'callback' => 'dc_api_auth_page_data',
+			'get_head' => 'dc_api_auth_page_head',
+			'ssr'      => false,
+		],
 		'blog/(?P<slug>[a-z0-9-]+)' => [
 			'callback' => 'dc_api_post_data',
 			'get_head' => 'dc_api_post_head',
@@ -96,6 +116,21 @@ function dc_register_api_routes() {
 	register_rest_route('dc/v1', '/my-account/update', [
 		'methods'             => 'POST',
 		'callback'            => 'dc_api_my_account_update',
+		'permission_callback' => '__return_true'
+	] );
+	register_rest_route('dc/v1', '/auth/login', [
+		'methods'             => 'POST',
+		'callback'            => 'dc_api_auth_login',
+		'permission_callback' => '__return_true'
+	] );
+	register_rest_route('dc/v1', '/auth/logout', [
+		'methods'             => 'POST',
+		'callback'            => 'dc_api_auth_logout',
+		'permission_callback' => '__return_true'
+	] );
+	register_rest_route('dc/v1', '/auth/register', [
+		'methods'             => 'POST',
+		'callback'            => 'dc_api_auth_register',
 		'permission_callback' => '__return_true'
 	] );
 	register_rest_route('dc/v1', '/wishlist/create', [

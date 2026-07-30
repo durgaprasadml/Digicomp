@@ -17,4 +17,6 @@ export const accountTab = account.route( '/:tab' ).lazy( () => import( './pages/
 export const viewOrder = account.route( '/view-order/:id' ).lazy( () => import( './pages/MyAccount/Tabs' ) )
 export const wishlist = app.route( '/wishlist' ).lazy( () => import( './pages/Wishlist' ) )
 export const wishlistView = app.route( '/wishlist/:id' ).lazy( () => import( './pages/Wishlist/View' ) )
+export const login = app.route( '/login' ).lazy( () => import( './pages/Auth' ) )
+export const signup = app.route( '/signup' ).lazy( () => import( './pages/Auth' ) )
 export const page = app.route( '/:slug' ).lazy( () => import( './pages/Post' ) )

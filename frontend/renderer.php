@@ -57,6 +57,10 @@ function dc_render() {
 		)
 	) return;
 
+	global $wp_query;
+	$wp_query->is_404 = false;
+	status_header( 200 );
+
 	$assets = get_react_assets();
 	$html = get_ssr_html( $path );
 	$data = get_page_data( $path, !! $html );

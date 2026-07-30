@@ -20,6 +20,12 @@ class UserClass extends Store {
 		}
 		return this.initPromise
 	}
+
+	refreshData() {
+		this.initPromise = null
+		this.set( () => ( { nonce: '' } ) ) // clear nonce to force fetch
+		return this.ensureData()
+	}
 }
 
 const UserStore = new UserClass( {
