@@ -53,7 +53,7 @@ export default function Cart() {
               {breadcrumbItems.map((item, index) => (
                 ! item.route ? <Breadcrumbs.Item key={index} className="pointer-events-none">{item.label}</Breadcrumbs.Item> :
                 <Breadcrumbs.Item key={index}>
-                  <Link to={item.route}>
+                  <Link to={ item.route } preload="intent">
                     {item.label}
                   </Link>
                 </Breadcrumbs.Item>
@@ -76,7 +76,7 @@ export default function Cart() {
             <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
             <p className="mb-8 max-w-md">Looks like you haven't added anything to your cart yet. Browse our products and find something you like!</p>
             <CustomButton variant="primary" size="lg">
-              <Link to={shop}>Start Shopping</Link>
+              <Link to={ shop } preload="intent">Start Shopping</Link>
             </CustomButton>
           </Card>
         ) : (
@@ -105,7 +105,7 @@ export default function Cart() {
                                   <span className="text-xs text-muted">No Img</span>
                                 )}
                               </div>
-                              <Link to={ product } params={{ slug: item.slug || item.id}} className="font-semibold line-clamp-2">
+                              <Link to={ product } params={{ slug: item.slug || item.id}} preload="intent" className="font-semibold line-clamp-2">
                                 <span dangerouslySetInnerHTML={{ __html: item.name }} />
                               </Link>
                             </div>

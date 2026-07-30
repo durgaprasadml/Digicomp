@@ -68,14 +68,14 @@ export default function Product() {
       <Section>
         <Stack spacing={6}>
           <Breadcrumbs>
-            {breadcrumbItems.map((item, index) => (
-              !item.route ? <Breadcrumbs.Item key={index} className="pointer-events-none">{item.label}</Breadcrumbs.Item> :
-                <Breadcrumbs.Item key={index}>
-                  <Link to={item.route}>
-                    {item.label}
+            { breadcrumbItems.map( ( item, index ) => (
+              ! item.route ? <Breadcrumbs.Item key={ index } className="pointer-events-none">{ item.label }</Breadcrumbs.Item> :
+                <Breadcrumbs.Item key={ index }>
+                  <Link to={ item.route } preload="intent">
+                    { item.label }
                   </Link>
                 </Breadcrumbs.Item>
-            ))}
+            ) ) }
           </Breadcrumbs>
 
           <FlexRow className="flex-row items-center gap-2">

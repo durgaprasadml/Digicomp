@@ -214,9 +214,9 @@ function UserMenu() {
       <div className="popover shadow-2xl w-56 right-0 p-4">
         <h4 className="mb-3 font-semibold text-[var(--text)]">My Account</h4>
         <ul className="flex flex-col text-sm gap-1">
-          <li><Link to={account} className="block py-1">Dashboard</Link></li>
-          <li><Link to={accountTab} params={{ tab: 'orders' }} className="block py-1">My Orders</Link></li>
-          <li><Link to={accountTab} params={{ tab: 'edit-account' }} className="block py-1">Settings</Link></li>
+          <li><Link to={account} preload="intent" className="block py-1">Dashboard</Link></li>
+          <li><Link to={accountTab} params={{ tab: 'orders' }} preload="intent" className="block py-1">My Orders</Link></li>
+          <li><Link to={accountTab} params={{ tab: 'edit-account' }} preload="intent" className="block py-1">Settings</Link></li>
           <li><hr className="my-2 border-[var(--border)]" /></li>
           <li><button onClick={ handleLogout } className="cursor-pointer hover:text-accent transition-colors py-1 w-full text-left">Logout</button></li>
         </ul>
@@ -263,25 +263,25 @@ function WishlistMenu() {
         <>
           <p className="text-sm text-[var(--text-secondary)]">Your wishlist is currently empty.</p>
           <CustomButton size="lg" className="mt-4 w-full">
-            <Link to={shop}>Explore Products</Link>
+            <Link to={ shop } preload="intent">Explore Products</Link>
           </CustomButton>
         </>
       ) : (
         <>
           <ul className="space-y-2 mb-4 max-h-48 overflow-y-auto scrollbar-thin">
-            {wishlists.map(wl => (
-              <li key={wl.id} className="flex justify-between items-center text-sm py-1">
-                <Link to={wishlistView} params={{ id: wl.id }} className="truncate pr-2">
-                  {wl.name}
+            { wishlists.map( wl => (
+              <li key={ wl.id } className="flex justify-between items-center text-sm py-1">
+                <Link to={ wishlistView } params={{ id: wl.id }} preload="intent" className="truncate pr-2">
+                  { wl.name }
                 </Link>
                 <span className="text-xs text-[var(--text-secondary)] whitespace-nowrap bg-default-100 px-2 py-0.5 rounded-full">
                   {Array.isArray(wl.items) ? wl.items.length : 0} items
                 </span>
               </li>
-            ))}
+            ) ) }
           </ul>
           <CustomButton size="md" className="w-full mt-2" variant="secondary">
-            <Link to={wishlist}>View All Lists</Link>
+            <Link to={ wishlist } preload="intent">View All Lists</Link>
           </CustomButton>
         </>
       )}
@@ -320,10 +320,10 @@ function CartMenu( { cart } ) {
           </div>
           <div className="flex items-center gap-2 border-t border-border pt-4 mt-2">
             <CustomButton variant='secondary' className="w-full">
-              <Link to={cartRoute}>View Cart</Link>
+              <Link to={ cartRoute } preload="intent">View Cart</Link>
             </CustomButton>
             <CustomButton className="w-full">
-              <Link to={checkout}>Checkout</Link>
+              <Link to={ checkout } preload="intent">Checkout</Link>
             </CustomButton>
           </div>
         </>
@@ -385,7 +385,7 @@ export default function Header() {
       {/* ── Mobile Top Header ── */}
       <div className={`sticky top-0 z-40 w-full lg:hidden transition-all bg-surface border-b border-[var(--border)] ${ showTopBar ? 'translate-y-0' : '-translate-y-full' }`}>
         <div className="section-container flex h-14 items-center justify-between">
-          <Link to={home} aria-label="Digicomp Technologies">
+          <Link to={ home } preload="intent" aria-label="Digicomp Technologies">
             <span className="sr-only">Digicomp Technologies</span>
             <Logo className="h-6 w-auto" />
           </Link>
@@ -408,6 +408,7 @@ export default function Header() {
         <Link
           id="header-brand"
           to={ home }
+          preload="intent"
           className="hidden lg:flex flex-shrink-0"
           alt="Digicomp Technologies"
         >
@@ -460,7 +461,7 @@ export default function Header() {
 
           <div className="popover-wrap icon-nav">
             <CustomButton isIconOnly variant='ghost'>
-              <Link to={account} className="icon-btn" aria-label="Account" ref={ wishlistRef }><UserIcon /></Link>
+              <Link to={ account } preload="intent" className="icon-btn" aria-label="Account" ref={ wishlistRef }><UserIcon /></Link>
             </CustomButton>
             <UserMenu />
           </div>
@@ -480,7 +481,7 @@ export default function Header() {
           <div className="popover-wrap icon-nav">
             <Badge.Anchor>
               <CustomButton isIconOnly variant='ghost'>
-                <Link to={wishlist} className="icon-btn" aria-label="Wishlist" ref={ wishlistRef }><HeartIcon /></Link>
+                <Link to={ wishlist } preload="intent" className="icon-btn" aria-label="Wishlist" ref={ wishlistRef }><HeartIcon /></Link>
               </CustomButton>
               {wishlistItemsCount > 0 && (
                 <Badge size="sm" className="bg-gradient-to-r from-accent to-(--color-accent-hover) text-white border-none shadow-sm" placement="top-right">
@@ -494,7 +495,7 @@ export default function Header() {
           <div className="popover-wrap icon-nav">
             <Badge.Anchor>
               <CustomButton isIconOnly variant='ghost'>
-                <Link to={cartRoute} className="icon-btn" aria-label="Cart" ref={ cartRef }><CartIcon /></Link>
+                <Link to={ cartRoute } preload="intent" className="icon-btn" aria-label="Cart" ref={ cartRef }><CartIcon /></Link>
               </CustomButton>
               {cart.lineCount > 0 && (
                 <Badge size="sm" className="bg-gradient-to-r from-accent to-(--color-accent-hover) text-white border-none shadow-sm" placement="top-right">

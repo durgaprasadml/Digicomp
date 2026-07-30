@@ -2,12 +2,12 @@ import { useEffect, useState, use } from 'react'
 import { Link, useLocation, useNavigate } from '@typeroute/router'
 import { Card, Button, Table, Input, TextField, toast, Select, ListBox } from "@heroui/react"
 
-import { viewOrder, login } from '../../routes'
+import { viewOrder, login, home, shop } from '../../routes'
 import { PageStore } from '../../stores/PageStore'
 import { UserStore } from '../../stores/UserStore'
 import { FlexRow, Stack, CustomButton } from '../../components'
 import { getCleanPath } from '../../utils/helper'
-import { updateCustomer, updateAccountDetails } from '../../utils/api'
+import { updateCustomer, updateAccountDetails, logout } from '../../utils/api'
 
 const ValidatedInput = ({ isInvalid, ...props }) => (
   <TextField isInvalid={isInvalid} className="w-full">
@@ -16,10 +16,18 @@ const ValidatedInput = ({ isInvalid, ...props }) => (
 )
 
 function DashboardView({ user }) {
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    await logout()
+    await UserStore.refreshData()
+    navigate( { to: home } )
+  }
+
   return (
     <Stack spacing={4}>
       <h2 className="text-xl font-semibold">Dashboard</h2>
-      <p>Hello <strong>{user?.display_name}</strong> (not {user?.display_name}? <a href="#logout" className="text-primary underline">Log out</a>)</p>
+      <p>Hello <strong>{user?.display_name}</strong> (not {user?.display_name}? <button onClick={ handleLogout } className="cursor-pointer underline">Logout</button>)</p>
       <p className="text-muted text-sm">
         From your account dashboard you can view your recent orders, manage your shipping and billing addresses, and edit your password and account details.
       </p>
@@ -34,7 +42,7 @@ function OrdersView({ orders }) {
         <h2 className="text-xl font-semibold">Orders</h2>
         <div className="bg-default-100 p-8 text-center rounded-lg">
           <p className="text-default-500 mb-4">No order has been made yet.</p>
-          <Link to="/shop">
+          <Link to={ shop } preload="intent">
             <Button variant="solid" color="primary">Browse products</Button>
           </Link>
         </div>
@@ -59,7 +67,7 @@ function OrdersView({ orders }) {
               {orders.map(order => (
                 <Table.Row key={order.id}>
                   <Table.Cell>
-                    <a href={order.view_url} className="text-primary font-medium hover:underline">#{order.order_number}</a>
+                    <Link to={ viewOrder } params={{ id: order.id }} preload="intent" className="text-primary font-medium">#{ order.order_number }</Link>
                   </Table.Cell>
                   <Table.Cell className="text-default-600">{order.date}</Table.Cell>
                   <Table.Cell>
@@ -70,7 +78,7 @@ function OrdersView({ orders }) {
                   </Table.Cell>
                   <Table.Cell>
                     <CustomButton size="sm">
-                      <Link to={viewOrder} params={{ id: order.id }}>View</Link>
+                      <Link to={ viewOrder } params={{ id: order.id }} preload="intent">View</Link>
                     </CustomButton>
                   </Table.Cell>
                 </Table.Row>

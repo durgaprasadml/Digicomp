@@ -47,7 +47,7 @@ export default function Wishlist() {
             { breadcrumbItems.map( ( item, index ) => (
               ! item.route ? <Breadcrumbs.Item key={ index } className="pointer-events-none">{ item.label }</Breadcrumbs.Item> :
               <Breadcrumbs.Item key={ index }>
-                <Link to={ item.route }>
+                <Link to={ item.route } preload="intent">
                   { item.label }
                 </Link>
               </Breadcrumbs.Item>
@@ -109,7 +109,7 @@ export default function Wishlist() {
 
               <FlexRow className="justify-between items-center mt-auto">
                 <CustomButton variant="secondary">
-                  <Link to={wishlistView} params={{ id: list.id }}>View List</Link>
+                  <Link to={ wishlistView } params={{ id: list.id }} preload="intent">View List</Link>
                 </CustomButton>
                 <Modal >
                   <Button variant="outline">Delete</Button>

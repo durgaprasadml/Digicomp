@@ -112,14 +112,14 @@ export default function Product() {
       {/* R1: Breadcrumbs */}
       <Section className="py-0">
         <Breadcrumbs>
-          {breadcrumbItems.map((item, index) => (
-            ! item.route ? <Breadcrumbs.Item className="pointer-events-none">{item.label}</Breadcrumbs.Item> :
-            <Breadcrumbs.Item render={ (props) => (
-              <Link {...props} to={item.route} params={ item.params || undefined }></Link>
+          { breadcrumbItems.map(( item, index ) => (
+            ! item.route ? <Breadcrumbs.Item className="pointer-events-none">{ item.label }</Breadcrumbs.Item> :
+            <Breadcrumbs.Item render={ ( props ) => (
+              <Link {...props} to={ item.route } params={ item.params || undefined } preload="intent"></Link>
             ) }>
-              {item.label}
+              { item.label }
             </Breadcrumbs.Item>
-          ))}
+          ) ) }
         </Breadcrumbs>
       </Section>
 

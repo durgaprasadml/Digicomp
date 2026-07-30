@@ -232,7 +232,7 @@ function NewsBlog() {
               transition={{ type: 'spring', stiffness: 500, damping: 22 }}
               className="glass-card overflow-hidden rounded-2xl cursor-pointer group flex flex-col"
             >
-              <Link to={ post } params={{ slug: article.slug }}>
+              <Link to={ post } params={{ slug: article.slug }} preload="intent">
               {/* Card Image */}
               <CardImage article={article} />
 

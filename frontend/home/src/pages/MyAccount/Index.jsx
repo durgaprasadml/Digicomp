@@ -36,6 +36,7 @@ export default function Test() {
 									key={item.id}
 									to={item.to}
 									params={item.params}
+									preload="intent"
 									className={ `px-4 py-2.5 rounded-lg font-medium ${isActive
 										? 'bg-surface text-primary-foreground border-l-4 border-accent'
 										: 'hover:bg-(--color-background-secondary)'}`}

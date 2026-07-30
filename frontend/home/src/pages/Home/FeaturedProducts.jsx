@@ -44,7 +44,8 @@ export default function FeaturedProducts() {
         >
           <Link
             id="view-all-products"
-            to={shop}
+            to={ shop }
+            preload="intent"
             className="btn-secondary inline-flex items-center gap-2"
           >
             View Full Catalog

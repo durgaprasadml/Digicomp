@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { Card, toast } from "@heroui/react";
+import { Link } from '@typeroute/router';
 
 import { CartStore } from '../stores/CartStore';
 import { PageStore } from '../stores/PageStore';
@@ -7,6 +8,7 @@ import { UserStore } from '../stores/UserStore';
 import { WishlistStore } from '../stores/WishlistStore';
 import { animateFlyToTarget } from '../utils/animate'
 import { AddToCart, CustomButton } from '.'
+import { product as productRoute } from '../routes'
 
 function badgeColor( badge ) {
   let color = 'bg-orange-500/20 text-orange-500'
@@ -88,7 +90,7 @@ export default function ProductCard({ product }) {
       id={`product-card-${product.id}`}
       className="group relative flex flex-col overflow-hidden transition-all duration-200 hover:shadow-sm p-0"
     >
-      <a href={`/product/${product.slug || product.id}`} className="absolute rounded-2xl inset-0 z-0"></a>
+      <Link to={ productRoute } params={{ slug: product.slug || product.id }} preload="intent" className="absolute rounded-2xl inset-0 z-0" />
 
       {/* Image area */}
       <div className="relative flex items-center justify-center h-44 bg-[var(--elevated)]/30 z-10 pointer-events-none">

@@ -116,14 +116,14 @@ export default function Shop() {
 
    {/* Top Bar */}
    <Breadcrumbs className="mb-4">
-    {breadcrumbItems.map((item, index) => (
-     ! item.route ? <BreadcrumbsItem key={index} className="pointer-events-none">{item.label}</BreadcrumbsItem> :
-     <BreadcrumbsItem key={index} render={ (props) => (
-      <Link {...props} to={item.route} params={ item.params || undefined }></Link>
+    { breadcrumbItems.map( ( item, index ) => (
+     ! item.route ? <BreadcrumbsItem key={ index } className="pointer-events-none">{ item.label }</BreadcrumbsItem> :
+     <BreadcrumbsItem key={ index } render={ ( props ) => (
+      <Link { ...props } to={ item.route } params={ item.params || undefined } preload="intent"></Link>
      ) }>
-      {item.label}
+      { item.label }
      </BreadcrumbsItem>
-    ))}
+    ) ) }
    </Breadcrumbs>
 
    <FlexRow className="sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--border)]">

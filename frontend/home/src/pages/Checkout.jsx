@@ -168,14 +168,14 @@ export default function Checkout() {
     <Container className='relative max-w-7xl py-4 pb-16'>
       <Section>
           <Breadcrumbs>
-            {breadcrumbItems.map((item, index) => (
-              ! item.route ? <Breadcrumbs.Item key={index} className="pointer-events-none">{item.label}</Breadcrumbs.Item> :
-              <Breadcrumbs.Item key={index}>
-                <Link to={item.route}>
-                  {item.label}
+            { breadcrumbItems.map( ( item, index ) => (
+              ! item.route ? <Breadcrumbs.Item key={ index } className="pointer-events-none">{ item.label }</Breadcrumbs.Item> :
+              <Breadcrumbs.Item key={ index }>
+                <Link to={ item.route } preload="intent">
+                  { item.label }
                 </Link>
               </Breadcrumbs.Item>
-            ))}
+            ) ) }
           </Breadcrumbs>
       </Section>
 

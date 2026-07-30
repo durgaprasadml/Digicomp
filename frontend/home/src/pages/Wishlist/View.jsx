@@ -55,7 +55,7 @@ export default function WishlistView() {
             { breadcrumbItems.map( ( item, index ) => (
               ! item.route ? <Breadcrumbs.Item key={ index } className="pointer-events-none">{ item.label }</Breadcrumbs.Item> :
               <Breadcrumbs.Item key={ index }>
-                <Link to={ item.route }>
+                <Link to={ item.route } preload="intent">
                   { item.label }
                 </Link>
               </Breadcrumbs.Item>
