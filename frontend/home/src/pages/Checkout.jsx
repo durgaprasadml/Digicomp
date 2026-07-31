@@ -159,7 +159,7 @@ export default function Checkout() {
   if (loading) {
     return (
       <Container className='relative max-w-7xl py-12 flex justify-center items-center min-h-[50vh]'>
-        <div className="w-8 h-8 border-4 border-t-transparent border-[var(--color-accent-start)] rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-t-transparent border-[var(--accent)] rounded-full animate-spin"></div>
       </Container>
     )
   }

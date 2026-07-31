@@ -17,22 +17,22 @@ const upcomingProducts = [
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
         {/* CPU / processor icon */}
-        <rect x="9" y="9" width="14" height="14" rx="2" stroke="var(--color-accent-start)" strokeWidth="1.5" fill="none" />
-        <rect x="12" y="12" width="8" height="8" rx="1" fill="var(--color-accent-start)" opacity="0.2" />
-        <rect x="14" y="14" width="4" height="4" rx="0.5" fill="var(--color-accent-start)" opacity="0.5" />
+        <rect x="9" y="9" width="14" height="14" rx="2" stroke="var(--accent)" strokeWidth="1.5" fill="none" />
+        <rect x="12" y="12" width="8" height="8" rx="1" fill="var(--accent)" opacity="0.2" />
+        <rect x="14" y="14" width="4" height="4" rx="0.5" fill="var(--accent)" opacity="0.5" />
         {/* Pins */}
-        <line x1="11" y1="5" x2="11" y2="9" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="16" y1="5" x2="16" y2="9" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="21" y1="5" x2="21" y2="9" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="11" y1="23" x2="11" y2="27" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="16" y1="23" x2="16" y2="27" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="21" y1="23" x2="21" y2="27" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="5" y1="11" x2="9" y2="11" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="5" y1="16" x2="9" y2="16" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="5" y1="21" x2="9" y2="21" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="23" y1="11" x2="27" y2="11" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="23" y1="16" x2="27" y2="16" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="23" y1="21" x2="27" y2="21" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="11" y1="5" x2="11" y2="9" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="16" y1="5" x2="16" y2="9" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="21" y1="5" x2="21" y2="9" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="11" y1="23" x2="11" y2="27" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="16" y1="23" x2="16" y2="27" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="21" y1="23" x2="21" y2="27" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="5" y1="11" x2="9" y2="11" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="5" y1="16" x2="9" y2="16" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="5" y1="21" x2="9" y2="21" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="23" y1="11" x2="27" y2="11" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="23" y1="16" x2="27" y2="16" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="23" y1="21" x2="27" y2="21" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     ),
     title: 'High-Performance Single-Board Computers',
@@ -45,12 +45,12 @@ const upcomingProducts = [
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
         {/* Radio waves / antenna */}
-        <line x1="16" y1="28" x2="16" y2="18" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="12" y1="28" x2="20" y2="28" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="16" cy="16" r="2" fill="var(--color-accent-start)" opacity="0.6" />
-        <path d="M10 12.4a8.5 8.5 0 0 1 12 0" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-        <path d="M7 9.4a13 13 0 0 1 18 0" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.7" />
-        <path d="M4 6.4a17.5 17.5 0 0 1 24 0" stroke="var(--color-accent-start)" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.4" />
+        <line x1="16" y1="28" x2="16" y2="18" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="12" y1="28" x2="20" y2="28" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" />
+        <circle cx="16" cy="16" r="2" fill="var(--accent)" opacity="0.6" />
+        <path d="M10 12.4a8.5 8.5 0 0 1 12 0" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+        <path d="M7 9.4a13 13 0 0 1 18 0" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.7" />
+        <path d="M4 6.4a17.5 17.5 0 0 1 24 0" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.4" />
       </svg>
     ),
     title: 'Sub-1GHz & 2.4GHz Wireless Modules',
@@ -65,11 +65,11 @@ const upcomingProducts = [
         {/* Lightning bolt / power */}
         <path
           d="M18 3L8 18h7l-3 11 12-16h-7l5-10h-4z"
-          stroke="var(--color-accent-start)"
+          stroke="var(--accent)"
           strokeWidth="1.5"
           strokeLinejoin="round"
           strokeLinecap="round"
-          fill="var(--color-accent-start)"
+          fill="var(--accent)"
           fillOpacity="0.15"
         />
       </svg>
@@ -100,7 +100,7 @@ export default function InnovationPipeline() {
     >
       {/* Background gradient orbs */}
       <motion.div
-        className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full bg-[var(--color-accent-start)]/10 blur-3xl pointer-events-none"
+        className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full bg-[var(--accent)]/10 blur-3xl pointer-events-none"
         style={{ y: orbY1 }}
         aria-hidden="true"
       />
@@ -124,7 +124,7 @@ export default function InnovationPipeline() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16 max-w-4xl mx-auto"
         >
-          <span className="uppercase tracking-widest text-sm text-[var(--color-accent-start)] font-semibold">
+          <span className="uppercase tracking-widest text-sm text-[var(--accent)] font-semibold">
             COMING SOON
           </span>
           <h2 className="text-4xl md:text-5xl font-bold mt-4 mb-4 text-[var(--text)]">
@@ -149,7 +149,7 @@ export default function InnovationPipeline() {
               key={product.id}
               id={product.id}
               variants={cardItem}
-              className="glass-card p-6 border-l-2 border-l-[var(--color-accent-start)] flex flex-col"
+              className="glass-card p-6 border-l-2 border-l-[var(--accent)] flex flex-col"
             >
               <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-[var(--elevated)] border border-[var(--border)] mb-5">
                 {product.icon}
@@ -160,10 +160,10 @@ export default function InnovationPipeline() {
                 {product.description}
               </p>
 
-              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-accent-start)] bg-[var(--color-accent-start)]/10 rounded-full px-3 py-1 w-fit">
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--accent)] bg-[var(--accent)]/10 rounded-full px-3 py-1 w-fit">
                 <svg width="8" height="8" viewBox="0 0 8 8" fill="none" aria-hidden="true">
-                  <circle cx="4" cy="4" r="3" fill="var(--color-accent-start)" opacity="0.6" />
-                  <circle cx="4" cy="4" r="1.5" fill="var(--color-accent-start)" />
+                  <circle cx="4" cy="4" r="3" fill="var(--accent)" opacity="0.6" />
+                  <circle cx="4" cy="4" r="1.5" fill="var(--accent)" />
                 </svg>
                 {product.status}
               </span>

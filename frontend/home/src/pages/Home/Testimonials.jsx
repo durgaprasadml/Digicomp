@@ -46,7 +46,7 @@ const StarIcon = () => (
     width="18"
     height="18"
     viewBox="0 0 24 24"
-    fill="var(--color-accent-start)"
+    fill="var(--warning)"
     aria-hidden="true"
   >
     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
@@ -59,7 +59,7 @@ const QuoteIcon = () => (
     height="40"
     viewBox="0 0 24 24"
     fill="currentColor"
-    className="text-[var(--color-accent-start)] opacity-20"
+    className="text-accent opacity-20"
     aria-hidden="true"
   >
     <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378C7.44 7.593 6.5 9.36 6.333 10.98H10v6.34H4.583zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378C17.44 7.593 16.5 9.36 16.333 10.98H20v6.34h-5.417z" />
@@ -78,7 +78,7 @@ function Testimonials() {
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.6 }}
         >
-          <span className="inline-block uppercase tracking-widest text-sm text-[var(--color-accent-start)] font-semibold mb-4">
+          <span className="inline-block uppercase tracking-widest text-sm text-accent font-semibold mb-4">
             TESTIMONIALS
           </span>
           <h2 className="text-4xl md:text-5xl font-bold text-[var(--text)]">

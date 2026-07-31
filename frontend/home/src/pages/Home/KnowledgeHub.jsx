@@ -27,10 +27,10 @@ function CheckIcon() {
       aria-hidden="true"
       className="flex-shrink-0 mt-0.5"
     >
-      <circle cx="10" cy="10" r="10" fill="var(--color-accent-start)" opacity="0.15" />
+      <circle cx="10" cy="10" r="10" fill="var(--accent)" opacity="0.15" />
       <path
         d="M6.5 10.5L9 13l5-6"
-        stroke="var(--color-accent-start)"
+        stroke="var(--accent)"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -166,7 +166,7 @@ function SchematicMockup() {
           </text>
 
           {/* Connecting traces */}
-          <line x1="42%" y1="35%" x2="50%" y2="25%" stroke="var(--color-accent-start)" strokeWidth="0.75" opacity="0.3" />
+          <line x1="42%" y1="35%" x2="50%" y2="25%" stroke="var(--accent)" strokeWidth="0.75" opacity="0.3" />
           <line x1="50%" y1="60%" x2="70%" y2="60%" stroke="var(--text-muted)" strokeWidth="0.75" opacity="0.4" />
 
           {/* Ground symbol */}
@@ -195,7 +195,7 @@ export default function KnowledgeHub() {
           >
             <motion.span
               variants={item}
-              className="uppercase tracking-widest text-sm text-[var(--color-accent-start)] font-semibold"
+              className="uppercase tracking-widest text-sm text-[var(--accent)] font-semibold"
             >
               OPEN SOURCE
             </motion.span>

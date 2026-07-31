@@ -22,8 +22,8 @@ const cards = [
         <line x1="14" y1="10" x2="14" y2="20" stroke="url(#pin-grad)" strokeWidth="1.5" strokeLinecap="round" />
         <defs>
           <linearGradient id="pin-grad" x1="6" y1="2" x2="26" y2="30" gradientUnits="userSpaceOnUse">
-            <stop stopColor="var(--color-accent-start)" />
-            <stop offset="1" stopColor="var(--color-accent-end)" />
+            <stop stopColor="var(--accent)" />
+            <stop offset="1" stopColor="var(--color-accent-hover)" />
           </linearGradient>
         </defs>
       </svg>
@@ -54,8 +54,8 @@ const cards = [
         />
         <defs>
           <linearGradient id="code-grad" x1="4" y1="6" x2="28" y2="26" gradientUnits="userSpaceOnUse">
-            <stop stopColor="var(--color-accent-start)" />
-            <stop offset="1" stopColor="var(--color-accent-end)" />
+            <stop stopColor="var(--accent)" />
+            <stop offset="1" stopColor="var(--color-accent-hover)" />
           </linearGradient>
         </defs>
       </svg>
@@ -85,8 +85,8 @@ const cards = [
         />
         <defs>
           <linearGradient id="shield-grad" x1="4" y1="3" x2="28" y2="30" gradientUnits="userSpaceOnUse">
-            <stop stopColor="var(--color-accent-start)" />
-            <stop offset="1" stopColor="var(--color-accent-end)" />
+            <stop stopColor="var(--accent)" />
+            <stop offset="1" stopColor="var(--color-accent-hover)" />
           </linearGradient>
         </defs>
       </svg>
@@ -108,7 +108,7 @@ export default function WhyDigicomp() {
         >
           <span
             id="why-digicomp-label"
-            className="text-sm font-semibold uppercase tracking-widest text-[var(--color-accent-start)]"
+            className="text-sm font-semibold uppercase tracking-widest text-[var(--accent)]"
           >
             Why Choose Us
           </span>
@@ -141,7 +141,7 @@ export default function WhyDigicomp() {
               transition={{ duration: 0.5, delay: index * 0.15 }}
             >
               {/* Orange accent line at top */}
-              <div className="absolute top-0 left-0 right-0 h-4 border-t-[3px] border-transparent hover:border-transparent [background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--color-accent-start),var(--color-accent-end))_border-box]" style={{ borderRadius: '18px 18px 1px 1px' }} />
+              <div className="absolute top-0 left-0 right-0 h-4 border-t-[3px] border-transparent hover:border-transparent [background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--accent),var(--color-accent-hover))_border-box]" style={{ borderRadius: '18px 18px 1px 1px' }} />
 
               {/* Icon container */}
               <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--elevated)]">

@@ -104,7 +104,7 @@ function CardImage({ article }) {
       className="relative h-48 overflow-hidden"
       style={{
         background:
-          'linear-gradient(135deg, var(--color-accent-start), #9C27B0)',
+          'linear-gradient(135deg, var(--accent), #9C27B0)',
       }}
     >
       {/* Circuit pattern overlay */}
@@ -151,7 +151,7 @@ function CardImage({ article }) {
       className="relative h-48 overflow-hidden"
       style={{
         background:
-          'linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end), #FF8A65)',
+          'linear-gradient(135deg, var(--accent), var(--color-accent-hover), #FF8A65)',
       }}
     >
       {/* Abstract pattern */}
@@ -204,7 +204,7 @@ function NewsBlog() {
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.3 }}
         >
-          <span className="inline-block uppercase tracking-widest text-sm text-[var(--color-accent-start)] font-semibold mb-4">
+          <span className="inline-block uppercase tracking-widest text-sm text-[var(--accent)] font-semibold mb-4">
             INSIGHTS
           </span>
           <h2 className="text-4xl md:text-5xl font-bold text-[var(--text)] mb-4">
@@ -251,7 +251,7 @@ function NewsBlog() {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-xl font-semibold text-[var(--text)] mb-3 group-hover:text-[var(--color-accent-start)] transition-colors duration-300">
+                <h3 className="text-xl font-semibold text-[var(--text)] mb-3 group-hover:text-[var(--accent)] transition-colors duration-300">
                   {article.title}
                 </h3>
 
@@ -272,7 +272,7 @@ function NewsBlog() {
                       {article.readTime}
                     </span>
                   </div>
-                  <span className="text-[var(--text-muted)] group-hover:text-[var(--color-accent-start)] transition-colors duration-300">
+                  <span className="text-[var(--text-muted)] group-hover:text-[var(--accent)] transition-colors duration-300">
                     <ArrowIcon />
                   </span>
                 </div>

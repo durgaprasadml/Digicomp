@@ -22,7 +22,7 @@ const bmsSpecs = [
         <path d="M4 2h8v1h2v10H2V3h2V2zm1 1v1h6V3H5zm-2 3h10v6H3V6z" fill="currentColor" opacity="0.7" />
         <rect x="4" y="7" width="2" height="4" rx="0.5" fill="#4ade80" />
         <rect x="7" y="8" width="2" height="3" rx="0.5" fill="#facc15" />
-        <rect x="10" y="9" width="2" height="2" rx="0.5" fill="var(--color-accent-start)" />
+        <rect x="10" y="9" width="2" height="2" rx="0.5" fill="var(--accent)" />
       </svg>
     ),
     label: '2S to 16S Scalable',
@@ -83,13 +83,13 @@ function BatteryIcon() {
       className="flex-shrink-0"
     >
       {/* Battery outline */}
-      <rect x="8" y="14" width="44" height="36" rx="4" stroke="var(--color-accent-start)" strokeWidth="2" fill="none" />
-      <rect x="52" y="24" width="6" height="16" rx="2" stroke="var(--color-accent-start)" strokeWidth="2" fill="none" />
+      <rect x="8" y="14" width="44" height="36" rx="4" stroke="var(--accent)" strokeWidth="2" fill="none" />
+      <rect x="52" y="24" width="6" height="16" rx="2" stroke="var(--accent)" strokeWidth="2" fill="none" />
       {/* Charge segments */}
       <rect x="13" y="19" width="8" height="26" rx="2" fill="#4ade80" opacity="0.9" />
       <rect x="23" y="19" width="8" height="26" rx="2" fill="#4ade80" opacity="0.7" />
       <rect x="33" y="19" width="8" height="26" rx="2" fill="#facc15" opacity="0.5" />
-      <rect x="43" y="19" width="4" height="26" rx="2" fill="var(--color-accent-start)" opacity="0.3" />
+      <rect x="43" y="19" width="4" height="26" rx="2" fill="var(--accent)" opacity="0.3" />
     </svg>
   );
 }
@@ -210,7 +210,7 @@ export default function ProductEcosystem() {
                     key={spec.label}
                     className="flex items-center gap-3 text-sm text-[var(--text-secondary)]"
                   >
-                    <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-[var(--elevated)] border border-[var(--border)] text-[var(--color-accent-start)]">
+                    <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-[var(--elevated)] border border-[var(--border)] text-[var(--accent)]">
                       {spec.icon}
                     </span>
                     {spec.label}

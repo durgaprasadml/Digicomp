@@ -114,12 +114,12 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
 
       <div
         ref={containerRef}
-        className={`group relative z-50 p-[1px] w-64 items-center gap-2 rounded-xl border xl:w-lg border-[var(--border)] hover:border-[var(--border)]/40 has-[:focus]:border-[var(--border)]/40 hover:[background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--color-accent-start),var(--color-accent-end))_border-box] has-[:focus]:[background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--color-accent-start),var(--color-accent-end))_border-box] ${
+        className={`group relative z-50 p-[1px] w-64 items-center gap-2 rounded-xl border xl:w-lg border-[var(--border)] hover:border-[var(--border)]/40 has-[:focus]:border-[var(--border)]/40 hover:[background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--accent),var(--color-accent-hover))_border-box] has-[:focus]:[background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--accent),var(--color-accent-hover))_border-box] ${
           isMobile ? 'w-full' : 'w-64'
         }`}
       >
         <div className="absolute inset-0 rounded-xl overflow-hidden">
-          <div className="absolute top-1/2 left-1/2 h-auto w-full -translate-1/2 aspect-square opacity-0 animate-spin-slow bg-conic-180 from-[var(--color-accent-start)] via-transparent to-[var(--color-accent-start)] group-has-[:focus]:hidden" />
+          <div className="absolute top-1/2 left-1/2 h-auto w-full -translate-1/2 aspect-square opacity-0 animate-spin-slow bg-conic-180 from-[var(--accent)] via-transparent to-[var(--accent)] group-has-[:focus]:hidden" />
         </div>
         <div className="relative flex items-center gap-2 rounded-[11px] bg-[var(--surface)] px-1.5 py-1">
           { isLoading ? <SpinnerIcon /> : <SearchIcon /> }
@@ -144,7 +144,7 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
           )}
 
           {showAskAI && (
-            <button className="shrink-0 cursor-pointer rounded-md bg-gradient-to-r from-[var(--color-accent-start)] to-[var(--color-accent-end)] px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:opacity-90">
+            <button className="shrink-0 cursor-pointer rounded-md bg-gradient-to-r from-[var(--accent)] to-[var(--color-accent-hover)] px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:opacity-90">
               Ask AI
             </button>
           )}
@@ -181,7 +181,7 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
                           <span className="text-sm font-medium text-[var(--text)] truncate">{result.value || 'Result'}</span>
                           {result.price ? (
                             <span
-                              className="text-xs text-[var(--text-muted)] truncate [&_del]:opacity-60 [&_ins]:no-underline [&_ins]:text-[var(--color-accent-start)] [&_.screen-reader-text]:hidden"
+                              className="text-xs text-[var(--text-muted)] truncate [&_del]:opacity-60 [&_ins]:no-underline [&_ins]:text-[var(--accent)] [&_.screen-reader-text]:hidden"
                               dangerouslySetInnerHTML={{ __html: result.price }}
                             />
                           ) : result.desc ? (
@@ -204,7 +204,7 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
                       <span className="text-base font-semibold text-[var(--text)] line-clamp-2">{activeResult?.value}</span>
                       {activeResult?.price && (
                         <span
-                          className="text-sm text-[var(--text-muted)] [&_del]:opacity-60 [&_ins]:no-underline [&_ins]:text-[var(--color-accent-start)] [&_.screen-reader-text]:hidden"
+                          className="text-sm text-[var(--text-muted)] [&_del]:opacity-60 [&_ins]:no-underline [&_ins]:text-[var(--accent)] [&_.screen-reader-text]:hidden"
                           dangerouslySetInnerHTML={{ __html: activeResult.price }}
                         />
                       )}
@@ -222,10 +222,10 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
                           type="number"
                           min="1"
                           defaultValue="1"
-                          className="w-12 rounded-md border border-[var(--border)] bg-[var(--bg)] px-2 py-1.5 text-sm text-[var(--text)] outline-none focus:border-[var(--color-accent-start)]"
+                          className="w-12 rounded-md border border-[var(--border)] bg-[var(--bg)] px-2 py-1.5 text-sm text-[var(--text)] outline-none focus:border-[var(--accent)]"
                         />
                         <button
-                          className="flex-1 rounded-md bg-gradient-to-r from-[var(--color-accent-start)] to-[var(--color-accent-end)] py-2 text-center text-xs font-semibold text-white shadow-sm hover:opacity-90 transition-opacity cursor-pointer"
+                          className="flex-1 rounded-md bg-gradient-to-r from-[var(--accent)] to-[var(--color-accent-hover)] py-2 text-center text-xs font-semibold text-white shadow-sm hover:opacity-90 transition-opacity cursor-pointer"
                         >
                           Add to Cart
                         </button>
@@ -233,7 +233,7 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
                     ) : (
                       <a
                         href={activeResult?.url || '#'}
-                        className="mt-auto w-full rounded-md bg-gradient-to-r from-[var(--color-accent-start)] to-[var(--color-accent-end)] py-2 text-center text-xs font-semibold text-white shadow-sm hover:opacity-90 transition-opacity"
+                        className="mt-auto w-full rounded-md bg-gradient-to-r from-[var(--accent)] to-[var(--color-accent-hover)] py-2 text-center text-xs font-semibold text-white shadow-sm hover:opacity-90 transition-opacity"
                       >
                         View Result
                       </a>
@@ -247,7 +247,7 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
             <a
               ref={ searchAllRef }
               href={`/?s=${encodeURIComponent(searchTerm)}`}
-              className="block border-t border-[var(--border)] p-3 text-center text-sm font-semibold text-[var(--color-accent-start)] hover:bg-[var(--elevated)] transition-colors"
+              className="block border-t border-[var(--border)] p-3 text-center text-sm font-semibold text-[var(--accent)] hover:bg-[var(--elevated)] transition-colors"
             >
               Search All Results
             </a>

@@ -41,11 +41,11 @@
 /* ===== DESIGN SYSTEM TOKENS ===== */
 @theme {
   /* Brand gradient (from logo SVG) */
-  --color-accent-start: #FF5722;
+  /* --color-accent-start: #FF5722;
   --color-accent-end: #FFA726;
   --color-accent-mid: #FF6D33;
   --color-accent-glow: rgba(255, 87, 34, 0.15);
-  --color-accent-glow-strong: rgba(255, 87, 34, 0.3);
+  --color-accent-glow-strong: rgba(255, 87, 34, 0.3); */
 
   --color-grid-glow: #7e57c2;
 
@@ -176,7 +176,7 @@ body {
 
 /* ===== UTILITY CLASSES ===== */
 .gradient-text {
-  background: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end));
+  background: linear-gradient(135deg, var(--accent), var(--color-accent-hover));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -191,7 +191,7 @@ body {
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end));
+  background: linear-gradient(135deg, var(--accent), var(--color-accent-hover));
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -208,8 +208,8 @@ body {
 }
 
 .glass-card:hover {
-  border-color: var(--color-accent-start);
-  box-shadow: 0 0 30px var(--color-accent-glow);
+  border-color: var(--accent);
+  box-shadow: 0 0 30px var(--color-accent-soft-hover);
 }
 
 .btn-primary {
@@ -217,7 +217,7 @@ body {
   align-items: center;
   gap: 8px;
   padding: 14px 32px;
-  background: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end));
+  background: linear-gradient(135deg, var(--accent), var(--color-accent-hover));
   color: white;
   font-weight: 600;
   font-size: 0.95rem;
@@ -230,7 +230,7 @@ body {
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px var(--color-accent-glow-strong);
+  box-shadow: 0 8px 30px var(--color-accent-hover);
 }
 
 .btn-secondary {
@@ -250,7 +250,7 @@ body {
 }
 
 .btn-secondary:hover {
-  border-color: var(--color-accent-start);
+  border-color: var(--accent);
   background: var(--color-accent-glow);
 }
 
@@ -330,7 +330,7 @@ body {
   width: 300px;
   height: 300px;
   border-radius: 50%;
-  background: radial-gradient(circle, var(--color-accent-glow-strong) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--color-accent-hover) 0%, transparent 70%);
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -386,7 +386,7 @@ body {
 
 .loadbus {
   border-radius: inherit;
-  box-shadow: -10px 0 12px 3px var(--color-accent-start);
+  box-shadow: -10px 0 12px 3px var(--accent);
   clip-path: polygon(0 5%, 100% 0,100% 100%,0 95%,-30px 50%);
   animation: move 1s infinite linear;
 }

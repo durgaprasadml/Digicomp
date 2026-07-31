@@ -132,12 +132,12 @@ export default function Slider({
               aria-label={`Slide ${index + 1}`}
               onClick={() => goTo(index)}
               className={`relative w-3 h-3 rounded-full cursor-pointer border-none outline-none transition-all duration-300 ${
-                index === activeIndex 
-                  ? 'scale-[1.15] shadow-sm' 
+                index === activeIndex
+                  ? 'scale-[1.15] shadow-sm'
                   : 'bg-[var(--border)] hover:bg-[var(--text-muted)]'
               }`}
               style={index === activeIndex ? {
-                background: 'linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end))'
+                background: 'linear-gradient(135deg, var(--accent), var(--color-accent-hover))'
               } : undefined}
             />
           ))}

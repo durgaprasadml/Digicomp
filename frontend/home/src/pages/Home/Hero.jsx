@@ -175,7 +175,7 @@ export default function Hero() {
             className="pointer-events-none absolute h-[120%] w-[120%] rounded-full"
             style={{
               background:
-                'radial-gradient(circle, var(--color-accent-glow-strong) 0%, transparent 70%)',
+                'radial-gradient(circle, var(--color-accent-soft-hover) 0%, transparent 70%)',
             }}
             aria-hidden="true"
           />

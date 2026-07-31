@@ -19,7 +19,7 @@ function App() {
         <Suspense fallback={
           <div className="pt-6 flex-1 flex items-center justify-center">
             <div class="w-28 h-5 rounded-4xl border-2 relative overflow-hidden text-[var(--text-secondary)]">
-              <div className="loadbus absolute m-0.5 w-3 inset-y-0 -left-5 bg-[var(--color-accent-start)]"></div>
+              <div className="loadbus absolute m-0.5 w-3 inset-y-0 -left-5 bg-[var(--accent)]"></div>
             </div>
           </div>
         }>

@@ -327,7 +327,7 @@ export default function Product() {
           <div className="surface surface--default rounded-3xl p-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--accent)] opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
             <h2 className="title-section">
-              <span className="w-1 h-1 bg-[var(--color-accent-start)] rounded-full"></span>
+              <span className="w-1 h-1 bg-[var(--accent)] rounded-full"></span>
               Overview
             </h2>
             <div dangerouslySetInnerHTML={{ __html: product.description }} />

@@ -22,7 +22,7 @@ const QuoteMark = () => (
     height="48"
     viewBox="0 0 24 24"
     fill="currentColor"
-    className="text-[var(--color-accent-start)] opacity-20 mb-2"
+    className="text-[var(--accent)] opacity-20 mb-2"
     aria-hidden="true"
   >
     <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378C7.44 7.593 6.5 9.36 6.333 10.98H10v6.34H4.583zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378C17.44 7.593 16.5 9.36 16.333 10.98H20v6.34h-5.417z" />
@@ -49,7 +49,7 @@ function MissionVision() {
           {/* Section Label */}
           <motion.span
             variants={item}
-            className="inline-block uppercase tracking-widest text-sm text-[var(--color-accent-start)] font-semibold mb-4"
+            className="inline-block uppercase tracking-widest text-sm text-[var(--accent)] font-semibold mb-4"
           >
             OUR PURPOSE
           </motion.span>
@@ -66,7 +66,7 @@ function MissionVision() {
           <motion.div variants={item} className="mb-12">
             <div className="text-left">
               <QuoteMark />
-              <blockquote className="border-l-4 border-[var(--color-accent-start)] pl-6">
+              <blockquote className="border-l-4 border-[var(--accent)] pl-6">
                 <span className="font-semibold text-lg gradient-text block mb-3">
                   Vision
                 </span>
@@ -83,7 +83,7 @@ function MissionVision() {
           <motion.div variants={item}>
             <div className="text-left">
               <QuoteMark />
-              <blockquote className="border-l-4 border-[var(--color-accent-start)] pl-6">
+              <blockquote className="border-l-4 border-[var(--accent)] pl-6">
                 <span className="font-semibold text-lg gradient-text block mb-3">
                   Mission
                 </span>
