@@ -4,7 +4,7 @@ import Header from './blocks/Header'
 import Footer from './blocks/Footer'
 import ScrollToTop from './blocks/ScrollToTop'
 import { UserStore } from './stores/UserStore'
-import { Toast } from '@heroui/react'
+import { Toast, Spinner } from '@heroui/react'
 
 function App() {
   useEffect( () => {
@@ -18,9 +18,7 @@ function App() {
       <main className="flex-1 flex flex-col">
         <Suspense fallback={
           <div className="pt-6 flex-1 flex items-center justify-center">
-            <div class="w-28 h-5 rounded-4xl border-2 relative overflow-hidden text-[var(--text-secondary)]">
-              <div className="loadbus absolute m-0.5 w-3 inset-y-0 -left-5 bg-[var(--accent)]"></div>
-            </div>
+            <Spinner />
           </div>
         }>
           <Outlet />

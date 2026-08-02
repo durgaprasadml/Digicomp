@@ -61,7 +61,7 @@ export default function Cart() {
             </Breadcrumbs>
 
             <FlexRow className="flex-row items-center gap-2">
-              <h1 className="text-2xl font-semibold">Your Cart</h1>
+              <h1 className="text-2xl">Your Cart</h1>
               <Chip variant="primary" size="md" className="mt-1">
                 { cart?.count } items
               </Chip>

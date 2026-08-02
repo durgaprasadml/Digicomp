@@ -126,9 +126,9 @@ export default function Shop() {
     ) ) }
    </Breadcrumbs>
 
-   <FlexRow className="sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--border)]">
+   <FlexRow className="sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-border">
     <FlexRow className="flex-row items-center gap-2">
-     <h1 className="text-2xl font-semibold">{heading}</h1>
+     <h1 className="text-2xl">{heading}</h1>
      <Chip variant="primary" size="md" className="mt-1">
       { filteredProducts.length } results
      </Chip>
@@ -186,7 +186,7 @@ export default function Shop() {
       swipeToOpen={true}
       className="w-80"
     >
-      <div className="flex flex-col h-full bg-[var(--surface)]">
+      <div className="flex flex-col h-full bg-surface">
         <div className="p-4">
           <Button variant="ghost" isIconOnly onPress={() => setIsMobileFiltersOpen(false)} aria-label="Close" className="absolute top-0 right-0">✕</Button>
         </div>
@@ -200,7 +200,7 @@ export default function Shop() {
             disabledFilters={disabledFilters}
           />
         </div>
-        <div className="p-4 border-t border-[var(--border)]">
+        <div className="p-4 border-t border-border">
           <Button color="primary" className="w-full font-bold" onPress={() => setIsMobileFiltersOpen(false)}>
             Show {filteredProducts.length} Results
           </Button>

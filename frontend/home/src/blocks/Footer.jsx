@@ -102,7 +102,7 @@ function NewsLetter() {
             <h3 className="mb-4">
               Join the Engineering Inner Circle
             </h3>
-            <p className="text-[var(--text-secondary)]">
+            <p className="text-muted">
               Get updates on new board releases, open-source schematic drops,
               and deep-dive technical tutorials.
             </p>
@@ -146,21 +146,21 @@ function NewsLetter() {
       </div>
 
       {/* Divider */}
-      <div className="border-t border-[var(--border)]" />
+      <div className="border-t border-border" />
     </>
   )
 }
 
 function Footer() {
   return (
-    <footer id="footer" className="bg-[var(--surface)] border-t border-[var(--border)]">
+    <footer id="footer" className="bg-surface border-t border-border">
       <NewsLetter />
       {/* Link Grid */}
       <div className="section-container">
         <div className="py-16 grid grid-cols-2 md:grid-cols-4 gap-8">
           {Object.entries(footerLinks).map(([title, links]) => (
             <div key={title}>
-              <h4 className="font-semibold text-[var(--text)] mb-4">
+              <h4 className="mb-4">
                 {title}
               </h4>
               <nav aria-label={title}>
@@ -169,7 +169,7 @@ function Footer() {
                     <li key={link.label}>
                       <a
                         href={link.href}
-                        className="block py-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--text)] transition-colors duration-200"
+                        className="block py-1.5 text-sm text-muted hover:text-foreground transition-colors duration-200"
                       >
                         {link.label}
                       </a>
@@ -183,9 +183,9 @@ function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-[var(--border)]">
+      <div className="border-t border-border">
         <div className="section-container">
-          <div className="py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-[var(--text-muted)]">
+          <div className="py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted">
             {/* Copyright */}
             <p>&copy; 2026 Digicomp Technologies. All rights reserved.</p>
 
@@ -200,7 +200,7 @@ function Footer() {
                   id={social.id}
                   href={social.href}
                   aria-label={social.label}
-                  className="text-[var(--text-muted)] hover:text-[var(--text)] transition-colors duration-200"
+                  className="text-muted hover:text-foreground transition-colors duration-200"
                 >
                   {social.icon}
                 </a>

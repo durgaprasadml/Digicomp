@@ -93,7 +93,7 @@ export default function ProductCard({ product }) {
       <Link to={ productRoute } params={{ slug: product.slug || product.id }} preload="intent" className="absolute rounded-2xl inset-0 z-0" />
 
       {/* Image area */}
-      <div className="relative flex items-center justify-center h-44 bg-[var(--elevated)]/30 z-10 pointer-events-none">
+      <div className="relative flex items-center justify-center h-44 bg-default/10 z-10 pointer-events-none">
         {/* Tag */}
         {product.badge && (
           <span className={`absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${ badgeColor( product.badge ) }`}>
@@ -105,7 +105,7 @@ export default function ProductCard({ product }) {
         <button
           id={`wishlist-${product.id}`}
           onClick={handleWishlist}
-          className="absolute top-2 right-3 p-1.5 rounded-full bg-[var(--bg)]/60 backdrop-blur-sm text-[var(--text-muted)] hover:text-[var(--danger)] transition-colors pointer-events-auto cursor-pointer"
+          className="absolute top-2 right-3 p-1.5 rounded-full bg-background/60 backdrop-blur-sm text-muted hover:text-danger transition-colors pointer-events-auto cursor-pointer"
           aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
         >
           <HeartIcon filled={isWishlisted} />
@@ -126,16 +126,16 @@ export default function ProductCard({ product }) {
         <h3 className="text-sm mb-0 line-clamp-1">
           {product.name}
         </h3>
-        <p className="mt-1 text-xs text-[var(--text-muted)] leading-relaxed line-clamp-1">
+        <p className="mt-1 text-xs text-muted leading-relaxed line-clamp-1">
           {product.excerpt}
         </p>
 
         <div className="mt-auto pt-3">
           {/* Price row */}
           <div className="flex items-baseline gap-2">
-            <span className="text-lg font-bold text-[var(--text)]">{ `${ currency }${ product.price || product.regPrice }` }</span>
+            <span className="text-lg font-bold">{ `${ currency }${ product.price || product.regPrice }` }</span>
             { product.regPrice && ( '' !== product.price ) && (
-              <span className="text-xs text-[var(--text-muted)] line-through">
+              <span className="text-xs text-muted line-through">
                 { `${ currency }${ product.regPrice }` }
               </span>
             )}

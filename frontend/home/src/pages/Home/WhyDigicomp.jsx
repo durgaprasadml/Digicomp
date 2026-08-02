@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { AnimateIn } from '../../components';
 
 const cards = [
   {
@@ -96,66 +96,58 @@ const cards = [
 
 export default function WhyDigicomp() {
   return (
-    <section id="why-digicomp" className="section-padding relative overflow-hidden">
+    <section id="why-digicomp" className="py-28 relative overflow-hidden">
       <div className="section-container">
         {/* ── Section Header ── */}
-        <motion.div
+        <AnimateIn
           className="mx-auto mb-16 max-w-2xl text-center"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
-        >
+          >
           <span
             id="why-digicomp-label"
-            className="text-sm font-semibold uppercase tracking-widest text-[var(--accent)]"
+            className="text-sm font-semibold uppercase tracking-widest text-accent"
           >
             Why Choose Us
           </span>
           <h2
             id="why-digicomp-title"
-            className="mt-3 text-4xl font-bold tracking-tight text-[var(--text)]"
+            className="mt-3 text-4xl font-bold tracking-tight"
           >
             Built Different. Built Better.
           </h2>
           <p
             id="why-digicomp-subtitle"
-            className="mt-4 text-[var(--text-secondary)]"
+            className="mt-4 text-muted"
           >
             We combine domestic manufacturing precision with open-source
             transparency to deliver hardware that engineers can truly trust and
             build upon.
           </p>
-        </motion.div>
+        </AnimateIn>
 
         {/* ── Cards Grid ── */}
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {cards.map((card, index) => (
-            <motion.article
+            <AnimateIn as="article" delay={index * 150.0}
               key={card.id}
               id={`why-card-${card.id}`}
               className="glass-card relative overflow-hidden p-8"
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-100px' }}
-              transition={{ duration: 0.5, delay: index * 0.15 }}
-            >
+              >
               {/* Orange accent line at top */}
-              <div className="absolute top-0 left-0 right-0 h-4 border-t-[3px] border-transparent hover:border-transparent [background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--accent),var(--color-accent-hover))_border-box]" style={{ borderRadius: '18px 18px 1px 1px' }} />
+              <div className="absolute top-0 left-0 right-0 h-4 border-t-[3px] border-transparent [background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--accent),var(--color-accent-hover))_border-box]" style={{ borderRadius: '18px 18px 1px 1px' }} />
 
               {/* Icon container */}
-              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--elevated)]">
+              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-default">
                 {card.icon}
               </div>
 
               {/* Content */}
-              <h3 className="mb-3 text-xl font-semibold text-[var(--text)]">
+              <h3 className="mb-3">
                 {card.title}
               </h3>
-              <p className="leading-relaxed text-[var(--text-secondary)]">
+              <p className="leading-relaxed text-muted">
                 {card.description}
               </p>
-            </motion.article>
+            </AnimateIn>
           ))}
         </div>
       </div>

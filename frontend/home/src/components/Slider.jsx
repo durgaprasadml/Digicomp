@@ -134,7 +134,7 @@ export default function Slider({
               className={`relative w-3 h-3 rounded-full cursor-pointer border-none outline-none transition-all duration-300 ${
                 index === activeIndex
                   ? 'scale-[1.15] shadow-sm'
-                  : 'bg-[var(--border)] hover:bg-[var(--text-muted)]'
+                  : 'bg-border hover:bg-muted'
               }`}
               style={index === activeIndex ? {
                 background: 'linear-gradient(135deg, var(--accent), var(--color-accent-hover))'

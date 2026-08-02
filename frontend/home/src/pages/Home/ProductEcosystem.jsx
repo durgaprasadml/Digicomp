@@ -1,19 +1,8 @@
-import { motion } from 'framer-motion';
+import { AnimateIn } from '../../components';
 
 import { usePageData } from '../../stores/PageStore';
 
-const container = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.15 } },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
-};
-
 const mcuChips = ['ESP32-S3', 'RP2040', 'CH32V003', 'STM32F030', 'TI MSPM0'];
-
 
 const bmsSpecs = [
   {
@@ -58,17 +47,14 @@ function handleMouseMove(e) {
 
 function BentoCard({ children, className = '', id }) {
   return (
-    <motion.div
+    <AnimateIn
       id={id}
-      variants={item}
-      whileHover={{ scale: 1.02 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      className={`spotlight-card bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden relative ${className}`}
+      className={`spotlight-card bg-surface border border-border rounded-2xl overflow-hidden relative hover:scale-[1.01] duration-300 ${className}`}
       onMouseMove={handleMouseMove}
     >
       <div className="spotlight-effect" />
       {children}
-    </motion.div>
+    </AnimateIn>
   );
 }
 
@@ -80,7 +66,7 @@ function BatteryIcon() {
       viewBox="0 0 64 64"
       fill="none"
       aria-hidden="true"
-      className="flex-shrink-0"
+      className="shrink-0"
     >
       {/* Battery outline */}
       <rect x="8" y="14" width="44" height="36" rx="4" stroke="var(--accent)" strokeWidth="2" fill="none" />
@@ -98,34 +84,26 @@ export default function ProductEcosystem() {
   const { ecosystem = {} } = usePageData('/');
   const { mcus = [], fpga = undefined } = ecosystem;
   return (
-    <section id="product-ecosystem" className="section-padding relative">
+    <section id="product-ecosystem" className="py-28 relative">
       <div className="section-container">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
+        <AnimateIn
           className="text-center mb-16"
         >
           <span className="uppercase tracking-widest text-sm gradient-text font-semibold">
             PRODUCT ECOSYSTEM
           </span>
-          <h2 className="text-4xl font-bold mt-4 mb-4 text-[var(--text)]">
+          <h2 className="text-4xl font-bold mt-4 mb-4">
             Hardware That Powers Ideas
           </h2>
-          <p className="text-[var(--text-secondary)] max-w-2xl mx-auto text-lg">
+          <p className="text-muted max-w-2xl mx-auto text-lg">
             From rapid prototyping to production deployment — a complete ecosystem of development
             platforms.
           </p>
-        </motion.div>
+        </AnimateIn>
 
         {/* Bento Grid */}
-        <motion.div
-          variants={container}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-80px' }}
+        <AnimateIn
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           {/* Card 1: Next-Gen Microcontrollers — spans 2 cols */}
@@ -138,15 +116,15 @@ export default function ProductEcosystem() {
               className="absolute inset-0 z-0 pointer-events-none"
               style={{
                 background:
-                  'linear-gradient(135deg, rgba(255,87,34,0.05) 0%, transparent 50%, rgba(255,167,38,0.03) 100%)',
+                  'linear-gradient(135deg, rgba(34,98,255,0.05) 0%, transparent 50%, rgba(38,98,255,0.03) 100%)',
               }}
             />
 
             <div className="relative z-10">
-              <h3 className="text-2xl md:text-3xl font-bold mb-3 text-[var(--text)]">
+              <h3 className="text-2xl md:text-3xl font-bold mb-3">
                 Next-Gen Microcontrollers
               </h3>
-              <p className="text-[var(--text-secondary)] max-w-2xl mb-8 text-base leading-relaxed">
+              <p className="text-muted max-w-2xl mb-8 text-base leading-relaxed">
                 Industry-leading development boards featuring ESP32-S3, RP2040, CH32V003, STM32F030,
                 and TI MSPM0 — each with complete documentation and example code.
               </p>
@@ -154,7 +132,7 @@ export default function ProductEcosystem() {
               {/* Floating product images */}
               <div className="flex items-center justify-evenly gap-4 mb-8 py-4">
                 {mcus.map((img, i) => (
-                  <motion.img
+                  <AnimateIn as="img"
                     key={img}
                     src={img}
                     alt={img.split('.')[0]}
@@ -163,14 +141,7 @@ export default function ProductEcosystem() {
                       marginLeft: i > 0 ? '-16px' : '0',
                       zIndex: mcus.length - i,
                     }}
-                    animate={{ y: [0, -12, 0] }}
-                    transition={{
-                      duration: 6,
-                      repeat: Infinity,
-                      ease: 'easeInOut',
-                      delay: (i+1) * 0.8,
-                    }}
-                  />
+                    />
                 ))}
               </div>
 
@@ -179,7 +150,7 @@ export default function ProductEcosystem() {
                 {mcuChips.map((chip) => (
                   <span
                     key={chip}
-                    className="bg-[var(--elevated)] border border-[var(--border)] rounded-full px-3 py-1 text-xs text-[var(--text-secondary)] font-medium"
+                    className="bg-default border border-border rounded-full px-3 py-1 text-xs text-muted font-medium"
                   >
                     {chip}
                   </span>
@@ -194,10 +165,10 @@ export default function ProductEcosystem() {
               <div className="flex items-start gap-5 mb-6">
                 <BatteryIcon />
                 <div>
-                  <h3 className="text-xl font-bold mb-2 text-[var(--text)]">
+                  <h3 className="text-xl font-bold mb-2">
                     Advanced Battery Management
                   </h3>
-                  <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
+                  <p className="text-muted text-sm leading-relaxed">
                     Scalable from 2S up to 16S BMS solutions. Industrial-grade protection with
                     precision monitoring.
                   </p>
@@ -208,9 +179,9 @@ export default function ProductEcosystem() {
                 {bmsSpecs.map((spec) => (
                   <li
                     key={spec.label}
-                    className="flex items-center gap-3 text-sm text-[var(--text-secondary)]"
+                    className="flex items-center gap-3 text-sm text-muted"
                   >
-                    <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-[var(--elevated)] border border-[var(--border)] text-[var(--accent)]">
+                    <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-default border border-border text-accent">
                       {spec.icon}
                     </span>
                     {spec.label}
@@ -223,32 +194,26 @@ export default function ProductEcosystem() {
           {/* Card 3: FPGA Platforms */}
           <BentoCard id="bento-card-fpga" className="p-8">
             <div className="relative z-10">
-              <h3 className="text-xl font-bold mb-2 text-[var(--text)]">FPGA Platforms</h3>
-              <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-6">
+              <h3 className="text-xl font-bold mb-2">FPGA Platforms</h3>
+              <p className="text-muted text-sm leading-relaxed mb-6">
                 Xilinx Artix-7 based development board for complex digital logic, signal processing,
                 and hardware acceleration.
               </p>
 
               <div className="flex justify-center mb-5">
-                <motion.img
+                <AnimateIn as="img"
                   src={ fpga }
                   alt="FPGA Development Board"
                   className="w-40 h-40 md:w-48 md:h-48 object-contain drop-shadow-2xl"
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{
-                    duration: 5,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                />
+                  />
               </div>
 
-              <span className="bg-[var(--elevated)] border border-[var(--border)] rounded-full px-3 py-1 text-xs text-[var(--text-secondary)] font-medium">
+              <span className="bg-default border border-border rounded-full px-3 py-1 text-xs text-muted font-medium">
                 Xilinx Artix-7
               </span>
             </div>
           </BentoCard>
-        </motion.div>
+        </AnimateIn>
       </div>
     </section>
   );

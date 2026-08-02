@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { AnimateIn } from '../../components';
 import { Link } from '@typeroute/router'
 
 import { usePageData } from '../../stores/PageStore'
@@ -76,18 +76,12 @@ const ArrowIcon = () => (
 function CardImage({ article }) {
   if ( article.img ) {
     return (
-      <div className="relative h-48 overflow-hidden bg-[var(--elevated)]">
-        {article.img ? (
-          <img
-            src={article.img}
-            alt={article.title}
-            className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-          />
-        ) : (
-          <div className="h-full w-full bg-[var(--bg-highlight)] flex items-center justify-center text-[var(--text-muted)]">
-             <span className="text-sm">No Image</span>
-          </div>
-        )}
+      <div className="relative h-48 overflow-hidden bg-default">
+        <img
+          src={article.img}
+          alt={article.title}
+          className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+        />
         <div
           className="absolute inset-0"
           style={{
@@ -194,43 +188,32 @@ function NewsBlog() {
   const { sticky: articles = [] } = usePageData('/')
 
   return (
-    <section id="news-blog" className="section-padding bg-[var(--bg)]">
+    <section id="news-blog" className="py-28 bg-background">
       <div className="section-container">
         {/* Header */}
-        <motion.div
+        <AnimateIn
           className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.3 }}
-        >
-          <span className="inline-block uppercase tracking-widest text-sm text-[var(--accent)] font-semibold mb-4">
+          >
+          <span className="inline-block uppercase tracking-widest text-sm text-accent font-semibold mb-4">
             INSIGHTS
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-[var(--text)] mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
             From the Engineering Desk
           </h2>
-          <p className="text-lg text-[var(--text-secondary)] max-w-2xl mx-auto">
+          <p className="text-lg text-muted max-w-2xl mx-auto">
             Deep dives, tutorials, and updates from our hardware team.
           </p>
-        </motion.div>
+        </AnimateIn>
 
         {/* Article Grid */}
-        <motion.div
+        <AnimateIn
           className="grid grid-cols-1 md:grid-cols-3 gap-8"
-          variants={container}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
-        >
+          >
           {articles.map((article) => (
-            <motion.article
+            <AnimateIn as="article"
               key={article.id}
               id={article.id}
-              variants={item}
-              whileHover={{ y: -8 }}
-              transition={{ type: 'spring', stiffness: 500, damping: 22 }}
-              className="glass-card overflow-hidden rounded-2xl cursor-pointer group flex flex-col"
+              className="glass-card overflow-hidden rounded-2xl cursor-pointer group flex flex-col hover:-translate-y-1"
             >
               <Link to={ post } params={{ slug: article.slug }} preload="intent">
               {/* Card Image */}
@@ -251,18 +234,18 @@ function NewsBlog() {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-xl font-semibold text-[var(--text)] mb-3 group-hover:text-[var(--accent)] transition-colors duration-300">
+                <h3 className="text-xl mb-3 group-hover:text-accent transition-colors duration-300">
                   {article.title}
                 </h3>
 
                 {/* Excerpt */}
-                <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-6 flex-1">
+                <p className="text-sm text-muted leading-relaxed mb-6 flex-1">
                   {article.excerpt}
                 </p>
 
                 {/* Footer */}
-                <div className="flex items-center justify-between pt-4 border-t border-[var(--border-subtle)]">
-                  <div className="flex items-center gap-4 text-sm text-[var(--text-muted)]">
+                <div className="flex items-center justify-between pt-4 border-t border-background">
+                  <div className="flex items-center gap-4 text-sm text-muted">
                     <span className="flex items-center gap-1.5">
                       <CalendarIcon />
                       {article.date}
@@ -272,15 +255,15 @@ function NewsBlog() {
                       {article.readTime}
                     </span>
                   </div>
-                  <span className="text-[var(--text-muted)] group-hover:text-[var(--accent)] transition-colors duration-300">
+                  <span className="text-muted group-hover:text-accent transition-colors duration-300">
                     <ArrowIcon />
                   </span>
                 </div>
               </div>
               </Link>
-            </motion.article>
+            </AnimateIn>
           ))}
-        </motion.div>
+        </AnimateIn>
       </div>
     </section>
   );

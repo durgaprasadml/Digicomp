@@ -182,7 +182,7 @@ function MegaMenu() {
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="block rounded-lg px-3 py-1.5 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--elevated)] hover:text-[var(--text)]"
+                    className="block rounded-lg px-3 py-1.5 text-sm text-muted transition-colors hover:bg-default hover:text-foreground"
                   >
                     {link.label}
                   </a>
@@ -212,12 +212,12 @@ function UserMenu() {
   if ( user?.is_logged_in ) {
     return (
       <div className="popover shadow-2xl w-56 right-0 p-4">
-        <h4 className="mb-3 font-semibold text-[var(--text)]">My Account</h4>
+        <h4 className="mb-3 text-foreground">My Account</h4>
         <ul className="flex flex-col text-sm gap-1">
           <li><Link to={account} preload="intent" className="block py-1">Dashboard</Link></li>
           <li><Link to={accountTab} params={{ tab: 'orders' }} preload="intent" className="block py-1">My Orders</Link></li>
           <li><Link to={accountTab} params={{ tab: 'edit-account' }} preload="intent" className="block py-1">Settings</Link></li>
-          <li><hr className="my-2 border-[var(--border)]" /></li>
+          <li><hr className="my-2 border-border" /></li>
           <li><button onClick={ handleLogout } className="cursor-pointer hover:text-accent transition-colors py-1 w-full text-left">Logout</button></li>
         </ul>
       </div>
@@ -226,8 +226,8 @@ function UserMenu() {
 
   return (
     <div className="popover shadow-2xl w-56 right-0 p-4">
-      <h4 className="mb-3 font-semibold text-[var(--text)]">Welcome</h4>
-      <ul className="space-y-2 text-sm text-[var(--text-secondary)]">
+      <h4 className="mb-2 text-foreground">Welcome</h4>
+      <ul className="space-y-2 text-sm text-muted">
         <li>
           <Modal isOpen={isOpenLogin} onOpenChange={setIsOpenLogin}>
             <Button variant='ghost' className='w-full justify-start' onPress={() => setIsOpenLogin(true)} onMouseEnter={preloadAuthModal} onFocus={preloadAuthModal}>Login</Button>
@@ -258,10 +258,10 @@ function WishlistMenu() {
 
   return (
     <div className="popover shadow-2xl w-64 right-0 p-4">
-      <h4 className="mb-2 font-semibold text-[var(--text)]">Wishlist</h4>
+      <h4 className="mb-2 text-foreground">Wishlist</h4>
       {wishlists.length === 0 ? (
         <>
-          <p className="text-sm text-[var(--text-secondary)]">Your wishlist is currently empty.</p>
+          <p className="text-sm text-muted">Your wishlist is currently empty.</p>
           <CustomButton size="lg" className="mt-4 w-full">
             <Link to={ shop } preload="intent">Explore Products</Link>
           </CustomButton>
@@ -274,7 +274,7 @@ function WishlistMenu() {
                 <Link to={ wishlistView } params={{ id: wl.id }} preload="intent" className="truncate pr-2">
                   { wl.name }
                 </Link>
-                <span className="text-xs text-[var(--text-secondary)] whitespace-nowrap bg-default-100 px-2 py-0.5 rounded-full">
+                <span className="text-xs text-muted whitespace-nowrap bg-default-100 px-2 py-0.5 rounded-full">
                   {Array.isArray(wl.items) ? wl.items.length : 0} items
                 </span>
               </li>
@@ -294,7 +294,7 @@ function CartMenu( { cart } ) {
 
   return (
     <div className="popover w-80 right-0 p-5">
-      <h4 className="mb-3 font-semibold border-b border-border pb-2">Shopping Cart</h4>
+      <h4 className="mb-2 text-foreground">Shopping Cart</h4>
       {cart.lineCount === 0 ? (
         <p className="text-sm py-4">Your cart is currently empty.</p>
       ) : (
@@ -318,7 +318,7 @@ function CartMenu( { cart } ) {
               </div>
             ))}
           </div>
-          <div className="flex items-center gap-2 border-t border-border pt-4 mt-2">
+          <div className="flex items-center gap-2 pt-4">
             <CustomButton variant='secondary' className="w-full">
               <Link to={ cartRoute } preload="intent">View Cart</Link>
             </CustomButton>
@@ -383,7 +383,7 @@ export default function Header() {
     <>
       <LogoDefs />
       {/* ── Mobile Top Header ── */}
-      <div className={`sticky top-0 z-40 w-full lg:hidden transition-all bg-surface border-b border-[var(--border)] ${ showTopBar ? 'translate-y-0' : '-translate-y-full' }`}>
+      <div className={`sticky top-0 z-40 w-full lg:hidden transition-all bg-surface border-b border-border ${ showTopBar ? 'translate-y-0' : '-translate-y-full' }`}>
         <div className="section-container flex h-14 items-center justify-between">
           <Link to={ home } preload="intent" aria-label="Digicomp Technologies">
             <span className="sr-only">Digicomp Technologies</span>
@@ -401,7 +401,7 @@ export default function Header() {
 
     <header
       id="site-header"
-      className={`fixed bottom-0 lg:sticky lg:bottom-auto lg:top-0 z-50 w-full transition-all duration-300 backdrop-blur-xl bg-[var(--surface)]/80 border-t lg:border-t-0 lg:border-b border-[var(--border)] ${ scrolled ? 'shadow-sm' : '' }`}
+      className={`fixed bottom-0 lg:sticky lg:bottom-auto lg:top-0 z-50 w-full transition-all duration-300 backdrop-blur-xl bg-surface/80 border-t lg:border-t-0 lg:border-b border-border ${ scrolled ? 'shadow-sm' : '' }`}
     >
       <div className="section-container relative flex h-16 items-center justify-between gap-4 border-none">
         {/* ── Left: Brand ── */}
@@ -409,7 +409,7 @@ export default function Header() {
           id="header-brand"
           to={ home }
           preload="intent"
-          className="hidden lg:flex flex-shrink-0"
+          className="hidden lg:flex shrink-0"
           alt="Digicomp Technologies"
         >
           <span className="sr-only">Digicomp Technologies</span>
@@ -446,7 +446,7 @@ export default function Header() {
         </div>
 
         {/* ── Right: Utilities (desktop) & Bottom Nav (mobile) ── */}
-        <div className="flex w-full justify-around lg:w-auto lg:justify-end items-center gap-1 text-[var(--text-secondary)]">
+        <div className="flex w-full justify-around lg:w-auto lg:justify-end items-center gap-1 text-muted">
           <div className="icon-nav flex">
             <CustomButton isIconOnly variant='ghost'>
               <button
@@ -519,10 +519,10 @@ export default function Header() {
         className="w-96"
       >
         {/* Close */}
-        <div className="flex items-center justify-between border-b border-[var(--border)] px-5 py-4">
+        <div className="flex items-center justify-between border-b border-border px-5 py-4">
           <span className="sr-only">Digicomp Technologies</span>
           <Logo className="h-7" />
-          <button id="mobile-drawer-close" onClick={() => setDrawerOpen(false)} className="text-[var(--text-secondary)] hover:text-[var(--text)]">
+          <button id="mobile-drawer-close" onClick={() => setDrawerOpen(false)} className="text-muted hover:text-foreground">
             <CloseIcon />
           </button>
         </div>
@@ -539,7 +539,7 @@ export default function Header() {
               key={link.id}
               id={`mobile-nav-${link.id}`}
               href={link.href || '#products'}
-              className="block border-b border-[var(--border-subtle)] py-3.5 text-[var(--text-secondary)] transition-colors hover:text-[var(--text)]"
+              className="block border-b border-border py-3.5 text-muted transition-colors hover:text-foreground"
               onClick={() => setDrawerOpen(false)}
             >
               {link.label}

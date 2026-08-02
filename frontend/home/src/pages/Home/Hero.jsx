@@ -1,24 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
 import DotGrid from './DotGrid';
 
 import { usePageData } from '../../stores/PageStore';
-
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.15 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: 'easeOut' },
-  },
-};
 
 const avatars = [
   { id: 1, bg: '#FF5722' },
@@ -74,51 +57,48 @@ export default function Hero() {
         onMouseEnter={handleInteraction}
         onClick={handleInteraction} >
         {/* ── Left Side (Text) ── */}
-        <motion.div
+        <div
           className="flex w-full flex-col items-center text-center lg:w-[55%] lg:items-start lg:text-left"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
         >
           {/* Eyebrow badge */}
-          <motion.div variants={itemVariants}>
+          <div className="animate-fade-in-up" style={{ animationDelay: '0ms', animationFillMode: 'both' }}>
             <span
               id="hero-badge"
-              className="inline-flex items-center gap-2 rounded-full bg-[var(--elevated)] px-4 py-1.5 text-sm font-medium text-[var(--text-secondary)]"
+              className="inline-flex items-center gap-2 rounded-full bg-default px-4 py-1.5 text-sm font-medium text-muted"
             >
               🇮🇳 Designed &amp; Manufactured in India
             </span>
-          </motion.div>
+          </div>
 
           {/* Headline */}
-          <motion.h1
+          <h1
             id="hero-headline"
-            className="mt-6 text-5xl font-bold tracking-tight text-[var(--text)] md:text-6xl lg:text-7xl"
-            variants={itemVariants}
+            className="mt-6 text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl animate-fade-in-up"
+            style={{ animationDelay: '150ms', animationFillMode: 'both' }}
           >
             Engineered for{' '}
             <span className="gradient-text">Innovators.</span>
             <br />
             Manufactured in India.
-          </motion.h1>
+          </h1>
 
           {/* Sub-headline */}
-          <motion.p
+          <p
             id="hero-subheadline"
-            className="mt-6 max-w-xl text-lg text-[var(--text-secondary)]"
-            variants={itemVariants}
+            className="mt-6 max-w-xl text-lg text-muted animate-fade-in-up"
+            style={{ animationDelay: '300ms', animationFillMode: 'both' }}
           >
             Research-grade development boards, BMS, and FPGA modules designed
             and built domestically. Experience uncompromising quality paired with
             complete open-source documentation.
-          </motion.p>
+          </p>
 
           {/* CTAs */}
-          <motion.div
-            className="mt-8 flex flex-wrap items-center gap-4"
-            variants={itemVariants}
+          <div
+            className="mt-8 flex flex-wrap items-center gap-4 animate-fade-in-up"
+            style={{ animationDelay: '450ms', animationFillMode: 'both' }}
           >
-            <a id="hero-cta-primary" href="#products" className="btn-primary">
+            <a id="hero-cta-primary" href="#products" className="button button--xl button--primary">
               Explore the Hardware
               <svg
                 width="18"
@@ -134,41 +114,39 @@ export default function Hero() {
                 <polyline points="12 5 19 12 12 19" />
               </svg>
             </a>
-            <a id="hero-cta-secondary" href="#mission-vision" className="btn-secondary">
+            <a id="hero-cta-secondary" href="#mission-vision" className="button button--xl button--outline">
               Read Our Mission
             </a>
-          </motion.div>
+          </div>
 
           {/* Trust strip */}
-          <motion.div
+          <div
             id="hero-trust-strip"
-            className="mt-10 flex items-center gap-3"
-            variants={itemVariants}
+            className="mt-10 flex items-center gap-3 animate-fade-in-up"
+            style={{ animationDelay: '600ms', animationFillMode: 'both' }}
           >
             {/* Overlapping avatars */}
             <div className="flex -space-x-2">
               {avatars.map((a) => (
                 <div
                   key={a.id}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[var(--bg)] text-[11px] font-bold text-white"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-background text-[11px] font-bold text-white"
                   style={{ backgroundColor: a.bg }}
                 >
                   {String.fromCharCode(64 + a.id)}
                 </div>
               ))}
             </div>
-            <span className="text-sm text-[var(--text-muted)]">
-              Trusted by <span className="font-semibold text-[var(--text-secondary)]">500+</span> engineers across India
+            <span className="text-sm text-muted">
+              Trusted by <span className="font-semibold text-muted">500+</span> engineers across India
             </span>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         {/* ── Right Side (Product Image) ── */}
-        <motion.div
-          className="relative flex w-full self-stretch items-center justify-center lg:w-[45%]"
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut', delay: 0.3 }}
+        <div
+          className="relative flex w-full self-stretch items-center justify-center lg:w-[45%] animate-fade-in-up"
+          style={{ animationDelay: '300ms', animationFillMode: 'both' }}
         >
           {/* Radial glow behind image */}
           <div
@@ -195,20 +173,14 @@ export default function Hero() {
               ></model-viewer>
             </div>
           ) : (
-            <motion.img
+            <img
               id="hero-product-image"
               src={ heroData.img }
               alt="ESP32-S3 Development Board by Digicomp Technologies"
-              className={`relative z-10 w-full max-w-md drop-shadow-2xl lg:max-w-lg ${has3D ? 'cursor-pointer' : ''}`}
-              animate={{ y: [0, -12, 0] }}
-              transition={{
-                duration: 6,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
+              className={`relative z-10 w-full max-w-md drop-shadow-2xl lg:max-w-lg animate-float ${has3D ? 'cursor-pointer' : ''}`}
             />
           )}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

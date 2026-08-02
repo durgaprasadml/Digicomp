@@ -11,6 +11,7 @@
 @import "@heroui/styles/themes/default" layer(theme);
 
 /* Components */
+@import "@heroui/styles/components/spinner.css" layer(components);
 @import "@heroui/styles/components/button.css" layer(components);
 @import "@heroui/styles/components/number-field.css" layer(components);
 @import "@heroui/styles/components/breadcrumbs.css" layer(components);
@@ -40,45 +41,28 @@
 
 /* ===== DESIGN SYSTEM TOKENS ===== */
 @theme {
-  /* Brand gradient (from logo SVG) */
-  /* --color-accent-start: #FF5722;
-  --color-accent-end: #FFA726;
-  --color-accent-mid: #FF6D33;
-  --color-accent-glow: rgba(255, 87, 34, 0.15);
-  --color-accent-glow-strong: rgba(255, 87, 34, 0.3); */
-
-  --color-grid-glow: #7e57c2;
-
-  /* Dark palette (default) */
-  --color-dark-bg: #09090B;
-  --color-dark-surface: #131316;
-  --color-dark-elevated: #1C1C21;
-  --color-dark-card: #18181B;
-  --color-dark-border: #27272A;
-  --color-dark-border-subtle: #1F1F23;
-  --color-dark-text: #FAFAFA;
-  --color-dark-text-secondary: #A1A1AA;
-  --color-dark-text-muted: #71717A;
-
-  /* Light palette */
-  --color-light-bg: #FAFAFA;
-  --color-light-surface: #FFFFFF;
-  --color-light-elevated: #F4F4F5;
-  --color-light-card: #FFFFFF;
-  --color-light-border: #E4E4E7;
-  --color-light-border-subtle: #F4F4F5;
-  --color-light-text: #09090B;
-  --color-light-text-secondary: #52525B;
-  --color-light-text-muted: #A1A1AA;
-
   /* Typography */
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', ui-monospace, monospace;
+
+  --dot-grid-active: #7e57c2;
 
   /* Animations */
   --animate-float: float 6s ease-in-out infinite;
   --animate-pulse-glow: pulse-glow 3s ease-in-out infinite;
   --animate-spotlight: spotlight 2s ease-in-out;
+}
+
+/* ===== CSS CUSTOM PROPERTIES (theme-aware) ===== */
+:root {
+  /* Default: dark theme */
+  --dot-grid-base: #27272A;
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --dot-grid-base: #E4E4E7;
+  color-scheme: light;
 }
 
 @keyframes float {
@@ -108,44 +92,20 @@
   100% { left: calc(100% + 20px); }
 }
 
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  opacity: 0;
+}
 .animate-spin-slow {
   animation: spin-slow 10s linear 5;
-}
-
-/* ===== CSS CUSTOM PROPERTIES (theme-aware) ===== */
-:root {
-  /* Default: dark theme */
-  --bg: var(--color-dark-bg);
-  --surface: var(--color-dark-surface);
-  --elevated: var(--color-dark-elevated);
-  --card: var(--color-dark-card);
-  --border: var(--color-dark-border);
-  --border-subtle: var(--color-dark-border-subtle);
-  --text: var(--color-dark-text);
-  --text-secondary: var(--color-dark-text-secondary);
-  --text-muted: var(--color-dark-text-muted);
-
-  --dot-grid-base: var(--color-dark-border);
-  --dot-grid-active: var(--color-grid-glow);
-
-  color-scheme: dark;
-}
-
-[data-theme="light"] {
-  --bg: var(--color-light-bg);
-  --surface: var(--color-light-surface);
-  --elevated: var(--color-light-elevated);
-  --card: var(--color-light-card);
-  --border: var(--color-light-border);
-  --border-subtle: var(--color-light-border-subtle);
-  --text: var(--color-light-text);
-  --text-secondary: var(--color-light-text-secondary);
-  --text-muted: var(--color-light-text-muted);
-
-  --dot-grid-base: var(--color-light-border);
-  --dot-grid-active: var(--color-grid-glow);
-
-  color-scheme: light;
 }
 
 /* ===== GLOBAL RESETS ===== */
@@ -204,7 +164,7 @@ body {
   border: 1px solid var(--border);
   border-radius: 16px;
   backdrop-filter: blur(12px);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  transition: all 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .glass-card:hover {
@@ -212,46 +172,16 @@ body {
   box-shadow: 0 0 30px var(--color-accent-soft-hover);
 }
 
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 14px 32px;
-  background: linear-gradient(135deg, var(--accent), var(--color-accent-hover));
-  color: white;
-  font-weight: 600;
-  font-size: 0.95rem;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  text-decoration: none;
+.button--xl {
+  height: calc(var(--spacing) * 13);
+  font-size: var(--text-base);
+  line-height: var(--tw-leading, var(--text-base--line-height));
+  padding-inline: calc(var(--spacing) * 6);
 }
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px var(--color-accent-hover);
-}
-
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 14px 32px;
-  background: transparent;
-  color: var(--text);
-  font-weight: 600;
-  font-size: 0.95rem;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  cursor: pointer;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
-  text-decoration: none;
-}
-
-.btn-secondary:hover {
-  border-color: var(--accent);
-  background: var(--color-accent-glow);
+@media (width >=48rem) {
+  .button--xl {
+    height: calc(var(--spacing) * 12);
+  }
 }
 
 .page-container {
@@ -264,11 +194,6 @@ body {
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 24px;
-}
-
-.section-padding {
-  padding-top: 120px;
-  padding-bottom: 120px;
 }
 
 .button--dc:focus {
@@ -302,23 +227,6 @@ body {
   position: static;
 }
 
-/* Dot grid pattern for backgrounds */
-.dot-pattern {
-  background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-/* Noise texture overlay */
-.noise-overlay::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
-}
-
 /* Spotlight card effect */
 .spotlight-card {
   position: relative;
@@ -339,7 +247,7 @@ body {
 }
 
 .spotlight-card:hover .spotlight-effect {
-  opacity: 1;
+  opacity: 0.3;
 }
 
 /* Code editor mockup styles */
@@ -384,13 +292,6 @@ body {
   border-color: var(--border);
 }
 
-.loadbus {
-  border-radius: inherit;
-  box-shadow: -10px 0 12px 3px var(--accent);
-  clip-path: polygon(0 5%, 100% 0,100% 100%,0 95%,-30px 50%);
-  animation: move 1s infinite linear;
-}
-
 /* ===== Input Range Slider ===== */
 input[type="range"]::-webkit-slider-thumb, input[type="range"]::-moz-range-thumb {
   -webkit-appearance: none;
@@ -414,13 +315,16 @@ input[type="range"]::-webkit-slider-thumb:hover, input[type="range"]::-moz-range
 /* This is not Tree shakable. Delete or comment this if the component is not being used. */
 @layer base {
   h1 {
-    @apply text-3xl font-semibold text-[var(--text)] leading-tight;
+    @apply text-3xl font-semibold leading-tight;
   }
   h2 {
-    @apply text-2xl font-semibold text-[var(--text)] leading-tight;
+    @apply text-2xl font-semibold leading-tight;
   }
   h3 {
-    @apply text-xl font-semibold text-[var(--text)] leading-tight;
+    @apply text-xl font-semibold leading-tight;
+  }
+  h4 {
+    @apply font-semibold;
   }
   a {
     @apply hover:text-accent transition-colors;

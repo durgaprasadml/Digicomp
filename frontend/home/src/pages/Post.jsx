@@ -79,7 +79,7 @@ export default function Product() {
           </Breadcrumbs>
 
           <FlexRow className="flex-row items-center gap-2">
-            <h1 className="text-2xl font-semibold">{ post?.post_title || '' }</h1>
+            <h1 className="text-2xl">{ post?.post_title || '' }</h1>
           </FlexRow>
           <div className="flex gap-4 text-muted">
             <div className="flex items-center gap-2">

@@ -1,15 +1,6 @@
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-
-const container = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.2 } },
-};
-
-const cardItem = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
-};
+import { AnimateIn } from '../../components';
+import { useParallax } from '../../utils/animations';
 
 const upcomingProducts = [
   {
@@ -82,94 +73,75 @@ const upcomingProducts = [
 ];
 
 export default function InnovationPipeline() {
-  const sectionRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start end', 'end start'],
-  });
-
-  const orbY1 = useTransform(scrollYProgress, [0, 1], ['-10%', '20%']);
-  const orbY2 = useTransform(scrollYProgress, [0, 1], ['15%', '-15%']);
-  const orbY3 = useTransform(scrollYProgress, [0, 1], ['-5%', '10%']);
+  const sectionRef = useParallax();
 
   return (
     <section
       id="innovation-pipeline"
       ref={sectionRef}
-      className="section-padding relative overflow-hidden"
+      className="py-28 relative overflow-hidden"
     >
       {/* Background gradient orbs */}
-      <motion.div
-        className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full bg-[var(--accent)]/10 blur-3xl pointer-events-none"
-        style={{ y: orbY1 }}
+      <div
+        className="absolute -top-32 -left-32 w-125 h-125 rounded-full bg-accent/10 blur-3xl pointer-events-none"
+        style={{ transform: 'translateY(calc(-70% + (130% * var(--scroll-progress))))' }}
         aria-hidden="true"
       />
-      <motion.div
-        className="absolute -bottom-32 -right-32 w-[400px] h-[400px] rounded-full bg-purple-500/10 blur-3xl pointer-events-none"
-        style={{ y: orbY2 }}
+      <div
+        className="absolute -bottom-32 -right-32 w-100 h-100 rounded-full bg-purple-500/10 blur-3xl pointer-events-none"
+        style={{ transform: 'translateY(calc(-35% - (130% * var(--scroll-progress))))' }}
         aria-hidden="true"
       />
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full bg-blue-500/10 blur-3xl pointer-events-none"
-        style={{ y: orbY3 }}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-blue-500/10 blur-3xl pointer-events-none"
+        style={{ transform: 'translateY(calc(-25% + (110% * var(--scroll-progress))))' }}
         aria-hidden="true"
       />
 
       <div className="section-container relative z-10">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16 max-w-4xl mx-auto"
-        >
-          <span className="uppercase tracking-widest text-sm text-[var(--accent)] font-semibold">
+        <AnimateIn className="text-center mb-16 max-w-4xl mx-auto">
+          <span className="uppercase tracking-widest text-sm text-accent font-semibold">
             COMING SOON
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-4 mb-4 text-[var(--text)]">
+          <h2 className="text-4xl md:text-5xl font-bold mt-4 mb-4">
             Beyond the Horizon: What&rsquo;s Next
           </h2>
-          <p className="text-[var(--text-secondary)] text-lg max-w-2xl mx-auto">
+          <p className="text-muted text-lg max-w-2xl mx-auto">
             We are actively expanding our ecosystem to bring advanced computing and RF technology to
             your workbench.
           </p>
-        </motion.div>
+        </AnimateIn>
 
         {/* Upcoming product cards */}
-        <motion.div
-          variants={container}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-80px' }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"
-        >
-          {upcomingProducts.map((product) => (
-            <motion.article
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {upcomingProducts.map((product, index) => (
+            <AnimateIn
+              as="article"
+              delay={index * 200}
               key={product.id}
               id={product.id}
-              variants={cardItem}
-              className="glass-card p-6 border-l-2 border-l-[var(--accent)] flex flex-col"
+              className="glass-card p-6 flex flex-col"
             >
-              <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-[var(--elevated)] border border-[var(--border)] mb-5">
+              <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-default border border-border mb-5">
                 {product.icon}
               </div>
 
-              <h3 className="text-lg font-bold mb-2 text-[var(--text)]">{product.title}</h3>
-              <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-5 flex-1">
+              <h3 className="text-lg font-bold mb-2">{product.title}</h3>
+              <p className="text-muted text-sm leading-relaxed mb-5 flex-1">
                 {product.description}
               </p>
 
-              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--accent)] bg-[var(--accent)]/10 rounded-full px-3 py-1 w-fit">
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-accent bg-accent/10 rounded-full px-3 py-1 w-fit">
                 <svg width="8" height="8" viewBox="0 0 8 8" fill="none" aria-hidden="true">
                   <circle cx="4" cy="4" r="3" fill="var(--accent)" opacity="0.6" />
                   <circle cx="4" cy="4" r="1.5" fill="var(--accent)" />
                 </svg>
                 {product.status}
               </span>
-            </motion.article>
+            </AnimateIn>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

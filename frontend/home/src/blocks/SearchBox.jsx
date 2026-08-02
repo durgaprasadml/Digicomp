@@ -108,27 +108,27 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
     <>
       {/* Backdrop */}
       {isFocused && !isMobile && typeof document !== 'undefined' && createPortal(
-        <div className="fixed inset-0 z-40 bg-[var(--bg)]/80 pointer-events-auto" />,
+        <div className="fixed inset-0 z-40 bg-background/80 pointer-events-auto" />,
         document.body
       )}
 
       <div
         ref={containerRef}
-        className={`group relative z-50 p-[1px] w-64 items-center gap-2 rounded-xl border xl:w-lg border-[var(--border)] hover:border-[var(--border)]/40 has-[:focus]:border-[var(--border)]/40 hover:[background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--accent),var(--color-accent-hover))_border-box] has-[:focus]:[background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--accent),var(--color-accent-hover))_border-box] ${
+        className={`group relative z-50 p-px w-64 items-center gap-2 rounded-xl border xl:w-lg border-border hover:border-border/40 has-focus:border-border/40 hover:[background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--accent),var(--color-accent-hover))_border-box] has-focus:[background:linear-gradient(var(--surface),var(--surface))_padding-box,linear-gradient(to_top_right,var(--accent),var(--color-accent-hover))_border-box] ${
           isMobile ? 'w-full' : 'w-64'
         }`}
       >
         <div className="absolute inset-0 rounded-xl overflow-hidden">
-          <div className="absolute top-1/2 left-1/2 h-auto w-full -translate-1/2 aspect-square opacity-0 animate-spin-slow bg-conic-180 from-[var(--accent)] via-transparent to-[var(--accent)] group-has-[:focus]:hidden" />
+          <div className="absolute top-1/2 left-1/2 h-auto w-full -translate-1/2 aspect-square opacity-0 animate-spin-slow bg-conic-180 from-accent via-transparent to-accent group-has-focus:hidden" />
         </div>
-        <div className="relative flex items-center gap-2 rounded-[11px] bg-[var(--surface)] px-1.5 py-1">
+        <div className="relative flex items-center gap-2 rounded-[11px] bg-surface px-1.5 py-1">
           { isLoading ? <SpinnerIcon /> : <SearchIcon /> }
 
           <input
             id={id}
             type="text"
             placeholder={placeholder || "Search parts, Ask AI..." }
-            className="w-full py-1 bg-transparent text-sm text-[var(--text)] outline-none placeholder:text-[var(--text-muted)]"
+            className="w-full py-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted"
             ref={searchRef}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -138,13 +138,13 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
           />
 
           {!isMobile && (
-            <kbd className="pointer-events-none hidden shrink-0 select-none rounded-md border border-[var(--border)] bg-[var(--surface)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--text-muted)] xl:inline-block">
+            <kbd className="pointer-events-none hidden shrink-0 select-none rounded-md border border-border bg-surface px-1.5 py-0.5 text-[10px] font-medium text-muted xl:inline-block">
               ⌘K
             </kbd>
           )}
 
           {showAskAI && (
-            <button className="shrink-0 cursor-pointer rounded-md bg-gradient-to-r from-[var(--accent)] to-[var(--color-accent-hover)] px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:opacity-90">
+            <button className="shrink-0 cursor-pointer rounded-md bg-gradient-to-r from-accent to-(--color-accent-hover) px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:opacity-90">
               Ask AI
             </button>
           )}
@@ -152,10 +152,10 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
 
         {/* Dropdown Results */}
         {isFocused && searchTerm.length >= 3 && (
-          <div className="absolute left-0 top-[calc(100%+4px)] w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
+          <div className="absolute left-0 top-[calc(100%+4px)] w-full rounded-xl border border-border bg-surface shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
             <div className="overflow-y-auto flex-1 flex">
               { ! isLoading && results.length === 0 && (
-                <div className="p-4 text-center text-sm text-[var(--text-muted)]">
+                <div className="p-4 text-center text-sm text-muted">
                   No results found for "{searchTerm}".
                 </div>
               ) }
@@ -166,11 +166,11 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
                   {results.map((result, idx) => (
                     <li key={idx} onMouseEnter={() => setHoveredIndex(idx)}>
                       { ( result.type === 'no-results' ) ? (
-                        <div className="p-4 text-center text-sm text-[var(--text-muted)]">
+                        <div className="p-4 text-center text-sm text-muted">
                           No results found for "{searchTerm}". Try asking Digicomp Expert AI.
                         </div>
                       ) : (
-                      <a href={result.url || '#'} className="px-3 py-2 flex items-center gap-3 hover:bg-[var(--elevated)]">
+                      <a href={result.url || '#'} className="px-3 py-2 flex items-center gap-3 hover:bg-default">
                         {result.thumb_html && (
                           <div
                             className="w-10 h-10 shrink-0 [&>img]:w-full [&>img]:h-full [&>img]:object-cover [&>img]:rounded"
@@ -178,14 +178,14 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
                           />
                         )}
                         <div className="flex flex-col overflow-hidden">
-                          <span className="text-sm font-medium text-[var(--text)] truncate">{result.value || 'Result'}</span>
+                          <span className="text-sm font-medium text-foreground truncate">{result.value || 'Result'}</span>
                           {result.price ? (
                             <span
-                              className="text-xs text-[var(--text-muted)] truncate [&_del]:opacity-60 [&_ins]:no-underline [&_ins]:text-[var(--accent)] [&_.screen-reader-text]:hidden"
+                              className="text-xs text-muted truncate [&_del]:opacity-60 [&_ins]:no-underline [&_ins]:text-accent [&_.screen-reader-text]:hidden"
                               dangerouslySetInnerHTML={{ __html: result.price }}
                             />
                           ) : result.desc ? (
-                            <span className="text-xs text-[var(--text-muted)] truncate">{result.desc}</span>
+                            <span className="text-xs text-muted truncate">{result.desc}</span>
                           ) : null}
                         </div>
                       </a>
@@ -194,24 +194,24 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
                   ))}
                 </ul>
                 { activeResult && (
-                  <div className="p-4 flex-1 flex flex-col h-full gap-3 border-l border-[var(--border)] max-w-[50%]">
+                  <div className="p-4 flex-1 flex flex-col h-full gap-3 border-l border-border max-w-[50%]">
                     {activeResult?.thumb_html && (
-                      <div className="w-full h-40 rounded-lg overflow-hidden bg-[var(--surface)]">
+                      <div className="w-full h-40 rounded-lg overflow-hidden bg-surface">
                         <img className="w-full h-full object-contain" src={ extractImageUrl( activeResult?.thumb_html || '' ) } alt={ activeResult?.value } />
                       </div>
                     )}
                     <div className="flex flex-col gap-1">
-                      <span className="text-base font-semibold text-[var(--text)] line-clamp-2">{activeResult?.value}</span>
+                      <span className="text-base font-semibold text-foreground line-clamp-2">{activeResult?.value}</span>
                       {activeResult?.price && (
                         <span
-                          className="text-sm text-[var(--text-muted)] [&_del]:opacity-60 [&_ins]:no-underline [&_ins]:text-[var(--accent)] [&_.screen-reader-text]:hidden"
+                          className="text-sm text-muted [&_del]:opacity-60 [&_ins]:no-underline [&_ins]:text-accent [&_.screen-reader-text]:hidden"
                           dangerouslySetInnerHTML={{ __html: activeResult.price }}
                         />
                       )}
                     </div>
                     {activeResult?.desc && (
                       <div
-                        className="text-xs text-[var(--text-secondary)] mt-1 line-clamp-3"
+                        className="text-xs text-muted mt-1 line-clamp-3"
                         dangerouslySetInnerHTML={{ __html: activeResult.desc }}
                       />
                     )}
@@ -222,10 +222,10 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
                           type="number"
                           min="1"
                           defaultValue="1"
-                          className="w-12 rounded-md border border-[var(--border)] bg-[var(--bg)] px-2 py-1.5 text-sm text-[var(--text)] outline-none focus:border-[var(--accent)]"
+                          className="w-12 rounded-md border border-border bg-background px-2 py-1.5 text-sm text-foreground outline-none focus:border-accent"
                         />
                         <button
-                          className="flex-1 rounded-md bg-gradient-to-r from-[var(--accent)] to-[var(--color-accent-hover)] py-2 text-center text-xs font-semibold text-white shadow-sm hover:opacity-90 transition-opacity cursor-pointer"
+                          className="flex-1 rounded-md bg-gradient-to-r from-accent to-(--color-accent-hover) py-2 text-center text-xs font-semibold text-white shadow-sm hover:opacity-90 transition-opacity cursor-pointer"
                         >
                           Add to Cart
                         </button>
@@ -233,7 +233,7 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
                     ) : (
                       <a
                         href={activeResult?.url || '#'}
-                        className="mt-auto w-full rounded-md bg-gradient-to-r from-[var(--accent)] to-[var(--color-accent-hover)] py-2 text-center text-xs font-semibold text-white shadow-sm hover:opacity-90 transition-opacity"
+                        className="mt-auto w-full rounded-md bg-gradient-to-r from-accent to-(--color-accent-hover) py-2 text-center text-xs font-semibold text-white shadow-sm hover:opacity-90 transition-opacity"
                       >
                         View Result
                       </a>
@@ -247,7 +247,7 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
             <a
               ref={ searchAllRef }
               href={`/?s=${encodeURIComponent(searchTerm)}`}
-              className="block border-t border-[var(--border)] p-3 text-center text-sm font-semibold text-[var(--accent)] hover:bg-[var(--elevated)] transition-colors"
+              className="block border-t border-border p-3 text-center text-sm font-semibold text-accent hover:bg-default transition-colors"
             >
               Search All Results
             </a>

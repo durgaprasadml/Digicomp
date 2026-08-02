@@ -27,7 +27,7 @@ function DualRangeSlider({ min, max, value, onChange }) {
           max={max}
           value={value[0]}
           onChange={handleMinChange}
-          className="absolute w-full [-webkit-appearance: none] appearance-none bg-transparent pointer-events-none z-[2]"
+          className="absolute w-full appearance-none bg-transparent pointer-events-none z-2"
         />
         <input
           type="range"
@@ -35,11 +35,11 @@ function DualRangeSlider({ min, max, value, onChange }) {
           max={max}
           value={value[1]}
           onChange={handleMaxChange}
-          className="absolute w-full [-webkit-appearance: none] appearance-none bg-transparent pointer-events-none z-[2]"
+          className="absolute w-full appearance-none bg-transparent pointer-events-none z-2"
         />
-        <div className="relative w-full h-1.5 bg-[var(--border)] rounded-md">
+        <div className="relative w-full h-1.5 bg-border rounded-md">
           <div
-            className="absolute h-1.5 bg-gradient-to-l from-(--accent) to-(--color-accent-hover) rounded-md"
+            className="absolute h-1.5 bg-gradient-to-l from-accent to-(--color-accent-hover) rounded-md"
             style={{ left: `calc(${percentMin}%)`, right: `calc(${100 - percentMax}%)` }}
           />
         </div>
@@ -80,7 +80,7 @@ export default function ShopFilters({ filtersData, activeFilters, setActiveFilte
   return (
     <div className="w-full flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold ml-1">Filters</h2>
+        <h2 className="text-lg ml-1">Filters</h2>
         <Button
           size="sm"
           variant="light"

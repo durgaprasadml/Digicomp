@@ -26,7 +26,7 @@ function DashboardView({ user }) {
 
   return (
     <Stack spacing={4}>
-      <h2 className="text-xl font-semibold">Dashboard</h2>
+      <h2 className="text-xl">Dashboard</h2>
       <p>Hello <strong>{user?.display_name}</strong> (not {user?.display_name}? <button onClick={ handleLogout } className="cursor-pointer underline">Logout</button>)</p>
       <p className="text-muted text-sm">
         From your account dashboard you can view your recent orders, manage your shipping and billing addresses, and edit your password and account details.
@@ -39,7 +39,7 @@ function OrdersView({ orders }) {
   if (!orders || orders.length === 0) {
     return (
       <Stack spacing={4}>
-        <h2 className="text-xl font-semibold">Orders</h2>
+        <h2 className="text-xl">Orders</h2>
         <div className="bg-default-100 p-8 text-center rounded-lg">
           <p className="text-default-500 mb-4">No order has been made yet.</p>
           <Link to={ shop } preload="intent">
@@ -52,7 +52,7 @@ function OrdersView({ orders }) {
 
   return (
     <Stack spacing={4}>
-      <h2 className="text-xl font-semibold">Orders</h2>
+      <h2 className="text-xl">Orders</h2>
       <Table>
         <Table.ScrollContainer>
           <Table.Content aria-label="Recent orders">
@@ -98,7 +98,7 @@ function OrderDetailsView({ order }) {
   return (
     <Stack spacing={4}>
       <FlexRow className="justify-between items-center">
-        <h2 className="text-xl font-semibold">Order #{order.order_number}</h2>
+        <h2 className="text-xl">Order #{order.order_number}</h2>
         <span className="bg-default-100 px-3 py-1.5 rounded-md text-sm text-default-700 font-medium">
           {order.status}
         </span>
@@ -178,7 +178,7 @@ function OrderDetailsView({ order }) {
 function DownloadsView({ downloads }) {
   return (
     <Stack spacing={4}>
-      <h2 className="text-xl font-semibold">Downloads</h2>
+      <h2 className="text-xl">Downloads</h2>
       <div className="bg-default-100 p-8 text-center rounded-lg">
         <p className="text-default-500">No downloads available yet.</p>
       </div>
@@ -256,7 +256,7 @@ function AddressesView({ billing, shipping }) {
   return (
     <Stack spacing={4}>
       <FlexRow className="justify-between items-center">
-        <h2 className="text-xl font-semibold">Addresses</h2>
+        <h2 className="text-xl">Addresses</h2>
       </FlexRow>
       <p className="text-muted text-sm">
         The following addresses will be used on the checkout page by default.
@@ -347,7 +347,7 @@ function AccountDetailsView({ user }) {
 
   return (
     <Stack spacing={4}>
-      <h2 className="text-xl font-semibold">Account Details</h2>
+      <h2 className="text-xl">Account Details</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>

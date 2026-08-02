@@ -56,7 +56,7 @@ export default function Wishlist() {
 
           <div className="flex justify-between">
           <FlexRow className="flex-row items-center gap-2">
-            <h1 className="text-2xl font-semibold">My Wishlists</h1>
+            <h1 className="text-2xl">My Wishlists</h1>
             <Chip variant="primary" size="md" className="mt-1">
               { lists.length } lists of 10
             </Chip>

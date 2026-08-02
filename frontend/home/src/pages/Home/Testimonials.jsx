@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { AnimateIn } from '../../components';
 
 import { Slider } from '../../components'
 
@@ -68,29 +68,25 @@ const QuoteIcon = () => (
 
 function Testimonials() {
   return (
-    <section id="testimonials" className="section-padding bg-[var(--bg)] overflow-hidden">
+    <section id="testimonials" className="py-28 bg-background overflow-hidden">
       <div className="section-container">
         {/* Header */}
-        <motion.div
+        <AnimateIn
           className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
-        >
+          >
           <span className="inline-block uppercase tracking-widest text-sm text-accent font-semibold mb-4">
             TESTIMONIALS
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-[var(--text)]">
+          <h2 className="text-4xl md:text-5xl font-bold">
             Trusted by Engineers
           </h2>
-        </motion.div>
+        </AnimateIn>
 
         {/* Carousel */}
         <div className="max-w-3xl mx-auto">
           <Slider
             autoPlayInterval={5000}
-            className="min-h-[320px] md:min-h-[280px]"
+            className="min-h-80 md:min-h-72"
             slideClassName="px-2 md:px-4"
           >
             {testimonials.map((current) => (
@@ -101,7 +97,7 @@ function Testimonials() {
                 </div>
 
                 {/* Quote Text */}
-                <p className="text-lg md:text-xl italic text-[var(--text-secondary)] leading-relaxed mb-8">
+                <p className="text-lg md:text-xl italic text-muted leading-relaxed mb-8">
                   &ldquo;{current.quote}&rdquo;
                 </p>
 
@@ -114,10 +110,10 @@ function Testimonials() {
 
                 {/* Author */}
                 <div>
-                  <p className="font-semibold text-[var(--text)]">
+                  <p className="font-semibold">
                     {current.author}
                   </p>
-                  <p className="text-sm text-[var(--text-muted)]">
+                  <p className="text-sm text-muted">
                     {current.role}, {current.company}
                   </p>
                 </div>

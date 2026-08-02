@@ -33,7 +33,7 @@ export default function WishlistView() {
   if ( ! data?.wishlist ) {
     return (
       <Container className="py-8 max-w-7xl">
-        <h1 className="text-3xl font-semibold mb-6">Wishlist Not Found</h1>
+        <h1 className="mb-6">Wishlist Not Found</h1>
         <p>This wishlist doesn't exist or has been deleted.</p>
       </Container>
     )
@@ -63,7 +63,7 @@ export default function WishlistView() {
           </Breadcrumbs>
 
           <FlexRow className="justify-between items-center">
-            <h1 className="text-2xl font-semibold">{ wishlist.name }</h1>
+            <h1 className="text-2xl">{ wishlist.name }</h1>
             <Button variant="outline" onPress={ handleShare }>Share Link</Button>
           </FlexRow>
         </Stack>

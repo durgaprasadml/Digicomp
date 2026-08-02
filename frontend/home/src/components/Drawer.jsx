@@ -144,7 +144,7 @@ export default function Drawer({
   const initialVisibility = isOpen ? 'visible' : 'hidden';
 
   const content = (
-    <div className="fixed inset-0 z-[100] clear-both pointer-events-none">
+    <div className="fixed inset-0 z-100 clear-both pointer-events-none">
       <div
         ref={overlayRef}
         className="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto"
@@ -153,7 +153,7 @@ export default function Drawer({
       />
       <aside
         ref={drawerRef}
-        className={`absolute ${position === 'right' ? 'right-0' : 'left-0'} top-0 flex h-full max-w-[90vw] flex-col bg-[var(--surface)] shadow-2xl pointer-events-auto ${className}`}
+        className={`absolute ${position === 'right' ? 'right-0' : 'left-0'} top-0 flex h-full max-w-[90vw] flex-col bg-surface shadow-2xl pointer-events-auto ${className}`}
         style={{ transform: initialTransform }}
         onClick={(e) => e.stopPropagation()}
       >

@@ -40,7 +40,7 @@ export default function Product() {
   const imgRef = useRef(null)
   const imgRefs = useRef([])
 
-  if (!product.id) return <div className="p-8 text-center text-[var(--text-muted)] min-h-[50vh] flex items-center justify-center">Loading product data...</div>
+  if (!product.id) return <div className="p-8 text-center text-muted min-h-[50vh] flex items-center justify-center">Loading product data...</div>
 
   const containingLists = (wishlists || []).filter(wl => wl.items && wl.items.includes(product.id))
   const wishlisted = containingLists.length > 0
@@ -131,7 +131,7 @@ export default function Product() {
           {product.gallery && product.gallery.length > 0 ? (
             <Slider
               className="w-full"
-              wrapClassName="w-full bg-[var(--surface)] border border-[var(--border)] rounded-3xl overflow-hidden"
+              wrapClassName="w-full bg-surface border border-border rounded-3xl overflow-hidden"
               slideClassName="flex items-center justify-center h-[400px] md:h-[600px]"
               showDots={false}
               thumbnails={product.gallery}
@@ -152,7 +152,7 @@ export default function Product() {
               ))}
             </Slider>
           ) : (
-            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-3xl overflow-hidden h-[400px] md:h-[600px] w-full flex items-center justify-center text-[var(--text-muted)]">
+            <div className="bg-surface border border-border rounded-3xl overflow-hidden h-100 md:h-150 w-full flex items-center justify-center text-muted">
               No Image Available
             </div>
           )}
@@ -169,7 +169,7 @@ export default function Product() {
             <h1 className="mb-2">{product.name}</h1>
             <div className="flex items-center gap-4 text-sm">
               <Rating rating={ product.avgRating || 0 } isReadOnly size="sm" />
-              <a href="#reviews" className="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">
+              <a href="#reviews" className="text-muted hover:text-accent transition-colors">
                 {product.reviewCount || 0} customer review{ 1 !== product?.reviewCount && 's' }
               </a>
             </div>
@@ -180,14 +180,14 @@ export default function Product() {
               ₹{product.price || product.regPrice}
             </span>
             {product.regPrice && product.price !== product.regPrice && (
-              <span className="text-xl text-[var(--text-muted)] line-through">₹{product.regPrice}</span>
+              <span className="text-xl text-muted line-through">₹{product.regPrice}</span>
             )}
           </div>
 
-          <div className="text-[var(--text-secondary)] leading-relaxed" dangerouslySetInnerHTML={{ __html: product.excerpt }} />
+          <div className="text-muted leading-relaxed" dangerouslySetInnerHTML={{ __html: product.excerpt }} />
 
           <Chip color={ product.stock === 'instock' ? 'success' : 'warning' } size="lg" variant="secondary">
-            <div className={`w-2 h-2 mr-1 rounded-full shadow-md ${product.stock === 'instock' ? 'bg-(--success)' : 'bg-(--warning)'}`}></div>
+            <div className={`w-2 h-2 mr-1 rounded-full shadow-md ${product.stock === 'instock' ? 'bg-success' : 'bg-warning'}`}></div>
             { product.stock === 'instock' ? (
               <Chip.Label>{product.stockQty ? `${product.stockQty} items in stock` : 'In Stock - Ready to ship'}</Chip.Label>
             ) : (
@@ -289,28 +289,28 @@ export default function Product() {
           </FlexRow>
 
           {/* Meta */}
-          <div className="grid grid-cols-2 gap-4 text-sm pt-4 border-t border-[var(--border)]">
+          <div className="grid grid-cols-2 gap-4 text-sm pt-4 border-t border-border">
             {product.sku && (
               <div className="flex flex-col gap-1">
-                <span className="text-[var(--text-muted)]">SKU</span>
-                <span className="font-semibold text-[var(--text)]">{product.sku}</span>
+                <span className="text-muted">SKU</span>
+                <span className="font-semibold">{product.sku}</span>
               </div>
             )}
             {product.categories?.length > 0 && (
               <div className="flex flex-col gap-1">
-                <span className="text-[var(--text-muted)]">Category</span>
-                <span className="font-semibold text-[var(--text)]">{product.categories.join(', ')}</span>
+                <span className="text-muted">Category</span>
+                <span className="font-semibold">{product.categories.join(', ')}</span>
               </div>
             )}
             {product.brands?.length > 0 && (
               <div className="flex flex-col gap-1">
-                <span className="text-[var(--text-muted)]">Brand</span>
-                <span className="font-semibold text-[var(--text)]">{product.brands.join(', ')}</span>
+                <span className="text-muted">Brand</span>
+                <span className="font-semibold">{product.brands.join(', ')}</span>
               </div>
             )}
             {product.tags?.length > 0 && (
               <div className="flex flex-col gap-2">
-                <span className="text-[var(--text-muted)]">Tags</span>
+                <span className="text-muted">Tags</span>
                 <div className="flex flex-wrap gap-1">
                   {product.tags.map(tag => <Chip key={tag} size="sm">{tag}</Chip>)}
                 </div>
@@ -325,9 +325,9 @@ export default function Product() {
       {product.description && (
         <Section>
           <div className="surface surface--default rounded-3xl p-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--accent)] opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-accent opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
             <h2 className="title-section">
-              <span className="w-1 h-1 bg-[var(--accent)] rounded-full"></span>
+              <span className="w-1 h-1 bg-accent rounded-full"></span>
               Overview
             </h2>
             <div dangerouslySetInnerHTML={{ __html: product.description }} />
@@ -352,8 +352,8 @@ export default function Product() {
                 <Table.Body>
                   {Object.entries(product.attributes).map(([key, values]) => (
                     <Table.Row key={key}>
-                      <Table.Cell className="font-semibold text-[var(--text)] w-1/3">{key}</Table.Cell>
-                      <Table.Cell className="text-[var(--text-secondary)] w-2/3">{values.join(', ')}</Table.Cell>
+                      <Table.Cell className="font-semibold w-1/3">{key}</Table.Cell>
+                      <Table.Cell className="text-muted w-2/3">{values.join(', ')}</Table.Cell>
                     </Table.Row>
                   ))}
                 </Table.Body>
@@ -382,9 +382,9 @@ export default function Product() {
                 </CustomButton>
               </div>
               {product.acf.datasheet.mime === 'application/pdf' ? (
-                <iframe src={product.acf.datasheet.url} className="w-full h-96 md:h-[800px] border border-[var(--border)] rounded-3xl bg-white shadow-sm" title="Datasheet" />
+                <iframe src={product.acf.datasheet.url} className="w-full h-96 md:h-200 border border-border rounded-3xl bg-white shadow-sm" title="Datasheet" />
               ) : (
-                <div className="p-12 text-center text-[var(--text-muted)] border border-dashed border-[var(--border)] rounded-3xl bg-[var(--surface)]">Preview not available</div>
+                <div className="p-12 text-center text-muted border border-dashed border-border rounded-3xl bg-surface">Preview not available</div>
               )}
             </div>
           )}
@@ -403,7 +403,7 @@ export default function Product() {
                 </CustomButton>
               </div>
               {product.acf.schematic.mime === 'application/pdf' ? (
-                <iframe src={product.acf.schematic.url} className="w-full h-96 md:h-[800px] border border-[var(--border)] rounded-3xl bg-white shadow-sm" title="Schematic" />
+                <iframe src={product.acf.schematic.url} className="w-full h-96 md:h-200 border border-border rounded-3xl bg-white shadow-sm" title="Schematic" />
               ) : (
                 <Card className="items-center">
                   <img src={product.acf.schematic.url} alt="Schematic" className="max-w-full max-h-full object-contain" />
@@ -463,24 +463,24 @@ export default function Product() {
                     </Avatar>
                     <div className="flex flex-col">
                       <span className="font-bold">{review.author}</span>
-                      <span className="text-xs text-(--text-muted) mt-0.5">{new Date(review.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                      <span className="text-xs text-muted mt-0.5">{new Date(review.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                     </div>
                   </div>
                   <Rating rating={review.rating} isReadOnly={true} size="sm" />
                 </Card.Header>
                 <Card.Content className="p-4">
-                  <div className="text-(--text-secondary) text-sm leading-relaxed prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: review.content }} />
+                  <div className="text-muted text-sm leading-relaxed prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: review.content }} />
                 </Card.Content>
               </Card>
             ))}
           </Stack>
         ) : (
           <Card className="text-center">
-            <div className="w-16 h-16 bg-(--default) rounded-full flex items-center justify-center mx-auto text-(--text-muted)">
+            <div className="w-16 h-16 bg-default rounded-full flex items-center justify-center mx-auto text-muted">
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
             </div>
             <h3 className="text-lg font-bold">No reviews yet</h3>
-            <p className="text-(--text-muted) max-w-sm mx-auto">Have you used this product? Be the first to share your experience with other engineers.</p>
+            <p className="text-muted max-w-sm mx-auto">Have you used this product? Be the first to share your experience with other engineers.</p>
           </Card>
         )}
       </Section>
@@ -490,7 +490,7 @@ export default function Product() {
         <Section>
           <div>
             <h2 className="title-section">
-              <span className="w-1 h-1 bg-red-500 rounded-full"></span>
+              <span className="w-1 h-1 bg-danger rounded-full"></span>
               You May Also Like
             </h2>
           </div>

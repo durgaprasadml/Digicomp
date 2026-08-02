@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { AnimateIn } from '../../components';
 import { useState, useRef } from 'react';
 import { Link } from '@typeroute/router';
 
@@ -10,43 +10,35 @@ import ProductGrid from '../../blocks/ProductGrid';
 export default function FeaturedProducts() {
   const { featured: products = [] } = usePageData('/')
   return (
-    <section id="products" className="section-padding relative">
+    <section id="products" className="py-28 relative">
       <div className="section-container">
         {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
+        <AnimateIn
           className="mb-14 text-center"
         >
           <span className="uppercase tracking-widest text-sm gradient-text font-semibold">
             OUR PRODUCTS
           </span>
-          <h2 className="mt-4 text-4xl font-bold text-[var(--text)]">
+          <h2 className="mt-4 text-4xl font-bold">
             Shop Development Boards
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-[var(--text-secondary)]">
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-muted">
             Production-ready boards with open-source documentation, tested for industrial reliability. Every purchase includes free schematics and example code.
           </p>
-        </motion.div>
+        </AnimateIn>
 
         {/* Product grid */}
         <ProductGrid products={ products } />
 
         {/* View all link */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
+        <AnimateIn delay={300.0}
           className="mt-12 text-center"
         >
           <Link
             id="view-all-products"
             to={ shop }
             preload="intent"
-            className="btn-secondary inline-flex items-center gap-2"
+            className="button button--primary button--xl"
           >
             View Full Catalog
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -54,7 +46,7 @@ export default function FeaturedProducts() {
               <polyline points="12 5 19 12 12 19" />
             </svg>
           </Link>
-        </motion.div>
+        </AnimateIn>
       </div>
     </section>
   );
