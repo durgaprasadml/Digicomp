@@ -121,10 +121,16 @@ function dc_api_get_product( \WP_REST_Request $request ) {
 					}
 					$avatar = get_avatar_url( $designer_id );
 					$designers[] = [
-						'id'     => $designer_id,
-						'name'   => $name,
-						'avatar' => $avatar,
-						'bio'    => $bio,
+						'id'          => $designer_id,
+						'name'        => $name,
+						'avatar'      => $avatar,
+						'bio'         => $bio,
+						'designation' => get_user_meta( $designer_id, 'designation', true ),
+						'linkedin'    => get_user_meta( $designer_id, 'linkedin', true ),
+						'github'      => get_user_meta( $designer_id, 'github', true ),
+						'instagram'   => get_user_meta( $designer_id, 'instagram', true ),
+						'twitter'     => get_user_meta( $designer_id, 'twitter', true ),
+						'public_mail' => get_user_meta( $designer_id, 'public_mail', true ),
 					];
 				}
 			}

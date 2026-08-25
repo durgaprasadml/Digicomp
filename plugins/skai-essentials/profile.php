@@ -126,3 +126,15 @@ function cs_replace_avatar_data($args, $id_or_email) {
 
 	return $args;
 }
+
+// Add social and contact fields to user profile
+add_filter('user_contactmethods', 'skai_custom_contact_methods');
+function skai_custom_contact_methods($methods) {
+	$methods['designation'] = 'Designation';
+	$methods['linkedin'] = 'LinkedIn';
+	$methods['github'] = 'Github';
+	$methods['instagram'] = 'Instagram';
+	$methods['twitter'] = 'Twitter';
+	$methods['public_mail'] = 'Public Mail';
+	return $methods;
+}

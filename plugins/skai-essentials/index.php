@@ -175,4 +175,4 @@ function skai_unipixel_replace_scripts() {
 }
 add_action( 'wp_enqueue_scripts', 'skai_unipixel_replace_scripts', 21 );
 
-require_once( __DIR__ . '/profilepic.php' );
+require_once( __DIR__ . '/profile.php' );
