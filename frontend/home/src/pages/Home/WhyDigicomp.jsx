@@ -54,7 +54,7 @@ function CardItem({ card, index }) {
     >
       {/* Particle Canvas Container */}
       <div className="w-full h-80 pointer-events-none flex items-center justify-center ease-[cubic-bezier(0.25,1,0.5,1)] translate-y-8">
-        <div className="absolute top-18 left-1/2 -translate-x-1/2 w-32 h-32 flex justify-center transition-all duration-700 scale-50 group-hover:opacity-10 group-hover:scale-135">
+        <div className="absolute top-18 left-1/2 -translate-x-1/2 w-32 h-32 flex justify-center transition-all duration-700 scale-50 group-hover:opacity-0 group-hover:scale-135">
           <card.bg />
         </div>
         <ParticleShape shape={card.shape} isHovered={isHovered} className={ `transition-transform ${ card.classes }` } hoverColor={ card?.hoverColor } />

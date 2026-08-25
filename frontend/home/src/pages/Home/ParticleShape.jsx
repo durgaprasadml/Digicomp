@@ -87,8 +87,9 @@ export default function ParticleShape({ shape, isHovered, hoverColor = null, cla
   const canvasRef = useRef(null);
   const particlesRef = useRef([]);
   const animationRef = useRef(null);
-  const colorRef = useRef( '#FF5722'); // Fallback accent color
+  const colorRef = useRef('#FF5722'); // Fallback accent color
   const hoveredRef = useRef(isHovered);
+  const colorProgressRef = useRef(isHovered ? 1 : 0);
 
   // Sync hovered state to ref for requestAnimationFrame closure
   useEffect(() => {
@@ -150,13 +151,23 @@ export default function ParticleShape({ shape, isHovered, hoverColor = null, cla
 
     particlesRef.current = particles;
 
+    const baseColor = colorRef.current;
+    const targetColor = hoverColor || baseColor;
+
     // 4. Animation loop
     const render = (time) => {
       ctx.clearRect(0, 0, width, height);
 
-      particlesRef.current.forEach(p => {
-        p.update(hoveredRef.current, time);
-        p.draw(ctx, colorRef.current);
+      // Lerp color progress
+      const targetProgress = hoveredRef.current ? 1 : 0;
+      colorProgressRef.current += (targetProgress - colorProgressRef.current) * 0.05; // Smoothing factor
+      
+      const p = Math.round(colorProgressRef.current * 100);
+      const currentColor = `color-mix(in srgb, ${targetColor} ${p}%, ${baseColor})`;
+
+      particlesRef.current.forEach(particle => {
+        particle.update(hoveredRef.current, time);
+        particle.draw(ctx, currentColor);
       });
 
       animationRef.current = requestAnimationFrame(render);
@@ -167,7 +178,7 @@ export default function ParticleShape({ shape, isHovered, hoverColor = null, cla
     return () => {
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
-  }, [shape]); // Re-init if shape changes
+  }, [shape, hoverColor]); // Re-init if shape or hoverColor changes
 
   return (
     <canvas
