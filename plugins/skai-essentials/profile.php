@@ -131,10 +131,10 @@ function cs_replace_avatar_data($args, $id_or_email) {
 add_filter('user_contactmethods', 'skai_custom_contact_methods');
 function skai_custom_contact_methods($methods) {
 	$methods['designation'] = 'Designation';
-	$methods['linkedin'] = 'LinkedIn';
-	$methods['github'] = 'Github';
-	$methods['instagram'] = 'Instagram';
-	$methods['twitter'] = 'Twitter';
+	$methods['linkedin'] = 'LinkedIn username';
+	$methods['github'] = 'Github username';
+	$methods['instagram'] = 'Instagram username';
+	$methods['twitter'] = 'X (Twitter)';
 	$methods['public_mail'] = 'Public Mail';
 	return $methods;
 }
