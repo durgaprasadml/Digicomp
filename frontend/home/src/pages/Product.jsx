@@ -166,6 +166,7 @@ export default function Product() {
               wrapClassName="w-full bg-surface border border-border rounded-3xl overflow-hidden"
               slideClassName="flex items-center justify-center h-[400px] md:h-[600px]"
               showDots={false}
+              showArrows={true}
               thumbnails={thumbnails}
               onSlideChange={i => {
                 if (slides[i]?.type === 'image') {
