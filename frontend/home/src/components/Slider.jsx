@@ -156,7 +156,18 @@ export default function Slider({
                   : 'border-border hover:border-(--color-accent-hover) opacity-70 hover:opacity-100'
               }`}
             >
-              <img src={thumb.thumb || thumb.url} alt={`Thumbnail ${index + 1}`} className="w-full h-full object-cover" draggable="false" />
+              <div className="w-full h-full relative flex items-center justify-center">
+                <img src={thumb.thumb || thumb.url} alt={`Thumbnail ${index + 1}`} className="w-full h-full object-cover absolute inset-0" draggable="false" />
+                {thumb.type === '3d' && (
+                  <div className="absolute inset-0 bg-white/20 flex items-center justify-center pointer-events-none backdrop-blur-[1px]">
+                    <div className="rounded-full bg-white/80 p-2">
+                      <svg className="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7z" /><path d="m3.3 7 8.7 5 8.7-5M12 22V12" />
+                      </svg>
+                    </div>
+                  </div>
+                )}
+              </div>
             </button>
           ))}
         </div>

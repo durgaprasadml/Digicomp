@@ -80,6 +80,7 @@ function dc_api_get_product( \WP_REST_Request $request ) {
 	if ( function_exists( 'get_field' ) ) {
 		$datasheet = get_field( 'datasheet', $product->get_id() );
 		$schematic = get_field( 'schematic', $product->get_id() );
+		$model_3d = get_field( '3d', $product->get_id() );
 		$designers_raw = get_field( 'designers', $product->get_id() );
 		$badges = get_field( 'badges', $product->get_id() );
 
@@ -87,6 +88,7 @@ function dc_api_get_product( \WP_REST_Request $request ) {
 		$acf['badges'] = get_field( 'badges', $product->get_id() );
 		$acf['datasheet'] = function_exists( 'sk_get_acf_file_info' ) ? sk_get_acf_file_info( $datasheet ) : null;
 		$acf['schematic'] = function_exists( 'sk_get_acf_file_info' ) ? sk_get_acf_file_info( $schematic ) : null;
+		$acf['3d'] = function_exists( 'sk_get_acf_file_info' ) ? sk_get_acf_file_info( $model_3d ) : null;
 
 		$badge = dc_get_top_badge( $acf['badges'] );
 

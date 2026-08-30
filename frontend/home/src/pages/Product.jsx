@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useLocation, Link } from '@typeroute/router'
-import { Button, NumberField, Breadcrumbs, Chip, Avatar, Card, Table, toast } from "@heroui/react"
+import { Button, NumberField, Breadcrumbs, Chip, Avatar, Card, Table, Spinner, toast } from "@heroui/react"
 
 import { home, shop } from '../routes'
 import { usePageData } from '../stores/PageStore'
@@ -36,11 +36,43 @@ export default function Product() {
   const { path } = useLocation()
   const product = usePageData(path) || {}
   const [qty, setQty] = useState(1)
+  const [is3DLoaded, setIs3DLoaded] = useState(false)
+  const isImporting = useRef(false)
   const { wishlists, wishlistRef } = WishlistStore.use()
   const imgRef = useRef(null)
   const imgRefs = useRef([])
 
   if (!product.id) return <div className="p-8 text-center text-muted min-h-[50vh] flex items-center justify-center">Loading product data...</div>
+
+  const slides = [];
+  const thumbnails = [];
+
+  if (product.gallery && product.gallery.length > 0) {
+    product.gallery.forEach(img => {
+      slides.push({ type: 'image', ...img });
+      thumbnails.push(img);
+    });
+  }
+
+  const has3D = !!product?.acf?.['3d']?.url;
+  if (has3D) {
+    slides.push({ type: '3d', url: product.acf['3d'].url });
+    thumbnails.push({ thumb: thumbnails.length > 0 ? thumbnails[0].thumb : '', type: '3d' });
+  }
+
+  useEffect(() => {
+    if (slides.length === 1 && has3D && !is3DLoaded && !isImporting.current) {
+      if (typeof window !== 'undefined') {
+        isImporting.current = true;
+        import('@google/model-viewer')
+          .then(() => setIs3DLoaded(true))
+          .catch((err) => {
+            console.error("Failed to load 3D viewer:", err);
+            isImporting.current = false;
+          });
+      }
+    }
+  }, [slides.length, has3D, is3DLoaded]);
 
   const containingLists = (wishlists || []).filter(wl => wl.items && wl.items.includes(product.id))
   const wishlisted = containingLists.length > 0
@@ -128,28 +160,69 @@ export default function Product() {
         <Grid cols={2} className="gap-8">
           {/* R2 C1: Image Slider */}
           <div className="relative">
-          {product.gallery && product.gallery.length > 0 ? (
+          {slides && slides.length > 0 ? (
             <Slider
               className="w-full"
               wrapClassName="w-full bg-surface border border-border rounded-3xl overflow-hidden"
               slideClassName="flex items-center justify-center h-[400px] md:h-[600px]"
               showDots={false}
-              thumbnails={product.gallery}
-              onSlideChange={i => { imgRef.current = imgRefs.current[i] }}
+              thumbnails={thumbnails}
+              onSlideChange={i => {
+                if (slides[i]?.type === 'image') {
+                  imgRef.current = imgRefs.current[i];
+                }
+
+                // Lazy load 3D engine only when navigated to a 3D slide
+                if (slides[i]?.type === '3d' && !is3DLoaded && !isImporting.current) {
+                  if (typeof window !== 'undefined') {
+                    isImporting.current = true;
+                    import('@google/model-viewer')
+                      .then(() => setIs3DLoaded(true))
+                      .catch((err) => {
+                        console.error("Failed to load 3D viewer:", err);
+                        isImporting.current = false;
+                      });
+                  }
+                }
+              }}
             >
-              {product.gallery.map((img, k) => (
-                <img
-                  key={k}
-                  src={img.url}
-                  alt={product.name}
-                  className="max-w-full max-h-full object-contain drop-shadow-2xl"
-                  draggable="false"
-                  ref={el => {
-                    imgRef.current = el;
-                    imgRefs.current[k] = el;
-                  }}
-                />
-              ))}
+              {slides.map((slide, k) => {
+                if (slide.type === '3d') {
+                  return (
+                    <div key={k} className="w-full h-full flex items-center justify-center bg-white relative">
+                      {is3DLoaded ? (
+                        <model-viewer
+                          src={slide.url}
+                          auto-rotate
+                          camera-controls
+                          shadow-intensity="1"
+                          style={{ width: '100%', height: '100%', outline: 'none' }}
+                        />
+                      ) : (
+                        <div className="text-muted flex flex-col items-center">
+                          <Spinner />
+                          Loading 3D Engine...
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                // Default image slide
+                return (
+                  <img
+                    key={k}
+                    src={slide.url}
+                    alt={product.name}
+                    className="max-w-full max-h-full object-contain drop-shadow-2xl"
+                    draggable="false"
+                    ref={el => {
+                      if (k === 0) imgRef.current = el; // default to first image
+                      imgRefs.current[k] = el;
+                    }}
+                  />
+                );
+              })}
             </Slider>
           ) : (
             <div className="bg-surface border border-border rounded-3xl overflow-hidden h-100 md:h-150 w-full flex items-center justify-center text-muted">
