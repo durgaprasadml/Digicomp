@@ -189,7 +189,7 @@ export default function Product() {
               {slides.map((slide, k) => {
                 if (slide.type === '3d') {
                   return (
-                    <div key={k} className="w-full h-full flex items-center justify-center bg-white relative">
+                    <div key={k} className="w-full h-full flex items-center justify-center relative">
                       {is3DLoaded ? (
                         <model-viewer
                           src={slide.url}
