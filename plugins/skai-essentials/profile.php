@@ -1,5 +1,5 @@
 <?php
-
+/*
 add_action('admin_enqueue_scripts', function($hook) {
 	if ($hook === 'profile.php' || $hook === 'user-edit.php') {
 		wp_enqueue_media();
@@ -9,7 +9,7 @@ add_action('show_user_profile', 'cs_add_avatar_field');
 add_action('edit_user_profile', 'cs_add_avatar_field');
 
 function cs_add_avatar_field($user) {
-	$avatar_id = get_user_meta($user->ID, 'custom_avatar_id', true);
+	$avatar_id = get_user_meta($user->ID, 'user_avatar', true);
 	$avatar_url = $avatar_id ? wp_get_attachment_image_url($avatar_id, 'thumbnail') : '';
 	?>
 	<h2>Profile Picture</h2>
@@ -96,6 +96,8 @@ function cs_save_avatar($user_id) {
 		}
 	}
 }
+*/
+
 add_filter('get_avatar_data', 'cs_replace_avatar_data', 10, 2);
 
 function cs_replace_avatar_data($args, $id_or_email) {
@@ -112,7 +114,7 @@ function cs_replace_avatar_data($args, $id_or_email) {
 
 	if ($user) {
 
-		$avatar_id = get_user_meta($user->ID, 'custom_avatar_id', true);
+		$avatar_id = get_user_meta($user->ID, 'user_avatar', true);
 
 		if ($avatar_id) {
 			$size = isset($args['size']) ? $args['size'] : 96;
@@ -128,7 +130,7 @@ function cs_replace_avatar_data($args, $id_or_email) {
 }
 
 // Add social and contact fields to user profile
-add_filter('user_contactmethods', 'skai_custom_contact_methods');
+/* add_filter('user_contactmethods', 'skai_custom_contact_methods');
 function skai_custom_contact_methods($methods) {
 	$methods['designation'] = 'Designation';
 	$methods['linkedin'] = 'LinkedIn username';
@@ -137,4 +139,4 @@ function skai_custom_contact_methods($methods) {
 	$methods['twitter'] = 'X (Twitter)';
 	$methods['public_mail'] = 'Public Mail';
 	return $methods;
-}
+} */
