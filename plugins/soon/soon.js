@@ -4,7 +4,7 @@ cdBg.innerHTML = `
 <div class="cd-wrap">
 	<div id="countdown"></div>
 	<div class="cd-action">
-		<div id="launch" class="button cd-number">LAUNCH</div>
+		<div id="launch" class="cd-btn cd-number">LAUNCH</div>
 		<div class="cd-msg cd-number">Launching soon!</div>
 	</div>
 </div>`

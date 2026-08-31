@@ -90,6 +90,11 @@ function dc_render() {
 	'<div id="dc-app">
 	</div><script>var dcSSD = ' . wp_json_encode( $data ) . ';</script>'; ?>
 	<script type="module" src="<?php echo $assets['dist'] . $assets['js'] ?>" defer></script>
+	<?php
+	if ( function_exists( 'soon_get_countdown_html' ) ) {
+		echo soon_get_countdown_html();
+	}
+	?>
 </body>
 </html>
 	<?php

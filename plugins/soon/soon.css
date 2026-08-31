@@ -41,7 +41,7 @@
 }
 
 .cd-wrap .cd-number {
-	font-size: 3rem;
+	font-size: 2rem;
 }
 
 .cd-bg.counting .cd-action, .cd-bg:not(.counting) #countdown {
@@ -55,4 +55,22 @@
 body:not(.cd-active) .cd-bg {
 	visibility: hidden;
 	opacity: 0;
+}
+
+#launch {
+	background: rgba(255, 255, 255, 0.15);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	border: 1px solid rgba(255, 255, 255, 0.25);
+	box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+	color: #fff;
+	padding: 0.6rem 3rem;
+	cursor: pointer;
+	transition: background 0.3s ease;
+	text-align: center;
+}
+
+#launch:hover {
+	background: rgba(255, 255, 255, 0.25);
 }
