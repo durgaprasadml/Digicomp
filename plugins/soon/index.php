@@ -92,6 +92,10 @@ function soon_get_countdown_html() {
 		return '';
 	}
 
+	if ( current_user_can( 'manage_options' ) && ! get_option( 'soon_show_admin' ) ) {
+		return '';
+	}
+
 	$lauch_time = get_option( 'lauch_time' );
 	$ajaxurl = admin_url( 'admin-ajax.php' );
 	$isAdmin = current_user_can( 'manage_options' ) ? 'true' : 'false';

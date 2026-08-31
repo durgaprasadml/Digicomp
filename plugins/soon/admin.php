@@ -48,7 +48,15 @@ function soon_settings_init() {
 		'soon',
 		'soon_setting_section'
 	);
-	
+
+	add_settings_field(
+		'soon_show_admin',
+		'Show to Admin',
+		'soon_show_admin_markup',
+		'soon',
+		'soon_setting_section'
+	);
+
 	add_settings_field(
 		'soon_maintenance',
 		'Maintenance Mode',
@@ -59,6 +67,7 @@ function soon_settings_init() {
 
 	register_setting( 'soon', 'cd_active' );
 	register_setting( 'soon', 'lauch_time' );
+	register_setting( 'soon', 'soon_show_admin' );
 	register_setting( 'soon', 'soon_maintenance' );
 }
 
@@ -81,5 +90,12 @@ function soon_maintenance_markup() {
 	?>
 	<input type="checkbox" id="soon_maintenance" name="soon_maintenance" value="1" <?php checked( get_option( 'soon_maintenance' ), 1, true ); ?>>
 	<label for="soon_maintenance">Enable maintenance mode (Blocks front-end)</label>
+	<?php
+}
+
+function soon_show_admin_markup() {
+	?>
+	<input type="checkbox" id="soon_show_admin" name="soon_show_admin" value="1" <?php checked( get_option( 'soon_show_admin' ), 1, true ); ?>>
+	<label for="soon_show_admin">Show countdown overlay to administrators</label>
 	<?php
 }
