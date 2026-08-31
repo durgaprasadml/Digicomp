@@ -177,3 +177,4 @@ add_action( 'wp_enqueue_scripts', 'skai_unipixel_replace_scripts', 21 );
 
 require_once( __DIR__ . '/acf.php' );
 require_once( __DIR__ . '/profile.php' );
+require_once( __DIR__ . '/deploy.php' );
