@@ -43,7 +43,7 @@ jobs:
 
     - name: Create Theme Zip
       run: |
-        zip -r theme.zip . -x "*.git*" "*.github*" "frontend/home/node_modules/*" "frontend/home/tmp/*" "node_modules/*" "theme.zip" "*.DS_Store"
+        zip -r theme.zip . -x "*.git*" "*.github*" "frontend/home/node_modules/*" "frontend/home/tmp/*" "frontend/home/heroui-docs/*" "node_modules/*" "theme.zip" "*.DS_Store"
 
     - name: Deploy Theme
       run: |
