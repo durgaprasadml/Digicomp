@@ -1,0 +1,403 @@
+/* Define layers */
+@layer theme, base, components, utilities;
+
+/* Base requirements */
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+@import "@heroui/styles/base" layer(base);
+
+/* Theme variables */
+@import "@heroui/styles/themes/shared/theme.css" layer(theme);
+@import "@heroui/styles/themes/default" layer(theme);
+
+/* Components */
+@import "@heroui/styles/components/spinner.css" layer(components);
+@import "@heroui/styles/components/button.css" layer(components);
+@import "@heroui/styles/components/number-field.css" layer(components);
+@import "@heroui/styles/components/breadcrumbs.css" layer(components);
+@import "@heroui/styles/components/chip.css" layer(components);
+@import "@heroui/styles/components/card.css" layer(components);
+@import "@heroui/styles/components/avatar.css" layer(components);
+@import "@heroui/styles/components/table.css" layer(components);
+@import "@heroui/styles/components/surface.css" layer(components);
+@import "@heroui/styles/components/input.css" layer(components);
+@import "@heroui/styles/components/accordion.css" layer(components);
+@import "@heroui/styles/components/checkbox.css" layer(components);
+@import "@heroui/styles/components/checkbox-group.css" layer(components);
+@import "@heroui/styles/components/switch.css" layer(components);
+@import "@heroui/styles/components/select.css" layer(components);
+@import "@heroui/styles/components/list-box.css" layer(components);
+@import "@heroui/styles/components/list-box-item.css" layer(components);
+@import "@heroui/styles/components/badge.css" layer(components);
+@import "@heroui/styles/components/radio-group.css" layer(components);
+@import "@heroui/styles/components/radio.css" layer(components);
+@import "@heroui/styles/components/toast.css" layer(components);
+@import "@heroui/styles/components/close-button.css" layer(components);
+@import "@heroui/styles/components/modal.css" layer(components);
+@import "@heroui/styles/components/tabs.css" layer(components);
+
+/* Utilities and Variants (Required for some component features) */
+@import "@heroui/styles/utilities";
+
+/* ===== DESIGN SYSTEM TOKENS ===== */
+@theme {
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', ui-monospace, monospace;
+
+  --dot-grid-active: #7e57c2;
+
+  /* Animations */
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-glow: pulse-glow 3s ease-in-out infinite;
+  --animate-spotlight: spotlight 2s ease-in-out;
+}
+
+/* ===== CSS CUSTOM PROPERTIES (theme-aware) ===== */
+:root {
+  /* Default: dark theme */
+  --dot-grid-base: #27272A;
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --dot-grid-base: #E4E4E7;
+  color-scheme: light;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+@keyframes spotlight {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes spin-slow {
+  0% { transform: rotate(0deg); opacity: 0; }
+  80% { opacity: 0; }
+  85% { transform: rotate(0deg); opacity: 1; }
+  95% { transform: rotate(360deg); opacity: 1; }
+  100% { transform: rotate(360deg); opacity: 0; }
+}
+
+@keyframes move {
+  100% { left: calc(100% + 20px); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  opacity: 0;
+}
+.animate-spin-slow {
+  animation: spin-slow 10s linear 5;
+}
+
+/* ===== GLOBAL RESETS ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  background-color: var(--background);
+  color: var(--foreground);
+  line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+::selection {
+  background: var(--accent);
+  color: white;
+}
+
+/* ===== UTILITY CLASSES ===== */
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent), var(--color-accent-hover));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-border {
+  position: relative;
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--accent), var(--color-accent-hover));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+}
+
+.glass-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  transition: all 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.glass-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 30px var(--color-accent-soft-hover);
+}
+
+.button--xl {
+  height: calc(var(--spacing) * 13);
+  font-size: var(--text-base);
+  line-height: var(--tw-leading, var(--text-base--line-height));
+  padding-inline: calc(var(--spacing) * 6);
+}
+@media (width >=48rem) {
+  .button--xl {
+    height: calc(var(--spacing) * 12);
+  }
+}
+
+.page-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.section-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.button--dc:focus {
+  @apply status-focused;
+}
+
+/* Main Icon Nav */
+.icon-nav {
+  @apply items-center justify-center grow h-16;
+
+  svg {
+    width: initial;
+    height: initial;
+  }
+}
+
+/* Mega menu */
+.popover-wrap {
+  @apply relative flex items-center justify-center;
+
+  .popover {
+    transition: all 200ms ease-out;
+    @apply absolute top-full p-4 z-50 pointer-events-none opacity-0 invisible shadow-2xl rounded-2xl -translate-y-4 bg-surface;
+  }
+
+  &:hover .popover, &:focus-within .popover {
+    @apply pointer-events-auto opacity-100 visible translate-y-0;
+  }
+}
+#site-header .popover-wrap {
+  position: static;
+}
+
+/* Spotlight card effect */
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.spotlight-card .spotlight-effect {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--color-accent-hover) 0%, transparent 70%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+}
+
+.spotlight-card:hover .spotlight-effect {
+  opacity: 0.3;
+}
+
+/* Code editor mockup styles */
+.code-editor {
+  background: #0D1117;
+  border: 1px solid #30363D;
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.7;
+}
+
+.code-editor-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #161B22;
+  border-bottom: 1px solid #30363D;
+}
+
+.code-editor-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.code-editor-body {
+  padding: 20px;
+  overflow-x: auto;
+}
+
+/* Light theme adjustments for code editor */
+[data-theme="light"] .code-editor {
+  background: #F6F8FA;
+  border-color: var(--border);
+}
+
+[data-theme="light"] .code-editor-header {
+  background: #EFF1F3;
+  border-color: var(--border);
+}
+
+/* ===== Input Range Slider ===== */
+input[type="range"]::-webkit-slider-thumb, input[type="range"]::-moz-range-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border: 3px solid var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: auto;
+  position: relative;
+  z-index: 3;
+  transform: translateY(-30%);
+  transition: all 0.2s ease
+}
+input[type="range"]::-webkit-slider-thumb:hover, input[type="range"]::-moz-range-thumb:hover {
+  transform: translateY(-30%) scale(110%);
+}
+
+/* This is not Tree shakable. Delete or comment this if the component is not being used. */
+@layer base {
+  h1 {
+    @apply text-3xl font-semibold leading-tight;
+  }
+  h2 {
+    @apply text-2xl font-semibold leading-tight;
+  }
+  h3 {
+    @apply text-xl font-semibold leading-tight;
+  }
+  h4 {
+    @apply font-semibold;
+  }
+  a {
+    @apply hover:text-accent transition-colors;
+  }
+  /* ===== Global Layout System ===== */
+  .container {
+    @apply mx-auto px-4;
+  }
+
+  .section {
+    @apply pt-4 pb-6;
+  }
+
+  .stack {
+    @apply flex flex-col gap-2 md:gap-4;
+  }
+
+  .grid-base {
+    @apply grid gap-2 md:gap-4;
+  }
+
+  .row {
+    @apply flex flex-col md:flex-row gap-2 md:gap-4;
+  }
+
+  .title-section {
+    @apply flex items-center gap-2 mb-6;
+  }
+}
+
+@layer components {
+  /* ===== Rating Component ===== */
+  .rating {
+    @apply flex items-center gap-1;
+  }
+
+  .rating__item {
+    @apply relative rounded-sm transition-transform;
+  }
+
+  .rating__item--interactive {
+    @apply cursor-pointer focus-within:ring-2 focus-within:ring-warning focus-within:ring-offset-1 focus-within:ring-offset-transparent hover:scale-110;
+  }
+
+  .rating__icon, .rating__icon-partial {
+    color: var(--color-surface-tertiary);
+    fill: var(--color-surface-tertiary);
+    @apply w-5 h-5 transition-transform duration-200;
+
+    svg {
+      @apply w-5 h-5;
+    }
+  }
+
+  .rating--sm {
+    .rating__icon, .rating__icon-partial {
+      @apply w-4 h-4;
+    }
+    svg {
+      @apply w-4 h-4;
+    }
+  }
+
+  .rating--lg {
+    .rating__icon, .rating__icon-partial {
+      @apply w-6 h-6;
+    }
+    svg {
+      @apply w-6 h-6;
+    }
+  }
+
+  .rating__icon-partial {
+    @apply absolute top-0 left-0 overflow-hidden text-warning fill-warning;
+  }
+}

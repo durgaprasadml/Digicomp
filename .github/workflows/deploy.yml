@@ -1,0 +1,58 @@
+name: Deploy Theme
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Verify Admin Privilege
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { data } = await github.rest.repos.getCollaboratorPermissionLevel({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            username: context.actor
+          });
+          if (data.permission !== 'admin') {
+            core.setFailed(`Deployment aborted: User ${context.actor} is not an organization owner or repository admin.`);
+          }
+
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    - name: Install Dependencies
+      run: npm ci
+      working-directory: frontend/home
+
+    - name: Build Frontend
+      run: npm run build
+      working-directory: frontend/home
+
+    - name: Create Theme Zip
+      run: |
+        zip -r theme.zip . -x "*.git*" "*.github*" "frontend/home/node_modules/*" "frontend/home/tmp/*" "frontend/home/heroui-docs/*" "node_modules/*" "theme.zip" "*.DS_Store"
+
+    - name: Deploy Theme
+      run: |
+        curl -X POST https://digicomp.app/wp-json/skai/v1/deploy-theme \
+          -H "X-GitHub-Token: ${{ secrets.DEPLOY_SECRET }}" \
+          -F "theme_zip=@theme.zip"
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: theme.zip
+        generate_release_notes: true

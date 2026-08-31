@@ -1,0 +1,465 @@
+/*
+Theme Name: Digicomp Site
+Description: Digicomp Child theme for Greenlet Theme.
+Template: greenlet
+*/
+
+/* Global Theme Variables */
+
+:root {
+	--bg-sec: #f4f9fc;
+	--bg-inv-sec: #0a2540;
+	--heading-weight: 600;
+	--text-inv: #a8b6bd;
+	--link-inv: #a8b6bd;
+	--radius: 4px;
+	--radius-small: 2px;
+	--border: #d6e3eb;
+	--border-hover: #98b9cd;
+	--border-focus: #98b9cd;
+	--bg-notice: #ddeffd;
+	--bg-success: #d2ffec;
+	--bg-warning: #fff5eb;
+	--bg-error: #ffedec;
+	--button-bg: #f4f9fc;
+
+	--primary-dark: #f8fafc;
+	--primary-accent: #2563eb;
+	--text-light: #0f172a;
+	--text-muted: #475569;
+	--glass-bg: rgba(255, 255, 255, 0.7);
+	--glass-hover: rgba(255, 255, 255, 0.9);
+	--header-link-color: var(--text-light);
+
+	/* Unified Global Visual Tokens */
+	--card-bg: #ffffff;
+	--border-hover-subtle: rgba(0, 0, 0, 0.1);
+	--btn-neutral-bg: #f1f1f1;
+	--btn-neutral-color: #333;
+	--img-embed-bg: #fcfcfc;
+	--quantity-bg: transparent;
+	--glass-card-bg: rgba(255, 255, 255, 0.4);
+	--shadow-card: 0 8px 32px 0 rgba(0, 0, 0, 0.03);
+	--shadow-card-hover: 0 12px 40px rgba(0, 0, 0, 0.08);
+	--shadow-premium: 0 10px 25px rgba(0, 0, 0, 0.05);
+	--primary-accent-hover: #1d4ed8;
+	--accent-hover: color-mix(in oklab, var(--accent) 85%, black);
+	--table-header-bg: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="dark"] {
+	--bg-sec: #0f172a;
+	--primary-dark: #0f172a;
+	--primary-accent: #3b82f6;
+	--text-light: #f8fafc;
+	--text-muted: #94a3b8;
+	--glass-bg: rgba(30, 41, 59, 0.7);
+	--glass-hover: rgba(30, 41, 59, 0.9);
+	--border: #475569;
+	--header-link-color: var(--text-light);
+	--button: var(--text-light);
+	--button-bg: #0f172a;
+
+	/* Unified Global Visual Tokens (Dark Mode) */
+	--card-bg: #1e293b;
+	--border-hover-subtle: rgba(255, 255, 255, 0.1);
+	--btn-neutral-bg: rgba(255, 255, 255, 0.05);
+	--btn-neutral-color: #fff;
+	--img-embed-bg: #111827;
+	--quantity-bg: rgba(255, 255, 255, 0.05);
+	--glass-card-bg: rgba(30, 41, 59, 0.4);
+	--shadow-card: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+	--shadow-card-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
+	--shadow-premium: 0 10px 25px rgba(0, 0, 0, 0.5);
+	--primary-accent-hover: #2563eb;
+	--table-header-bg: rgba(255, 255, 255, 0.02);
+}
+
+body {
+	background-color: var(--primary-dark);
+	color: var(--text-light);
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+	position: fixed;
+	right: 3.2rem;
+	margin-top: 4px;
+	z-index: 1001;
+	background: var(--glass-bg);
+	border: 1px solid var(--border);
+	backdrop-filter: blur(10px);
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	padding: 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	color: var(--text-light);
+	transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+	transform: scale(1.1);
+	background: var(--glass-hover);
+}
+
+.theme-toggle svg {
+	transition: transform 0.3s ease;
+}
+
+.admin-bar .theme-toggle {
+	top: 56px;
+}
+
+/* Global Header Overrides */
+.site-header {
+	background: var(--glass-bg) !important;
+	backdrop-filter: blur(10px);
+	border-bottom: 1px solid var(--border);
+	width: 100%;
+	transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.admin-bar .site-header {
+	top: 32px;
+}
+
+.site-logo {
+	transition: padding 0.1s;
+}
+.header-section.is-stuck .site-logo {
+	padding: 10px 0;
+}
+.header-section {
+	transition: margin-bottom 0.1s;
+}
+.header-section.is-stuck {
+	margin-bottom: 30px;
+}
+
+.header-section.header-1 {
+	background: var(--accent);
+	padding: 8px 0;
+}
+.header-1 a {
+	color: #fff;
+}
+
+.button, input[type="submit"], .wp-element-button, body .woocommerce .button {
+	font-weight: 600;
+	color: #fff;
+	background-color: var(--accent);
+	background-image: linear-gradient(var(--accent), var(--accent));
+	border-color: var(--accent);
+	height: initial;
+}
+
+.button:hover, input[type="submit"]:hover, .wp-element-button:hover {
+	transform: translate3d(0, -2px, 0);
+	box-shadow: 0 12px 20px -10px hsla(160, 96%, 32%, .5);
+	border-color: var(--accent);
+}
+
+.button:hover, .button:visited, .wp-element-button:hover, .wp-element-button:visited {
+	color: #fff;
+}
+
+.hidden {
+	display: none;
+}
+
+.menu-toggle-button {
+	top: -60px;
+	z-index: 999;
+}
+
+.menu-toggle:checked~.site-menu {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background: rgba(0, 0, 0, .9);
+	text-align: center;
+	padding-top: 20vh;
+}
+
+.site-content {
+	min-height: calc(100vh - 478px);
+	overflow: hidden;
+}
+
+.center {
+	text-align: center;
+}
+
+.site-header a:hover {
+	color: var(--accent);
+}
+
+.copyright {
+	padding-top: 4rem;
+}
+
+.copyright p {
+	margin-bottom: 2rem;
+}
+
+.site-footer .widget_nav_menu {
+	width: 100%;
+}
+
+.site-footer .menu {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	text-align: center;
+}
+
+span.love {
+	background: #ffcf66;
+	background: linear-gradient(225deg, #ffcf66 0%, #d3321d 100%);
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	font-family: system-ui, sans-serif;
+	font-size: 2rem;
+}
+
+/* GENERAL */
+
+#confetti {
+	position: relative;
+	z-index: 999;
+}
+
+.wpcf7-form-control:not(input[type="submit"]) {
+	width: 100%;
+}
+
+.grecaptcha-badge {
+	visibility: hidden;
+}
+
+@media (min-width: 801px) {
+	.site-footer .menu {
+		flex-direction: row;
+	}
+}
+
+/* For WP Job Openings Plugin */
+@media (min-width: 993px) {
+	.awsm-job-single-wrap.awsm-col-2 .awsm-job-content {
+		width: 60%;
+	}
+	.awsm-job-single-wrap.awsm-col-2 .awsm-job-form {
+		width: 40%;
+	}
+}
+
+.awsm-job-form-inner h2 {
+	font-size: 3rem;
+}
+
+.awsm-job-specification-label {
+	display: none;
+}
+
+.awsm-job-specification-wrapper {
+	display: flex;
+	margin-top: 20px;
+	column-gap: 1.2vw;
+}
+
+.woocommerce-notice {
+	background: linear-gradient(to bottom right, var(--bg-notice) 0%, #fff 100%);
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+	padding: 0.6rem 2rem;
+	border-radius: 4px;
+}
+
+.woocommerce-notice--success {
+	--bg-notice: var(--bg-success);
+}
+
+.woocommerce-notice--warning {
+	--bg-notice: var(--bg-success);
+}
+
+.woocommerce-notice--error {
+	--bg-notice: var(--bg-success);
+}
+
+/* Woocommerce Custom call button */
+.woocommerce a.skai-call-button {
+    background-color: #ff9f00;
+    color: #ffffff;
+    padding: 11px 20px;
+    font-size: 16px;
+}
+
+/* fibosearch */
+.dc-search {
+	width: 100%;
+}
+
+.dgwt-wcas-style-pirx .dgwt-wcas-sf-wrapp {
+	background: none;
+	padding: 0;
+}
+.dgwt-wcas-pd-addtc-form .quantity input.qty {
+	max-width: 60px;
+}
+
+.dgwt-wcas-style-pirx .dgwt-wcas-sf-wrapp input[type=search].dgwt-wcas-search-input {
+	padding: 10px 24px 10px 48px;
+	background: none;
+	border: 1px solid var(--border);
+	font-size: 1.6rem;
+	font-family: inherit;
+	transition: all 0.1s;
+}
+
+.dgwt-wcas-style-pirx .dgwt-wcas-sf-wrapp input[type=search].dgwt-wcas-search-input:hover,
+.dgwt-wcas-style-pirx .dgwt-wcas-sf-wrapp input[type=search].dgwt-wcas-search-input:focus,
+.dgwt-wcas-style-pirx.dgwt-wcas-search-wrapp.dgwt-wcas-search-focused input[type=search].dgwt-wcas-search-input:hover {
+	background: var(--bg-sec);
+	border: 1px solid var(--border-hover);
+}
+
+.dgwt-wcas-search-wrapp input {
+	color: var(--text-light);
+}
+
+/* .dgwt-wcas-style-pirx .dgwt-wcas-sf-wrapp input[type=search].dgwt-wcas-search-input:focus {
+	background: var(--bg-sec);
+	border: 1px solid var(--border-hover);
+} */
+
+.dgwt-wcas-style-pirx .dgwt-wcas-sf-wrapp button.dgwt-wcas-search-submit {
+	left: 9px;
+	top: 7px;
+}
+
+.dgwt-wcas-open-pirx.dgwt-wcas-overlay-mobile-on .dgwt-wcas-om-bar button.dgwt-wcas-om-return path, .dgwt-wcas-style-pirx .dgwt-wcas-close:not(.dgwt-wcas-inner-preloader) path, .dgwt-wcas-style-pirx .dgwt-wcas-voice-search svg path, .dgwt-wcas-style-pirx.dgwt-wcas-has-submit .dgwt-wcas-search-submit svg path {
+	fill: var(--text-muted);
+}
+
+.dgwt-wcas-style-pirx.dgwt-wcas-search-filled .dgwt-wcas-sf-wrapp button.dgwt-wcas-search-submit {
+	right: 8px;
+}
+
+.dgwt-wcas-style-pirx .dgwt-wcas-preloader {
+	margin-right: 10px;
+}
+
+.dgwt-wcas-open-pirx .dgwt-wcas-open .dgwt-wcas-suggestions-wrapp,
+.dgwt-wcas-open-pirx .dgwt-wcas-open .dgwt-wcas-details-wrapp,
+.dgwt-wcas-open-pirx .dgwt-wcas-open.dgwt-wcas-nores .dgwt-wcas-suggestions-wrapp {
+	padding: 0;
+	border: 1px solid var(--border);
+	border-radius: 20px;
+	overflow: auto;
+}
+.dgwt-wcas-open-pirx .dgwt-wcas-open .dgwt-wcas-suggestions-wrapp {
+	margin-left: 1px;
+	border-radius: 20px 0 0 20px;
+}
+.dgwt-wcas-open.dgwt-wcas-nores.dgwt-wcas-full-width:not(.rtl):not(.dgwt-wcas-details-outside) .dgwt-wcas-suggestions-wrapp {
+	border-right-color: var(--border);
+}
+.dgwt-wcas-open-pirx .dgwt-wcas-open .dgwt-wcas-details-wrapp {
+	border-radius: 0 20px 20px 0;
+}
+
+.dgwt-wcas-sp {
+	font-size: 12px;
+}
+.dgwt-wcas-sp del {
+	font-size: 11px;
+}
+.dgwt-wcas-sp bdi {
+	white-space: nowrap;
+	margin-right: -18px;
+	clip-path: inset(0 17px 0 0);
+}
+
+/* Custom Header Icons Menu */
+
+.dc-header-menu {
+	display: inline-flex;
+	align-items: center;
+	gap: 1.4rem;
+	padding-left: 2rem;
+}
+
+.dc-header-menu-item {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--text-muted) !important;
+	transition: color 0.3s ease, transform 0.2s ease;
+	padding: 0.5rem;
+}
+
+.dc-header-menu-item:hover {
+	color: var(--primary-accent) !important;
+	transform: scale(1.08);
+}
+
+.dc-menu-icon {
+	position: relative;
+	display: inline-flex;
+}
+
+.dc-menu-icon svg {
+	width: 22px;
+	height: 22px;
+	stroke-width: 2px;
+}
+
+.dc-menu-badge {
+	position: absolute;
+	top: -6px;
+	right: -8px;
+	background-color: var(--primary-accent);
+	color: #fff;
+	font-size: 9px;
+	font-weight: 700;
+	border-radius: 50%;
+	min-width: 14px;
+	height: 14px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 3px;
+	line-height: 1;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.dc-menu-badge.dc-cart-count.empty {
+	display: none;
+}
+
+@media only screen and (max-width: 600px) {
+	.woocommerce a.skai-call-button {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		z-index: 102;
+		padding: 20px 0;
+	}
+}
+
+@media only screen and (max-width: 800px) {
+	.dc-header-menu {
+		border-left: none;
+		padding-left: 0;
+		margin-right: 3rem; /* Leave space for mobile hamburger menu toggle */
+	}
+}
+
