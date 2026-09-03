@@ -94,7 +94,7 @@ export function cleanFinalAssistantAnswer(rawContent) {
   cleaned = cleaned.replace(/\{[\s\S]*?"(?:tool|query|max_price)"[\s\S]*?\}/gi, '');
 
   // 3. Filter out lines containing internal reasoning indicators
-  const reasoningRegex = /\b(the user (is|wants|needs|asked|looking|might)|they('ll|'re| will| might| need| want| are)|let me (start|check|think|search|recall|first|see|use|know if you)|i (need|should|will|must|have|might|can|would|'ll) (to )?(check|search|find|use|look|recall|suggest|recommend|call|query)|first,?\s*i need|okay,?\s*the user|okay,?\s*let me|okay,?\s*i need|alright,?\s*the user|my role is|system prompt|maybe they need|i should check|if they want|search function|search query|tool call|make sure to (mention|include|search)|the function allows|the query should be|max_price should be)\b/i;
+  const reasoningRegex = /\b(the user (is|wants|needs|asked|looking|might)|they('ll|'re| will| might| need| want| are)|let me (start|check|think|search|recall|first|see|use|know if you)|i (need|should|will|must|have|might|can|would|'ll) (to )?(check|search|find|use|look|recall|suggest|recommend|call|query)|first,?\s*i need|okay,?\s*the user|okay,?\s*let me|okay,?\s*i need|alright,?\s*the user|my role is|system prompt|maybe they need|i should check|if they want|search function|search query|tool call|calling tool|thinking about|let's analyze|thought:|action:|plan:|make sure to (mention|include|search)|the function allows|the query should be|max_price should be)\b/i;
 
   const lines = cleaned.split('\n');
   const cleanLines = [];
