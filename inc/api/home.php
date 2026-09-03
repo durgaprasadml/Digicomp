@@ -29,8 +29,7 @@ function dc_api_get_home( \WP_REST_Request $request ) {
 	foreach ( $featured_products as $featprod ) {
 		$featprod_id = $featprod->get_id();
 		$badges = function_exists( 'get_field' ) ? get_field( 'badges', $featprod_id ) : [];
-		$priority = ['Bestseller', 'Popular', 'Pro', 'New', 'Value'];
-		$badge = current( array_intersect( $priority, $badges ) ) ?: null;
+		$badge = function_exists( 'dc_get_top_badge' ) ? dc_get_top_badge( $badges ) : ( is_array( $badges ) ? current( array_intersect( ['Bestseller', 'Popular', 'Pro', 'New', 'Value'], $badges ) ) : null );
 		$featimg_id  = $featprod->get_image_id();
 		$featimg_url = '';
 		if ($featimg_id) {
