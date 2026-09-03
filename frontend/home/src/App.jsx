@@ -1,5 +1,5 @@
 import { Suspense, useEffect } from 'react'
-import { Outlet } from "@typeroute/router"
+import { Outlet, useLocation } from "@typeroute/router"
 import Header from './blocks/Header'
 import Footer from './blocks/Footer'
 import ScrollToTop from './blocks/ScrollToTop'
@@ -8,15 +8,22 @@ import { Toast, Spinner } from '@heroui/react'
 import { FloatingAIButton } from './components'
 
 function App() {
+  const { path = '' } = useLocation()
+  const isAiPage = path === '/ai' || path.startsWith('/ai')
+
   useEffect( () => {
     UserStore.ensureData()
   }, [] )
 
   return (
-    <div className="min-h-screen flex flex-col pb-16 lg:pb-0 transition-colors duration-300">
+    <div className={`flex flex-col transition-colors duration-300 ${
+      isAiPage
+        ? 'h-[100dvh] max-h-[100dvh] overflow-hidden pb-16 lg:pb-0'
+        : 'min-h-screen pb-16 lg:pb-0'
+    }`}>
       <Toast.Provider placement="bottom end" />
       <Header />
-      <main className="flex-1 flex flex-col">
+      <main className={`flex-1 flex flex-col ${isAiPage ? 'min-h-0 overflow-hidden' : ''}`}>
         <Suspense fallback={
           <div className="pt-6 flex-1 flex items-center justify-center">
             <Spinner />
@@ -27,7 +34,7 @@ function App() {
       </main>
       <Footer />
       <FloatingAIButton />
-      <ScrollToTop />
+      {!isAiPage && <ScrollToTop />}
     </div>
   )
 }

@@ -353,7 +353,7 @@ export default function ChatHistorySidebar({
     <>
       {/* Desktop Collapsible Sidebar */}
       <aside
-        className={`hidden md:block shrink-0 transition-all duration-300 ${
+        className={`hidden md:block shrink-0 h-full min-h-0 transition-all duration-300 ${
           isCollapsed ? 'w-0 overflow-hidden' : 'w-64'
         }`}
       >

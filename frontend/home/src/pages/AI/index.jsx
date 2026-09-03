@@ -154,13 +154,23 @@ export default function AIPage() {
   // Check if conversation has any user messages
   const hasUserMessages = messages.some((m) => m.sender === 'user');
 
-  // 1. Initial page load scroll
+  // 1. Initial page load scroll & window scroll containment
   useEffect(() => {
     if (typeof window !== 'undefined') {
       window.scrollTo(0, 0);
       if (scrollContainerRef.current) {
         scrollContainerRef.current.scrollTop = 0;
       }
+    }
+    if (typeof document !== 'undefined') {
+      const prevBodyOverflow = document.body.style.overflow;
+      const prevHtmlOverflow = document.documentElement.style.overflow;
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = prevBodyOverflow;
+        document.documentElement.style.overflow = prevHtmlOverflow;
+      };
     }
   }, []);
 
@@ -546,7 +556,7 @@ export default function AIPage() {
   }
 
   return (
-    <div className="flex-1 flex h-[calc(100vh-64px)] max-h-[calc(100vh-64px)] bg-background overflow-hidden select-text">
+    <div className="flex-1 flex h-full max-h-full w-full min-h-0 min-w-0 bg-background overflow-hidden select-text">
       {/* Left Chat History Sidebar */}
       <ChatHistorySidebar
         conversations={conversations}
@@ -720,12 +730,14 @@ export default function AIPage() {
 
                     {/* Bubble Content Container */}
                     <div
-                      className={`space-y-3.5 max-w-[85%] sm:max-w-2xl ${
-                        msg.sender === 'user' ? 'items-end' : 'items-start'
+                      className={`space-y-3.5 min-w-0 ${
+                        msg.sender === 'user'
+                          ? 'flex flex-col items-end max-w-[85%] sm:max-w-xl'
+                          : 'flex flex-col items-start max-w-[90%] sm:max-w-2xl'
                       }`}
                     >
                       <div
-                        className={`p-4 rounded-2xl text-sm leading-relaxed ${
+                        className={`p-4 rounded-2xl text-sm leading-relaxed break-words w-fit max-w-full ${
                           msg.sender === 'user'
                             ? 'bg-gradient-to-r from-accent to-[var(--color-accent-hover,var(--accent))] text-white rounded-tr-xs shadow-sm'
                             : 'bg-surface border border-border/90 text-foreground rounded-tl-xs shadow-xs'
@@ -743,12 +755,12 @@ export default function AIPage() {
 
                       {/* Matching DigiComp Product Cards */}
                       {msg.products && msg.products.length > 0 && (
-                        <div className="space-y-2.5 pt-1">
+                        <div className="space-y-2.5 pt-1 w-full max-w-2xl min-w-0">
                           <div className="flex items-center gap-2 text-xs font-bold text-foreground">
                             <Cpu className="w-4 h-4 text-accent" />
                             <span>Matching DigiComp Products ({msg.products.length}):</span>
                           </div>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
                             {msg.products.map((product) => {
                               const isAdded = addedProductIds[product.id];
                               return (
@@ -857,10 +869,10 @@ export default function AIPage() {
 
         {/* Composer (Input Area) */}
         <div className="bg-surface/90 backdrop-blur-md border-t border-border/80 p-3 sm:p-4 shrink-0 z-20 shadow-sm">
-          <div className="mx-auto max-w-4xl space-y-2.5">
+          <div className="mx-auto max-w-4xl space-y-2.5 min-w-0">
             {/* Quick Suggestions row when conversation is active */}
             {hasUserMessages && (
-              <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs scrollbar-none">
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs scrollbar-none min-w-0">
                 <span className="text-muted font-medium shrink-0 flex items-center gap-1 text-[11px]">
                   <Sparkles className="w-3 h-3 text-accent" /> Suggested:
                 </span>
@@ -878,7 +890,7 @@ export default function AIPage() {
             )}
 
             {/* Input Composer Box */}
-            <div className="relative flex items-end gap-2 bg-background border border-border/90 rounded-2xl p-2 focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/15 transition-all shadow-inner">
+            <div className="relative flex items-end gap-2 bg-background border border-border/90 rounded-2xl p-2 focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/15 transition-all shadow-inner min-w-0">
               <textarea
                 ref={textareaRef}
                 value={inputValue}
