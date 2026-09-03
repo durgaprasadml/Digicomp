@@ -78,6 +78,11 @@ function dc_api_routes() {
 			'get_head' => 'dc_api_auth_page_head',
 			'ssr'      => false,
 		],
+		'ai' => [
+			'callback' => 'dc_api_ai_data',
+			'get_head' => 'dc_api_ai_head',
+			'ssr'      => false,
+		],
 		'blog/(?P<slug>[a-z0-9-]+)' => [
 			'callback' => 'dc_api_post_data',
 			'get_head' => 'dc_api_post_head',
@@ -88,6 +93,17 @@ function dc_api_routes() {
 			'get_head' => 'dc_api_page_head',
 			'type'     => 'page',
 		],
+	];
+}
+
+function dc_api_ai_data() {
+	return new \WP_REST_Response( [ 'head' => dc_api_ai_head() ] );
+}
+
+function dc_api_ai_head() {
+	return [
+		'title' => 'DigiComp AI Assistant - Digicomp Technologies',
+		'desc'  => 'Ask DigiComp AI about electronics, components, robotics projects, and products.',
 	];
 }
 

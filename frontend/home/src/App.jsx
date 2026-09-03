@@ -5,6 +5,7 @@ import Footer from './blocks/Footer'
 import ScrollToTop from './blocks/ScrollToTop'
 import { UserStore } from './stores/UserStore'
 import { Toast, Spinner } from '@heroui/react'
+import { FloatingAIButton } from './components'
 
 function App() {
   useEffect( () => {
@@ -25,6 +26,7 @@ function App() {
         </Suspense>
       </main>
       <Footer />
+      <FloatingAIButton />
       <ScrollToTop />
     </div>
   )

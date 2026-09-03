@@ -9,6 +9,7 @@ import MyAccount from './pages/MyAccount'
 import Wishlist from './pages/Wishlist'
 import WishlistView from './pages/Wishlist/View'
 import Auth from './pages/Auth'
+import AI from './pages/AI'
 
 // Server-side routes statically import components to avoid Suspense fallbacks during SSR
 export const home = route( '/' ).component( Home )
@@ -27,4 +28,5 @@ export const wishlist = route( '/wishlist' ).component( Wishlist )
 export const wishlistView = route( '/wishlist/:id' ).component( WishlistView )
 export const login = route( '/login' ).component( Auth )
 export const signup = route( '/signup' ).component( Auth )
+export const ai = route( '/ai' ).component( AI )
 export const page = route( '/:slug' ).component( Post )
