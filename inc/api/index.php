@@ -32,6 +32,11 @@ function dc_api_routes() {
 			'callback' => 'dc_api_get_shop',
 			'get_head' => 'dc_api_shop_head',
 		],
+		'search' => [
+			'callback' => 'dc_api_get_search',
+			'get_head' => 'dc_api_shop_head',
+			'ssr'      => false,
+		],
 		'product-category/(?P<cat>[a-zA-Z0-9-]+)' => [
 			'callback' => 'dc_api_get_shop',
 			'get_head' => 'dc_api_taxonomy_head',

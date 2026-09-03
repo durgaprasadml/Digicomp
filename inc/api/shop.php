@@ -14,10 +14,13 @@ function dc_api_get_shop( \WP_REST_Request $request ) {
 	$cat = $request['cat'] ?? null;
 	$tag = $request['tag'] ?? null;
 	$brand = $request['brand'] ?? null;
+	$search = $request['s'] ?? $request['search'] ?? $request['q'] ?? null;
+	$stock = $request['stock'] ?? $request['stock_status'] ?? null;
+	$limit = isset( $request['limit'] ) ? intval( $request['limit'] ) : -1;
 
 	$query_args = [
 		'status' => 'publish',
-		'limit'  => -1,
+		'limit'  => $limit > 0 ? $limit : -1,
 	];
 
 	if ( $cat ) {
@@ -26,6 +29,14 @@ function dc_api_get_shop( \WP_REST_Request $request ) {
 		$query_args['tag'] = array( $tag );
 	} elseif ( $brand ) {
 		$query_args['product_brand'] = array( $brand );
+	}
+
+	if ( ! empty( $search ) ) {
+		$query_args['s'] = sanitize_text_field( $search );
+	}
+
+	if ( ! empty( $stock ) ) {
+		$query_args['stock_status'] = sanitize_text_field( $stock );
 	}
 
 	// Fetch all products to build the filter dataset and virtualization payload
@@ -107,21 +118,37 @@ function dc_api_get_shop( \WP_REST_Request $request ) {
 		if ($price < $min_price) $min_price = $price;
 		if ($price > $max_price) $max_price = $price;
 
+		$min_price_req = isset( $request['min_price'] ) && is_numeric( $request['min_price'] ) ? floatval( $request['min_price'] ) : null;
+		$max_price_req = isset( $request['max_price'] ) && is_numeric( $request['max_price'] ) ? floatval( $request['max_price'] ) : null;
+		if ( $min_price_req !== null && $price < $min_price_req ) {
+			continue;
+		}
+		if ( $max_price_req !== null && $price > $max_price_req ) {
+			continue;
+		}
+
 		$products[] = [
-			'id'         => $prod->get_id(),
-			'name'       => $prod->get_name(),
-			'excerpt'    => $prod->get_short_description(),
-			'price'      => $prod->get_price(),
-			'regPrice'   => $prod->get_regular_price(),
-			'stock'      => $prod->get_stock_status(),
-			'image'      => $img_data ? $img_data[0] : '',
-			'categories' => $cats,
-			'tags'       => $tags,
-			'brands'     => $brands,
-			'attributes' => $attrs,
-			'acf'        => $acf_values,
-			'badge'      => $badge,
-			'date'       => $prod->get_date_created() ? $prod->get_date_created()->getOffsetTimestamp() : 0,
+			'id'          => $prod->get_id(),
+			'name'        => $prod->get_name(),
+			'slug'        => $prod->get_slug(),
+			'sku'         => $prod->get_sku(),
+			'excerpt'     => $prod->get_short_description(),
+			'description' => $prod->get_description(),
+			'price'       => $prod->get_price(),
+			'regPrice'    => $prod->get_regular_price(),
+			'salePrice'   => $prod->get_sale_price(),
+			'stock'       => $prod->get_stock_status(),
+			'stockQty'    => $prod->get_stock_quantity(),
+			'image'       => $img_data ? $img_data[0] : '',
+			'url'         => '/product/' . $prod->get_slug(),
+			'permalink'   => get_permalink( $prod->get_id() ),
+			'categories'  => $cats,
+			'tags'        => $tags,
+			'brands'      => $brands,
+			'attributes'  => $attrs,
+			'acf'         => $acf_values,
+			'badge'       => $badge,
+			'date'        => $prod->get_date_created() ? $prod->get_date_created()->getOffsetTimestamp() : 0,
 		];
 
 		$taxonomies['categories'] = array_unique(array_merge($taxonomies['categories'], $cats));
@@ -202,4 +229,11 @@ function dc_api_taxonomy_head( $request = null ) {
 		'title' => $title,
 		'desc'  => 'Browse ' . $name . ' at Digicomp Technologies.',
 	];
+}
+
+/**
+ * REST API Callback for Search Endpoint.
+ */
+function dc_api_get_search( \WP_REST_Request $request ) {
+	return dc_api_get_shop( $request );
 }
