@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
-import { Link } from '@typeroute/router'
+import { Link, useNavigate } from '@typeroute/router'
 import { Button, NumberField, Breadcrumbs, Chip, Spinner, toast } from "@heroui/react"
+import { Sparkles } from 'lucide-react'
 
-import { home, shop } from '../../routes'
+import { home, shop, ai as aiRoute, login as loginRoute } from '../../routes'
 import { CartStore } from '../../stores/CartStore'
 import { UserStore } from '../../stores/UserStore'
 import { WishlistStore } from '../../stores/WishlistStore'
@@ -31,12 +32,53 @@ function ShareIcon() {
 }
 
 export default function Header({ product }) {
+  const navigate = useNavigate()
   const [qty, setQty] = useState(1)
   const [is3DLoaded, setIs3DLoaded] = useState(false)
   const isImporting = useRef(false)
+  const { user } = UserStore.use()
   const { wishlists, wishlistRef } = WishlistStore.use()
   const imgRef = useRef(null)
   const imgRefs = useRef([])
+
+  const handleAskAIAboutProduct = () => {
+    const productSlug = product.slug || product.sku || (product.id ? String(product.id) : '');
+    const productContext = {
+      id: product.id,
+      name: product.name,
+      slug: product.slug || productSlug,
+      sku: product.sku || '',
+      category: product.categories?.[0] || 'Hardware',
+      categories: product.categories || [],
+      brand: product.brands?.[0] || 'DigiComp',
+      brands: product.brands || [],
+      price: product.price || product.regPrice || 0,
+      regPrice: product.regPrice || product.price || 0,
+      salePrice: product.salePrice || null,
+      stock: product.stock || 'instock',
+      stockQty: product.stockQty || 0,
+      description: product.description || product.excerpt || '',
+      excerpt: product.excerpt || '',
+      attributes: product.attributes || {},
+      product_url: product.url || `/product/${productSlug}`,
+      image_url: product.gallery?.[0]?.url || product.image || '',
+    };
+
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      try {
+        window.sessionStorage.setItem(`digicomp_product_context_${productSlug}`, JSON.stringify(productContext));
+      } catch (e) {
+        console.warn('Could not cache product context in sessionStorage', e);
+      }
+    }
+
+    const aiDestination = `/ai?product=${encodeURIComponent(productSlug)}`;
+    if (!user?.is_logged_in) {
+      navigate({ to: loginRoute, state: { from: aiDestination } });
+    } else {
+      navigate({ to: aiRoute, search: { product: productSlug } });
+    }
+  };
 
   const slides = [];
   const thumbnails = [];
@@ -295,6 +337,20 @@ export default function Header({ product }) {
               Buy Now
             </Button>
           </FlexRow>
+
+          {/* Dedicated Product AI Button */}
+          <Button
+            size="lg"
+            variant="outline"
+            className="w-full font-semibold border-border hover:border-accent/60 hover:bg-accent/5 text-foreground hover:text-accent transition-all flex items-center justify-center gap-2.5 py-3 rounded-2xl cursor-pointer shadow-2xs group"
+            onClick={handleAskAIAboutProduct}
+            id="product-ask-ai-button"
+            aria-label={`Ask AI About ${product.name}`}
+          >
+            <Sparkles className="w-4 h-4 text-accent transition-transform group-hover:scale-110 group-hover:rotate-12 duration-200" />
+            <span className="text-sm font-semibold tracking-wide">Ask AI About This Product</span>
+          </Button>
+
           <FlexRow className="flex-wrap flex-row">
             <div className="flex">
               <CustomButton

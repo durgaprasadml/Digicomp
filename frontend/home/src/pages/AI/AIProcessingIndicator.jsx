@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Sparkles, Cpu, Search, Database, Layers } from 'lucide-react';
 
-const STATUS_ROTATION = [
+const GENERAL_STATUS_ROTATION = [
   { text: 'Preparing your answer...', icon: Sparkles },
   { text: 'Finding relevant products...', icon: Search },
   { text: 'Checking DigiComp catalog...', icon: Database },
@@ -9,24 +9,32 @@ const STATUS_ROTATION = [
   { text: 'Analyzing specifications...', icon: Layers },
 ];
 
+const PRODUCT_STATUS_ROTATION = [
+  { text: 'Understanding this product...', icon: Sparkles },
+  { text: 'Checking product specifications...', icon: Layers },
+  { text: 'Preparing your answer...', icon: Cpu },
+];
+
 export default function AIProcessingIndicator({
   active = true,
   intervalMs = 1800,
+  isProductMode = false,
 }) {
   const [stepIndex, setStepIndex] = useState(0);
+  const rotation = isProductMode ? PRODUCT_STATUS_ROTATION : GENERAL_STATUS_ROTATION;
 
   useEffect(() => {
     if (!active) return;
     setStepIndex(0);
     const timer = setInterval(() => {
-      setStepIndex((prev) => (prev + 1) % STATUS_ROTATION.length);
+      setStepIndex((prev) => (prev + 1) % rotation.length);
     }, intervalMs);
     return () => clearInterval(timer);
-  }, [active, intervalMs]);
+  }, [active, intervalMs, rotation.length]);
 
   if (!active) return null;
 
-  const current = STATUS_ROTATION[stepIndex];
+  const current = rotation[stepIndex] || rotation[0];
   const StepIcon = current.icon;
 
   return (

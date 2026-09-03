@@ -29,6 +29,7 @@ import {
   sendChatMessageStream,
   fetchConversations,
   fetchConversationById,
+  createConversation,
   renameConversation,
   deleteConversation,
   saveMessageToConversation,
@@ -84,6 +85,45 @@ const WELCOME_SUGGESTIONS = [
   },
 ];
 
+const PRODUCT_SUGGESTIONS = [
+  {
+    icon: Cpu,
+    title: 'What is this product?',
+    desc: 'Overview, architecture & key capabilities',
+    prompt: 'What is this product?',
+  },
+  {
+    icon: Layers,
+    title: 'Technical specifications',
+    desc: 'Processor, memory, clock speed, pinout & I/O',
+    prompt: 'What are the specifications?',
+  },
+  {
+    icon: Zap,
+    title: 'Robotics & projects',
+    desc: 'Suitability for motor control, sensors, and robotics builds',
+    prompt: 'Can I use this for robotics?',
+  },
+  {
+    icon: CheckCircle2,
+    title: 'Price & availability',
+    desc: 'Check current DigiComp pricing and stock status',
+    prompt: 'Is it in stock and what is the price?',
+  },
+  {
+    icon: Sparkles,
+    title: 'Power requirements',
+    desc: 'Operating voltage, power supply & circuit needs',
+    prompt: 'What power supply does it need?',
+  },
+  {
+    icon: Search,
+    title: 'Catalog alternatives',
+    desc: 'Find cheaper or related alternative boards in DigiComp store',
+    prompt: 'Are there cheaper alternatives?',
+  },
+];
+
 export default function AIPage() {
   const { search } = useLocation();
   const navigate = useNavigate();
@@ -92,7 +132,8 @@ export default function AIPage() {
 
   // Parse URL search params
   const urlParams = new URLSearchParams(search || (typeof window !== 'undefined' ? window.location.search : ''));
-  const queryParam = urlParams.get('query') || urlParams.get('product') || urlParams.get('s') || '';
+  const queryParam = urlParams.get('query') || urlParams.get('s') || '';
+  const productParam = urlParams.get('product') || '';
   const chatParam = urlParams.get('chat') || urlParams.get('id') || '';
 
   // Auth gate check - only trigger once UserStore has initialized
@@ -105,13 +146,58 @@ export default function AIPage() {
     }
   }, [isInitialized, user?.is_logged_in, navigate]);
 
+  const [activeProductContext, setActiveProductContext] = useState(() => {
+    if (productParam && typeof window !== 'undefined' && window.sessionStorage) {
+      try {
+        const cached = window.sessionStorage.getItem(`digicomp_product_context_${productParam}`);
+        if (cached) return JSON.parse(cached);
+      } catch (_e) {}
+    }
+    return null;
+  });
+  const [_productLoadingError, setProductLoadingError] = useState(false);
+
   const [conversations, setConversations] = useState([]);
   const [activeConversationId, setActiveConversationId] = useState(() => chatParam || generateNewConvId());
-  const [activeTitle, setActiveTitle] = useState('New Chat');
+  const [activeTitle, setActiveTitle] = useState(() => {
+    if (productParam) {
+      if (typeof window !== 'undefined' && window.sessionStorage) {
+        try {
+          const cached = window.sessionStorage.getItem(`digicomp_product_context_${productParam}`);
+          if (cached) {
+            const p = JSON.parse(cached);
+            if (p?.name) return `${p.name} — Product Questions`;
+          }
+        } catch (_e) {}
+      }
+      return `${productParam} — Product Questions`;
+    }
+    return 'New Chat';
+  });
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
 
   const getInitialMessages = useCallback(() => {
+    if (productParam) {
+      let cachedName = productParam;
+      if (typeof window !== 'undefined' && window.sessionStorage) {
+        try {
+          const cached = window.sessionStorage.getItem(`digicomp_product_context_${productParam}`);
+          if (cached) {
+            const p = JSON.parse(cached);
+            if (p?.name) cachedName = p.name;
+          }
+        } catch (_e) {}
+      }
+      return [
+        {
+          id: 'welcome-prod',
+          sender: 'assistant',
+          text: `Hi! I can help you understand the ${cachedName}. Ask me about its specifications, applications, compatibility, or whether it's suitable for your project.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        },
+      ];
+    }
     if (queryParam) {
       return [
         {
@@ -133,7 +219,7 @@ export default function AIPage() {
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       },
     ];
-  }, [queryParam, user?.first_name, user?.email, conversations.length]);
+  }, [productParam, queryParam, user?.first_name, user?.email, conversations.length]);
 
   const [messages, setMessages] = useState(getInitialMessages);
   const [inputValue, setInputValue] = useState('');
@@ -192,6 +278,11 @@ export default function AIPage() {
       setMessages(conv.messages);
       setActiveTitle(conv.title || 'New Chat');
       setActiveConversationId(conv.id);
+      if (conv.product_context) {
+        setActiveProductContext(conv.product_context);
+      } else {
+        setActiveProductContext(null);
+      }
     } else {
       setMessages([
         {
@@ -207,12 +298,116 @@ export default function AIPage() {
       ]);
       setActiveTitle('New Chat');
       setActiveConversationId(convId);
+      setActiveProductContext(null);
     }
   }, [user?.first_name, user?.email, conversations.length, queryParam]);
 
+  // Product context loader when navigated from product page (?product=slug)
+  const lastLoadedProductRef = useRef(null);
+
+  useEffect(() => {
+    if (!productParam) {
+      lastLoadedProductRef.current = null;
+      return;
+    }
+
+    if (lastLoadedProductRef.current === productParam && activeProductContext) {
+      return;
+    }
+    lastLoadedProductRef.current = productParam;
+
+    let isMounted = true;
+    const loadProductContext = async () => {
+      let productData = null;
+      if (typeof window !== 'undefined' && window.sessionStorage) {
+        try {
+          const cached = window.sessionStorage.getItem(`digicomp_product_context_${productParam}`);
+          if (cached) {
+            productData = JSON.parse(cached);
+          }
+        } catch (e) {
+          console.warn('Error reading cached product context:', e);
+        }
+      }
+
+      if (!productData) {
+        try {
+          const res = await fetch(`/wp-json/dc/v1/product/${encodeURIComponent(productParam)}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.name) {
+              productData = {
+                id: data.id,
+                name: data.name,
+                slug: data.slug || productParam,
+                sku: data.sku || '',
+                category: data.categories?.[0] || 'Hardware',
+                categories: data.categories || [],
+                brand: data.brands?.[0] || 'DigiComp',
+                brands: data.brands || [],
+                price: data.price || data.regPrice || 0,
+                regPrice: data.regPrice || data.price || 0,
+                salePrice: data.salePrice || null,
+                stock: data.stock || 'instock',
+                stockQty: data.stockQty || 0,
+                description: data.description || data.excerpt || '',
+                excerpt: data.excerpt || '',
+                attributes: data.attributes || {},
+                product_url: data.url || `/product/${productParam}`,
+                image_url: data.gallery?.[0]?.url || data.image || '',
+              };
+            }
+          }
+        } catch (err) {
+          console.warn('Error fetching product context:', err);
+        }
+      }
+
+      if (!isMounted) return;
+
+      if (productData && productData.name) {
+        setProductLoadingError(false);
+        setActiveProductContext(productData);
+        const prodTitle = `${productData.name} — Product Questions`;
+        setActiveTitle(prodTitle);
+        const freshConvId = generateNewConvId();
+        setActiveConversationId(freshConvId);
+
+        setMessages([
+          {
+            id: `welcome-prod-${Date.now()}`,
+            sender: 'assistant',
+            text: `Hi! I can help you understand the ${productData.name}. Ask me about its specifications, applications, compatibility, or whether it's suitable for your project.`,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          },
+        ]);
+
+        createConversation(freshConvId, prodTitle, productData)
+          .then(() => refreshConversationsList())
+          .catch((e) => console.warn('Failed to register product conversation:', e));
+      } else {
+        setProductLoadingError(true);
+        setMessages([
+          {
+            id: `welcome-error-${Date.now()}`,
+            sender: 'assistant',
+            text: "I couldn't load this product's information right now. Please try again.",
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          },
+        ]);
+      }
+    };
+
+    loadProductContext();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [productParam, activeProductContext, refreshConversationsList]);
+
   // Update initial greeting when user data updates
   useEffect(() => {
-    if (!queryParam && !chatParam) {
+    if (!queryParam && !chatParam && !productParam) {
       setMessages((prev) => {
         if (prev.length === 1 && prev[0].id === 'welcome-1') {
           const freshText = generateWelcomeMessage({
@@ -226,7 +421,7 @@ export default function AIPage() {
         return prev;
       });
     }
-  }, [user?.first_name, user?.email, conversations.length, queryParam, chatParam]);
+  }, [user?.first_name, user?.email, conversations.length, queryParam, chatParam, productParam]);
 
   useEffect(() => {
     if (chatParam) {
@@ -274,11 +469,11 @@ export default function AIPage() {
 
   // Handle prefilled query param (e.g. from SearchBox "Ask AI")
   useEffect(() => {
-    if (queryParam && !initialFetchDone.current && !activeRequestRef.current) {
+    if (queryParam && !productParam && !initialFetchDone.current && !activeRequestRef.current) {
       initialFetchDone.current = true;
       handleSendRef.current?.(queryParam);
     }
-  }, [queryParam]);
+  }, [queryParam, productParam]);
 
   // Auto-resize textarea
   useEffect(() => {
@@ -396,9 +591,17 @@ export default function AIPage() {
       timestamp: now,
     };
 
-    // Auto-generate short title on first message
+    // Auto-generate short title on first message or preserve product title
     const isFirstUserMessage = !messages.some((m) => m.sender === 'user');
-    if (isFirstUserMessage || activeTitle === 'New Chat') {
+    if (activeProductContext) {
+      const prodTitle = `${activeProductContext.name} — Product Questions`;
+      if (activeTitle !== prodTitle) {
+        setActiveTitle(prodTitle);
+        renameConversation(convId, prodTitle)
+          .then(() => refreshConversationsList())
+          .catch((e) => console.warn('Failed to save title:', e));
+      }
+    } else if (isFirstUserMessage || activeTitle === 'New Chat') {
       const generatedTitle = generateConversationTitle(text);
       setActiveTitle(generatedTitle);
       renameConversation(convId, generatedTitle)
@@ -440,7 +643,8 @@ export default function AIPage() {
           );
         },
         undefined,
-        convId
+        convId,
+        activeProductContext
       );
 
       const finalCleanAnswer = cleanFinalAssistantAnswer(res.answer) || 'I could not process your request. Please try again.';
@@ -641,36 +845,76 @@ export default function AIPage() {
                 {/* Welcome Title & Subtitle */}
                 <div className="space-y-2 max-w-lg">
                   <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
-                    DigiComp AI
+                    {activeProductContext ? activeProductContext.name : 'DigiComp AI'}
                   </h1>
                   <p className="text-xs sm:text-sm text-muted leading-relaxed">
-                    Your engineering and electronics assistant. Ask about components, projects, compatibility, pricing, specifications, or DigiComp products.
+                    {activeProductContext
+                      ? `Dedicated product assistant for ${activeProductContext.name}. Ask about specifications, applications, compatibility, or catalog alternatives.`
+                      : 'Your engineering and electronics assistant. Ask about components, projects, compatibility, pricing, specifications, or DigiComp products.'}
                   </p>
                 </div>
 
                 {/* Capability Badges */}
                 <div className="flex flex-wrap items-center justify-center gap-2 text-[11px] font-medium text-muted">
-                  <span className="px-3 py-1 rounded-full bg-surface border border-border/80 shadow-xs flex items-center gap-1.5">
-                    <Cpu className="w-3 h-3 text-accent" /> Microcontrollers & SoCs
-                  </span>
-                  <span className="px-3 py-1 rounded-full bg-surface border border-border/80 shadow-xs flex items-center gap-1.5">
-                    <Zap className="w-3 h-3 text-accent" /> Robotics & Sensors
-                  </span>
-                  <span className="px-3 py-1 rounded-full bg-surface border border-border/80 shadow-xs flex items-center gap-1.5">
-                    <Layers className="w-3 h-3 text-accent" /> Circuit Compatibility
-                  </span>
-                  <span className="px-3 py-1 rounded-full bg-surface border border-border/80 shadow-xs flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3 h-3 text-accent" /> DigiComp Catalog & Stock
-                  </span>
+                  {activeProductContext ? (
+                    <>
+                      {activeProductContext.category && (
+                        <span className="px-3 py-1 rounded-full bg-surface border border-border/80 shadow-xs flex items-center gap-1.5">
+                          <Layers className="w-3 h-3 text-accent" /> {activeProductContext.category}
+                        </span>
+                      )}
+                      {activeProductContext.sku && (
+                        <span className="px-3 py-1 rounded-full bg-surface border border-border/80 shadow-xs flex items-center gap-1.5">
+                          <Cpu className="w-3 h-3 text-accent" /> SKU: {activeProductContext.sku}
+                        </span>
+                      )}
+                      <span className="px-3 py-1 rounded-full bg-surface border border-border/80 shadow-xs flex items-center gap-1.5">
+                        <Zap className="w-3 h-3 text-accent" /> {currency}{activeProductContext.price || activeProductContext.regPrice}
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-surface border border-border/80 shadow-xs flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3 h-3 text-accent" /> {activeProductContext.stock === 'instock' ? 'In Stock' : 'Check Stock'}
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="px-3 py-1 rounded-full bg-surface border border-border/80 shadow-xs flex items-center gap-1.5">
+                        <Cpu className="w-3 h-3 text-accent" /> Microcontrollers & SoCs
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-surface border border-border/80 shadow-xs flex items-center gap-1.5">
+                        <Zap className="w-3 h-3 text-accent" /> Robotics & Sensors
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-surface border border-border/80 shadow-xs flex items-center gap-1.5">
+                        <Layers className="w-3 h-3 text-accent" /> Circuit Compatibility
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-surface border border-border/80 shadow-xs flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3 h-3 text-accent" /> DigiComp Catalog & Stock
+                      </span>
+                    </>
+                  )}
                 </div>
+
+                {/* Assistant Welcome Message Card */}
+                {messages.length > 0 && messages[0].sender === 'assistant' && (
+                  <div className="w-full max-w-2xl text-left bg-surface border border-border/90 rounded-2xl p-4 shadow-xs flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-surface text-accent flex items-center justify-center shrink-0 border border-border shadow-xs mt-0.5">
+                      <Bot className="w-4.5 h-4.5" />
+                    </div>
+                    <div className="flex-1 space-y-1">
+                      <div className="text-xs font-bold text-foreground">DigiComp AI</div>
+                      <div className="text-sm text-foreground/90 leading-relaxed">
+                        {messages[0].text}
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Suggested Prompts Cards Grid */}
                 <div className="w-full pt-4">
                   <div className="text-left text-xs font-bold text-muted uppercase tracking-wider mb-3 px-1">
-                    Suggested Engineering Inquiries
+                    {activeProductContext ? 'Suggested Product Questions' : 'Suggested Engineering Inquiries'}
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-left">
-                    {WELCOME_SUGGESTIONS.map((s, idx) => {
+                    {(activeProductContext ? PRODUCT_SUGGESTIONS : WELCOME_SUGGESTIONS).map((s, idx) => {
                       const Icon = s.icon;
                       return (
                         <button
@@ -849,7 +1093,7 @@ export default function AIPage() {
                 ))}
 
             {/* Animated Loading Indicator */}
-            {isLoading && <AIProcessingIndicator active={isLoading} query={activeQuery} />}
+            {isLoading && <AIProcessingIndicator active={isLoading} query={activeQuery} isProductMode={!!activeProductContext} />}
 
             <div ref={messagesEndRef} />
           </div>
@@ -876,7 +1120,17 @@ export default function AIPage() {
                 <span className="text-muted font-medium shrink-0 flex items-center gap-1 text-[11px]">
                   <Sparkles className="w-3 h-3 text-accent" /> Suggested:
                 </span>
-                {['ESP32 pinout', 'Sensors under ₹200', 'Motor driver choice', 'Wi-Fi boards in stock'].map((p, idx) => (
+                {(activeProductContext
+                  ? [
+                      'What is this product?',
+                      'What are the specifications?',
+                      'Is it in stock?',
+                      'Are there cheaper alternatives?',
+                      'Can I use this for robotics?',
+                      'What power supply does it need?',
+                    ]
+                  : ['ESP32 pinout', 'Sensors under ₹200', 'Motor driver choice', 'Wi-Fi boards in stock']
+                ).map((p, idx) => (
                   <button
                     key={idx}
                     onClick={() => handleSend(p)}
@@ -896,7 +1150,11 @@ export default function AIPage() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask DigiComp AI about electronics, projects, components, compatibility, or pricing..."
+                placeholder={
+                  activeProductContext
+                    ? `Ask about ${activeProductContext.name}, its specifications, applications, or alternatives...`
+                    : "Ask DigiComp AI about electronics, projects, components, compatibility, or pricing..."
+                }
                 disabled={isLoading}
                 rows={1}
                 className="flex-1 bg-transparent resize-none border-none outline-none px-3 py-1.5 text-xs sm:text-sm text-foreground placeholder:text-muted/70 leading-relaxed max-h-36 overflow-y-auto scrollbar-thin"

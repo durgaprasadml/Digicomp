@@ -130,7 +130,7 @@ export function cleanFinalAssistantAnswer(rawContent) {
   return result || cleaned;
 }
 
-export async function sendChatMessage(message, history = [], conversationId = null) {
+export async function sendChatMessage(message, history = [], conversationId = null, productContext = null) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_SECONDS * 1000);
   const url = `${AI_API_BASE}/api/ai/chat`;
@@ -143,6 +143,7 @@ export async function sendChatMessage(message, history = [], conversationId = nu
       message,
       history,
       stream: false,
+      product_context: productContext || undefined,
     };
 
     const response = await fetch(url, {
@@ -188,9 +189,10 @@ export async function sendChatMessageStream(
   onToken,
   onProducts,
   onStatus,
-  conversationId
+  conversationId,
+  productContext = null
 ) {
-  const res = await sendChatMessage(message, history, conversationId);
+  const res = await sendChatMessage(message, history, conversationId, productContext);
 
   if (res.answer) {
     onToken?.(res.answer);
@@ -236,13 +238,14 @@ export async function fetchConversationById(id) {
   }
 }
 
-export async function createConversation(id = null, title = 'New Chat') {
+export async function createConversation(id = null, title = 'New Chat', productContext = null) {
   try {
     const headers = await getAuthHeaders();
+    const product_slug = productContext?.slug || (productContext?.id ? String(productContext.id) : undefined);
     const res = await fetch(`${AI_API_BASE}/api/ai/conversations`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ id, title }),
+      body: JSON.stringify({ id, title, product_slug, product_context: productContext }),
     });
     if (!res.ok) {
       throw new Error(`Failed to create conversation (${res.status})`);
