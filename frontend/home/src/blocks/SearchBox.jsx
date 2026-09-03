@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useNavigate } from '@typeroute/router';
 import { fetchSearchResults } from '../utils/api';
+import { UserStore } from '../stores/UserStore';
+import { ai as aiRoute, login as loginRoute } from '../routes';
 
 function extractImageUrl(imgHtml) {
   const match = imgHtml.match(/src=["']([^"']+)["']/i);
@@ -27,6 +30,8 @@ const SpinnerIcon = () => (
 );
 
 export default function SearchBox({ id, placeholder, isMobile = false }) {
+  const navigate = useNavigate();
+  const { user } = UserStore.use();
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
   const [hoveredIndex, setHoveredIndex] = useState(null);
@@ -38,6 +43,16 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
 
   const wordCount = searchTerm.trim().split(/\s+/).filter(Boolean).length;
   const showAskAI = (wordCount > 1) || ( results.length === 1 && results?.[0]?.type === 'no-results' );
+
+  const handleAskAI = (queryText) => {
+    const q = (queryText || searchTerm).trim();
+    setIsFocused(false);
+    if (!user?.is_logged_in) {
+      navigate({ to: loginRoute, state: { from: q ? `/ai?query=${encodeURIComponent(q)}` : '/ai' } });
+    } else {
+      navigate({ to: aiRoute, search: q ? { query: q } : undefined });
+    }
+  };
 
   // Global Keyboard shortcuts
   useEffect(() => {
@@ -63,13 +78,16 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
   useEffect(() => {
     const handleGlobalKey = (event) => {
       if ( isFocused && event.key === 'Enter' ) {
-        // if showAskAI, click that. else click search all
-        searchAllRef.current.click()
+        if (showAskAI) {
+          handleAskAI();
+        } else if (searchAllRef.current) {
+          searchAllRef.current.click();
+        }
       }
     };
     window.addEventListener('keydown', handleGlobalKey);
     return () => window.removeEventListener('keydown', handleGlobalKey);
-  }, [isFocused]);
+  }, [isFocused, showAskAI, searchTerm]);
 
   // Click outside to close
   useEffect(() => {
@@ -144,7 +162,10 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
           )}
 
           {showAskAI && (
-            <button className="shrink-0 cursor-pointer rounded-md bg-gradient-to-r from-accent to-(--color-accent-hover) px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:opacity-90">
+            <button
+              onClick={() => handleAskAI()}
+              className="shrink-0 cursor-pointer rounded-md bg-gradient-to-r from-accent to-(--color-accent-hover) px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:opacity-90 transition-opacity"
+            >
               Ask AI
             </button>
           )}
@@ -167,7 +188,13 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
                     <li key={idx} onMouseEnter={() => setHoveredIndex(idx)}>
                       { ( result.type === 'no-results' ) ? (
                         <div className="p-4 text-center text-sm text-muted">
-                          No results found for "{searchTerm}". Try asking Digicomp Expert AI.
+                          <span>No results found for "{searchTerm}". </span>
+                          <button
+                            onClick={() => handleAskAI(searchTerm)}
+                            className="text-accent font-semibold hover:underline cursor-pointer ml-1"
+                          >
+                            Try asking Digicomp Expert AI.
+                          </button>
                         </div>
                       ) : (
                       <a href={result.url || '#'} className="px-3 py-2 flex items-center gap-3 hover:bg-default">
@@ -193,6 +220,7 @@ export default function SearchBox({ id, placeholder, isMobile = false }) {
                     </li>
                   ))}
                 </ul>
+
                 { activeResult && (
                   <div className="p-4 flex-1 flex flex-col h-full gap-3 border-l border-border max-w-[50%]">
                     {activeResult?.thumb_html && (
