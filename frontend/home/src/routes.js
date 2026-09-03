@@ -19,5 +19,6 @@ export const wishlist = app.route( '/wishlist' ).lazy( () => import( './pages/Wi
 export const wishlistView = app.route( '/wishlist/:id' ).lazy( () => import( './pages/Wishlist/View' ) )
 export const login = app.route( '/login' ).lazy( () => import( './pages/Auth' ) )
 export const signup = app.route( '/signup' ).lazy( () => import( './pages/Auth' ) )
+export const forgotPassword = app.route( '/forgot-password' ).lazy( () => import( './pages/Auth' ) )
 export const ai = app.route( '/ai' ).lazy( () => import( './pages/AI' ) )
 export const page = app.route( '/:slug' ).lazy( () => import( './pages/Post' ) )

@@ -1,109 +1,66 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Bot, Sparkles, Search, Layers, Cpu } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Sparkles, Cpu, Search, Database, Layers } from 'lucide-react';
 
-export function classifyQuery(query) {
-  if (!query || typeof query !== 'string') return 'general';
-  const q = query.toLowerCase().trim();
-  if (!q) return 'general';
-
-  const projectPatterns = [
-    /\b(build|make|create|develop|construct|diy|project|robot|robotics|smart|system|automation|automate|iot|circuit|wiring|schematic|interfac(e|ing)|connect(ing)?|line follower|obstacle avoid(ing|er)?|quadcopter|drone|tracker|transmitter|receiver)\b/i,
-    /\b(how to build|how to make|how to connect|how to wire|guide to|tutorial for|components? for)\b/i,
-  ];
-
-  const productPricePatterns = [
-    /\b(under|below|around|within|budget|price|cost|rate|cheap|cheapest|affordable)\b/i,
-    /₹|\brs\.?|\binr\b/i,
-    /\b(buy|purchase|order|shop|store|in stock|stock|available|catalog|discount|deal|specs|datasheet)\b/i,
-    /\b(i need|i want|looking for|recommend|suggest|find me|search for|give me)\b/i,
-  ];
-
-  const questionPatterns = [
-    /^(hi|hello|hey|greetings|howdy|good (morning|afternoon|evening))\b/i,
-    /^(what is|what are|what's|explain|who (is|was|invented)|why (is|are|do|does)|how (does|do|works?)|difference between|compare|tell me about|definition of|can you explain)\b/i,
-    /\?$/,
-  ];
-
-  if (projectPatterns.some((p) => p.test(q))) return 'project';
-  if (productPricePatterns.some((p) => p.test(q))) return 'product';
-  if (questionPatterns.some((p) => p.test(q))) return 'question';
-  return 'general';
-}
-
-export function getStatusSteps(category) {
-  switch (category) {
-    case 'question':
-      return [
-        { text: 'Understanding your question...', icon: 'sparkles' },
-        { text: 'Analyzing electronics concepts...', icon: 'cpu' },
-        { text: 'Preparing explanation...', icon: 'layers' },
-        { text: 'Finalizing your answer...', icon: 'ready' },
-      ];
-    case 'product':
-      return [
-        { text: 'Understanding requirements...', icon: 'sparkles' },
-        { text: 'Searching DigiComp catalog...', icon: 'search' },
-        { text: 'Checking price and availability...', icon: 'layers' },
-        { text: 'Matching components...', icon: 'cpu' },
-        { text: 'Preparing recommendations...', icon: 'ready' },
-      ];
-    case 'project':
-      return [
-        { text: 'Understanding project scope...', icon: 'sparkles' },
-        { text: 'Identifying required hardware...', icon: 'cpu' },
-        { text: 'Finding matching DigiComp parts...', icon: 'search' },
-        { text: 'Checking inventory...', icon: 'layers' },
-        { text: 'Preparing build recommendations...', icon: 'ready' },
-      ];
-    default:
-      return [
-        { text: 'Understanding your request...', icon: 'sparkles' },
-        { text: 'Analyzing requirements...', icon: 'cpu' },
-        { text: 'Searching DigiComp catalog...', icon: 'search' },
-        { text: 'Preparing your response...', icon: 'ready' },
-      ];
-  }
-}
+const STATUS_ROTATION = [
+  { text: 'Preparing your answer...', icon: Sparkles },
+  { text: 'Finding relevant products...', icon: Search },
+  { text: 'Checking DigiComp catalog...', icon: Database },
+  { text: 'Comparing components...', icon: Cpu },
+  { text: 'Analyzing specifications...', icon: Layers },
+];
 
 export default function AIProcessingIndicator({
   active = true,
-  mode,
-  query,
-  statusOverride,
   intervalMs = 1800,
 }) {
-  const normalizedCategory = useMemo(() => {
-    if (mode && ['product', 'project', 'question', 'general'].includes(mode)) {
-      return mode;
-    }
-    return classifyQuery(query);
-  }, [mode, query]);
-
-  const steps = useMemo(() => getStatusSteps(normalizedCategory), [normalizedCategory]);
   const [stepIndex, setStepIndex] = useState(0);
 
   useEffect(() => {
-    if (!active || steps.length <= 1) return;
+    if (!active) return;
     setStepIndex(0);
     const timer = setInterval(() => {
-      setStepIndex((prev) => (prev + 1) % steps.length);
+      setStepIndex((prev) => (prev + 1) % STATUS_ROTATION.length);
     }, intervalMs);
     return () => clearInterval(timer);
-  }, [active, steps, intervalMs]);
+  }, [active, intervalMs]);
 
   if (!active) return null;
 
-  const currentStep = steps[stepIndex % steps.length] || steps[0];
-  const displayText = statusOverride || currentStep.text;
+  const current = STATUS_ROTATION[stepIndex];
+  const StepIcon = current.icon;
 
   return (
-    <div className="flex gap-3 items-start animate-fade-in-up">
-      <div className="w-8 h-8 rounded-lg bg-surface border border-border text-accent flex items-center justify-center shrink-0 shadow-xs">
-        <Bot className="w-4.5 h-4.5 animate-pulse" />
+    <div className="flex gap-3.5 items-start animate-fade-in-up">
+      {/* AI Emblem */}
+      <div className="relative w-8 h-8 rounded-xl bg-surface border border-accent/30 text-accent flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+        <Sparkles className="w-4 h-4 animate-spin-slow text-accent" />
+        <span className="absolute -inset-0.5 rounded-xl bg-accent/20 blur-[2px] -z-10 animate-pulse" />
       </div>
-      <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-surface border border-border text-xs text-muted shadow-xs">
-        <div className="w-2 h-2 rounded-full bg-accent animate-ping" />
-        <span className="font-medium text-foreground">{displayText}</span>
+
+      {/* Activity Card */}
+      <div className="min-w-[240px] max-w-sm rounded-2xl bg-surface/90 border border-border/90 shadow-sm p-3.5 space-y-2.5 backdrop-blur-xs">
+        {/* Header: DigiComp AI ● WORKING */}
+        <div className="flex items-center justify-between gap-3 border-b border-border/50 pb-2">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+            <span className="text-accent">✦</span>
+            <span>DigiComp AI</span>
+          </div>
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-accent/10 text-accent border border-accent/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent animate-ping" />
+            <span>WORKING</span>
+          </div>
+        </div>
+
+        {/* Rotating dynamic message */}
+        <div className="flex items-center gap-2 text-xs text-foreground/90 font-medium transition-all duration-300 min-h-[20px]">
+          <StepIcon className="w-3.5 h-3.5 text-accent shrink-0 animate-pulse" />
+          <span className="truncate">{current.text}</span>
+        </div>
+
+        {/* Subtle shimmer line */}
+        <div className="h-0.5 w-full bg-default/40 rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-transparent via-accent to-transparent w-1/2 animate-[move_1.5s_infinite_linear] rounded-full" />
+        </div>
       </div>
     </div>
   );

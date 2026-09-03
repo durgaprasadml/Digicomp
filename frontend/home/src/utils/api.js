@@ -205,12 +205,72 @@ export async function login( username, password, remember = false, phoneWebsite 
 }
 
 export async function logout() {
+	try {
+		if ( typeof localStorage !== 'undefined' ) {
+			// Clear all user AI tokens
+			for ( let i = localStorage.length - 1; i >= 0; i-- ) {
+				const key = localStorage.key( i )
+				if ( key && key.startsWith( 'digicomp_ai_session' ) ) {
+					localStorage.removeItem( key )
+				}
+			}
+		}
+	} catch ( err ) {
+		console.warn( 'Error clearing local AI session on logout:', err )
+	}
+
 	return await dcApiFetch( 'auth/logout', { method: 'POST' } )
 }
 
-export async function register( username, email, phoneWebsite = '' ) {
+export async function register( nameOrData, emailArg = '', passwordArg = '', phoneWebsiteArg = '' ) {
+	let payload = {}
+	if ( typeof nameOrData === 'object' && nameOrData !== null ) {
+		payload = {
+			name: nameOrData.name || nameOrData.username || '',
+			email: nameOrData.email || '',
+			password: nameOrData.password || '',
+			phone_website: nameOrData.phoneWebsite || nameOrData.phone_website || '',
+		}
+	} else {
+		payload = {
+			name: nameOrData,
+			email: emailArg,
+			password: passwordArg,
+			phone_website: phoneWebsiteArg,
+		}
+	}
+
 	return await dcApiFetch( 'auth/register', {
 		method: 'POST',
-		body: JSON.stringify( { username, email, phone_website: phoneWebsite } )
+		body: JSON.stringify( payload )
 	} )
 }
+
+export async function forgotPassword( email, phoneWebsite = '' ) {
+	return await dcApiFetch( 'auth/forgot-password', {
+		method: 'POST',
+		body: JSON.stringify( { email, phone_website: phoneWebsite } )
+	} )
+}
+
+export async function loginWithGoogle( credential ) {
+	return await dcApiFetch( 'auth/google', {
+		method: 'POST',
+		body: JSON.stringify( { credential } )
+	} )
+}
+
+export async function sendPhoneOtp( phone, phoneWebsite = '' ) {
+	return await dcApiFetch( 'auth/phone/send-otp', {
+		method: 'POST',
+		body: JSON.stringify( { phone, phone_website: phoneWebsite } )
+	} )
+}
+
+export async function verifyPhoneOtp( phone, otp, phoneWebsite = '' ) {
+	return await dcApiFetch( 'auth/phone/verify-otp', {
+		method: 'POST',
+		body: JSON.stringify( { phone, otp, phone_website: phoneWebsite } )
+	} )
+}
+

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Input, Button } from '@heroui/react'
 import { useMatch } from '@typeroute/router'
-import { cart, checkout } from '../routes'
+import { cart, checkout, ai } from '../routes'
 
 const footerLinks = {
   'Shop Hardware': [
@@ -152,6 +152,9 @@ function NewsLetter() {
 }
 
 function Footer() {
+  const matchAi = useMatch({ from: ai });
+  if (matchAi) return null;
+
   return (
     <footer id="footer" className="bg-surface border-t border-border">
       <NewsLetter />

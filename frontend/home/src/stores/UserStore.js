@@ -9,13 +9,16 @@ class UserClass extends Store {
 	}
 
 	ensureData() {
-		// Todo: Only fetch userData if user intends to.
-		if ( this.get().nonce ) return Promise.resolve( this.get() )
+		// If already initialized with nonce, return resolved state
+		if ( this.get().nonce && this.get().isInitialized ) return Promise.resolve( this.get() )
 
 		if ( !this.initPromise ) {
 			this.initPromise = fetchUserData().then( ( ud ) => {
-				this.set( () => ( { ...ud } ) )
-				return ud
+				this.set( () => ( { ...ud, isInitialized: true } ) )
+				return { ...ud, isInitialized: true }
+			} ).catch( () => {
+				this.set( () => ( { isInitialized: true } ) )
+				return this.get()
 			} )
 		}
 		return this.initPromise
@@ -29,6 +32,7 @@ class UserClass extends Store {
 }
 
 const UserStore = new UserClass( {
+	isInitialized: false,
 	nonce: '',
 	wpNonce: '',
 	cart: {
@@ -42,3 +46,4 @@ const UserStore = new UserClass( {
 } )
 
 export { UserStore, useStore }
+

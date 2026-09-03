@@ -27,7 +27,7 @@ export default function FloatingAIButton() {
     <button
       onClick={handleClick}
       id="floating-ask-ai-button"
-      className="fixed bottom-20 lg:bottom-6 right-5 z-40 flex items-center gap-2 px-3.5 py-2 bg-surface/90 hover:bg-surface text-foreground rounded-full shadow-xl hover:shadow-2xl border border-border hover:border-accent/40 backdrop-blur-md transition-all hover:scale-105 active:scale-95 group cursor-pointer"
+      className="fixed bottom-[154px] md:bottom-[150px] lg:bottom-[86px] right-8 z-40 flex items-center gap-2 px-3.5 py-2 bg-surface/90 hover:bg-surface text-foreground rounded-full shadow-xl hover:shadow-2xl border border-border hover:border-accent/40 backdrop-blur-md transition-all hover:scale-105 active:scale-95 group cursor-pointer"
       aria-label="Ask DigiComp AI"
     >
       <div className="w-5 h-5 rounded-full bg-accent text-white flex items-center justify-center group-hover:opacity-90 transition-opacity">
