@@ -78,6 +78,11 @@ function dc_api_routes() {
 			'get_head' => 'dc_api_auth_page_head',
 			'ssr'      => false,
 		],
+		'forgot-password' => [
+			'callback' => 'dc_api_auth_page_data',
+			'get_head' => 'dc_api_auth_page_head',
+			'ssr'      => false,
+		],
 		'ai' => [
 			'callback' => 'dc_api_ai_data',
 			'get_head' => 'dc_api_ai_head',
@@ -147,6 +152,26 @@ function dc_register_api_routes() {
 	register_rest_route('dc/v1', '/auth/register', [
 		'methods'             => 'POST',
 		'callback'            => 'dc_api_auth_register',
+		'permission_callback' => '__return_true'
+	] );
+	register_rest_route('dc/v1', '/auth/forgot-password', [
+		'methods'             => 'POST',
+		'callback'            => 'dc_api_auth_forgot_password',
+		'permission_callback' => '__return_true'
+	] );
+	register_rest_route('dc/v1', '/auth/google', [
+		'methods'             => 'POST',
+		'callback'            => 'dc_api_auth_google',
+		'permission_callback' => '__return_true'
+	] );
+	register_rest_route('dc/v1', '/auth/phone/send-otp', [
+		'methods'             => 'POST',
+		'callback'            => 'dc_api_auth_phone_send_otp',
+		'permission_callback' => '__return_true'
+	] );
+	register_rest_route('dc/v1', '/auth/phone/verify-otp', [
+		'methods'             => 'POST',
+		'callback'            => 'dc_api_auth_phone_verify_otp',
 		'permission_callback' => '__return_true'
 	] );
 	register_rest_route('dc/v1', '/wishlist/create', [

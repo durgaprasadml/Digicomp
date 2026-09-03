@@ -1,18 +1,14 @@
-import { useState, useEffect, useRef, lazy, Suspense } from 'react';
-import { createPortal } from 'react-dom';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from '@typeroute/router';
-import { Button, Badge, Modal } from '@heroui/react';
+import { Button, Badge } from '@heroui/react';
 
-import { home, cart as cartRoute, checkout, wishlist, wishlistView, shop, account, accountTab } from '../routes';
+import { home, cart as cartRoute, checkout, wishlist, wishlistView, shop, account, accountTab, login as loginRoute, signup as signupRoute } from '../routes';
 import { ThemeStore } from '../stores/ThemeStore';
 import { CartStore } from '../stores/CartStore';
 import { PageStore } from '../stores/PageStore';
 import { WishlistStore } from '../stores/WishlistStore';
 import { UserStore } from '../stores/UserStore';
 import { logout } from '../utils/api';
-
-const preloadAuthModal = () => import('./AuthModalContent');
-const AuthModalContent = lazy(preloadAuthModal);
 
 import { Logo, LogoDefs, Drawer, CustomButton } from '../components'
 import SearchBox, { SearchIcon } from './SearchBox';
@@ -200,9 +196,6 @@ function UserMenu() {
   const { user } = UserStore.use()
   const navigate = useNavigate()
 
-  const [isOpenLogin, setIsOpenLogin] = useState(false);
-  const [isOpenSignup, setIsOpenSignup] = useState(false);
-
   const handleLogout = async () => {
     await logout()
     await UserStore.refreshData()
@@ -210,45 +203,48 @@ function UserMenu() {
   }
 
   if ( user?.is_logged_in ) {
+    const displayName = user.first_name
+      ? `${user.first_name} ${user.last_name || ''}`.trim()
+      : (user.email ? user.email.split('@')[0] : 'Member');
+
     return (
-      <div className="popover shadow-2xl w-56 right-0 p-4">
-        <h4 className="mb-3 text-foreground">My Account</h4>
+      <div className="popover shadow-2xl w-60 right-0 p-4">
+        <div className="mb-3 pb-2 border-b border-border">
+          <p className="text-[11px] text-muted uppercase tracking-wider font-semibold">Signed in as</p>
+          <p className="font-bold text-sm text-foreground truncate">{displayName}</p>
+          {user.email && (
+            <p className="text-xs text-muted truncate mt-0.5">{user.email}</p>
+          )}
+        </div>
         <ul className="flex flex-col text-sm gap-1">
-          <li><Link to={account} preload="intent" className="block py-1">Dashboard</Link></li>
-          <li><Link to={accountTab} params={{ tab: 'orders' }} preload="intent" className="block py-1">My Orders</Link></li>
-          <li><Link to={accountTab} params={{ tab: 'edit-account' }} preload="intent" className="block py-1">Settings</Link></li>
+          <li><Link to={account} preload="intent" className="block py-1 text-foreground hover:text-accent transition-colors">Dashboard</Link></li>
+          <li><Link to={accountTab} params={{ tab: 'orders' }} preload="intent" className="block py-1 text-foreground hover:text-accent transition-colors">My Orders</Link></li>
+          <li><Link to={accountTab} params={{ tab: 'edit-account' }} preload="intent" className="block py-1 text-foreground hover:text-accent transition-colors">Settings</Link></li>
           <li><hr className="my-2 border-border" /></li>
-          <li><button onClick={ handleLogout } className="cursor-pointer hover:text-accent transition-colors py-1 w-full text-left">Logout</button></li>
+          <li><button onClick={ handleLogout } className="cursor-pointer hover:text-accent transition-colors py-1 w-full text-left font-medium text-muted hover:text-accent">Logout</button></li>
         </ul>
       </div>
     )
   }
 
   return (
-    <div className="popover shadow-2xl w-56 right-0 p-4">
-      <h4 className="mb-2 text-foreground">Welcome</h4>
-      <ul className="space-y-2 text-sm text-muted">
-        <li>
-          <Modal isOpen={isOpenLogin} onOpenChange={setIsOpenLogin}>
-            <Button variant='ghost' className='w-full justify-start' onPress={() => setIsOpenLogin(true)} onMouseEnter={preloadAuthModal} onFocus={preloadAuthModal}>Login</Button>
-            {isOpenLogin && (
-              <Suspense fallback={null}>
-                <AuthModalContent defaultTab="login" />
-              </Suspense>
-            )}
-          </Modal>
-        </li>
-        <li>
-          <Modal isOpen={isOpenSignup} onOpenChange={setIsOpenSignup}>
-            <Button variant='ghost' className='w-full justify-start' onPress={() => setIsOpenSignup(true)} onMouseEnter={preloadAuthModal} onFocus={preloadAuthModal}>Register</Button>
-            {isOpenSignup && (
-              <Suspense fallback={null}>
-                <AuthModalContent defaultTab="signup" />
-              </Suspense>
-            )}
-          </Modal>
-        </li>
-      </ul>
+    <div className="popover shadow-2xl w-60 right-0 p-4">
+      <h4 className="mb-1 text-foreground font-bold text-sm">Welcome</h4>
+      <p className="text-xs text-muted mb-3.5 leading-relaxed">
+        Sign in to DigiComp to manage your orders, wishlists, and access DigiComp AI.
+      </p>
+      <div className="flex flex-col gap-2">
+        <CustomButton variant="primary" className="w-full">
+          <Link to={ loginRoute } preload="intent" className="w-full text-center block text-xs font-semibold py-1">
+            Sign In
+          </Link>
+        </CustomButton>
+        <CustomButton variant="secondary" className="w-full">
+          <Link to={ signupRoute } preload="intent" className="w-full text-center block text-xs font-semibold py-1">
+            Create Account
+          </Link>
+        </CustomButton>
+      </div>
     </div>
   )
 }
@@ -342,6 +338,7 @@ export default function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { cart } = CartStore.use()
   const { wishlists } = WishlistStore.use()
+  const { user } = UserStore.use()
 
   const wishlistItemsCount = wishlists?.reduce((total, list) => total + (list.items?.length || 0), 0) || 0;
 
@@ -460,8 +457,15 @@ export default function Header() {
           </div>
 
           <div className="popover-wrap icon-nav">
-            <CustomButton isIconOnly variant='ghost'>
-              <Link to={ account } preload="intent" className="icon-btn" aria-label="Account" ref={ wishlistRef }><UserIcon /></Link>
+            <CustomButton isIconOnly={!user?.is_logged_in} variant='ghost' className={user?.is_logged_in ? 'px-2.5 h-10' : ''}>
+              <Link to={ user?.is_logged_in ? account : loginRoute } preload="intent" className="icon-btn flex items-center gap-1.5" aria-label="Account" ref={ wishlistRef }>
+                <UserIcon />
+                {user?.is_logged_in && (
+                  <span className="hidden lg:inline text-xs font-semibold text-foreground max-w-[100px] truncate">
+                    {user.first_name || (user.email ? user.email.split('@')[0] : 'Account')}
+                  </span>
+                )}
+              </Link>
             </CustomButton>
             <UserMenu />
           </div>
@@ -545,6 +549,63 @@ export default function Header() {
               {link.label}
             </a>
           ))}
+
+          {/* User Account / Auth section in mobile drawer */}
+          <div className="pt-4 border-t border-border mt-2">
+            {user?.is_logged_in ? (
+              <div className="space-y-2">
+                <div className="px-1 py-1">
+                  <span className="text-[11px] text-muted uppercase font-medium block">Signed in as</span>
+                  <span className="text-sm font-bold text-foreground truncate block">
+                    {user.first_name ? `${user.first_name} ${user.last_name || ''}`.trim() : user.email}
+                  </span>
+                </div>
+                <Link
+                  to={account}
+                  className="block py-2 text-sm font-semibold text-foreground hover:text-accent transition-colors"
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  My Account Dashboard
+                </Link>
+                <Link
+                  to={accountTab}
+                  params={{ tab: 'orders' }}
+                  className="block py-2 text-sm text-muted hover:text-foreground transition-colors"
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  My Orders
+                </Link>
+                <button
+                  onClick={async () => {
+                    await logout();
+                    await UserStore.refreshData();
+                    setDrawerOpen(false);
+                    navigate({ to: home });
+                  }}
+                  className="block w-full text-left py-2 text-sm text-accent font-semibold cursor-pointer"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-2 pt-2">
+                <Link
+                  to={loginRoute}
+                  className="block w-full py-2.5 px-4 text-center rounded-xl bg-accent text-white text-xs font-semibold shadow-xs"
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  Sign In
+                </Link>
+                <Link
+                  to={signupRoute}
+                  className="block w-full py-2.5 px-4 text-center rounded-xl border border-border bg-surface text-foreground text-xs font-semibold"
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  Create Account
+                </Link>
+              </div>
+            )}
+          </div>
         </nav>
       </Drawer>
     </header>

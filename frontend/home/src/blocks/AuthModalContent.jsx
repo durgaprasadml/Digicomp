@@ -1,21 +1,19 @@
 import { Modal } from '@heroui/react'
 import { AuthTabs } from '../pages/Auth'
 
-export default function AuthModalContent({ defaultTab }) {
+export default function AuthModalContent({ defaultTab, onClose }) {
   return (
     <Modal.Backdrop variant="opaque">
       <Modal.Container size="sm">
-        <Modal.Dialog>
+        <Modal.Dialog className="rounded-3xl p-2 border border-border bg-surface shadow-2xl">
           <Modal.CloseTrigger />
-          <Modal.Header>
-            <h2 className="text-lg font-medium">{defaultTab === 'login' ? 'Welcome Back' : 'Create an Account'}</h2>
-          </Modal.Header>
-          <Modal.Body>
-             <AuthTabs defaultTab={defaultTab} />
+          <Modal.Body className="pt-4 pb-2 px-3 sm:px-5">
+            <AuthTabs defaultTab={defaultTab} onSuccess={onClose} />
           </Modal.Body>
         </Modal.Dialog>
       </Modal.Container>
     </Modal.Backdrop>
   )
 }
+
 

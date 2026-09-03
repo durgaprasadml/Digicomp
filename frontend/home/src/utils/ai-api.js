@@ -22,8 +22,9 @@ export async function getAuthHeaders() {
     headers['X-Digicomp-User-Email'] = userEmail;
     headers['X-Digicomp-User-Name'] = userName;
 
-    // Check if we have an active session token stored locally
-    let token = typeof localStorage !== 'undefined' ? localStorage.getItem('digicomp_ai_session') : null;
+    // Check if we have an active session token stored locally for this specific user
+    const sessionKey = `digicomp_ai_session_${userId}`;
+    let token = typeof localStorage !== 'undefined' ? localStorage.getItem(sessionKey) : null;
 
     if (!token) {
       // Auto-authenticate or login with backend
@@ -55,7 +56,7 @@ export async function getAuthHeaders() {
         }
 
         if (token && typeof localStorage !== 'undefined') {
-          localStorage.setItem('digicomp_ai_session', token);
+          localStorage.setItem(sessionKey, token);
         }
       } catch (err) {
         console.warn('AI backend auto-auth notice:', err);

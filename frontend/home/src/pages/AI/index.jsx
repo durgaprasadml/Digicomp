@@ -87,7 +87,7 @@ const WELCOME_SUGGESTIONS = [
 export default function AIPage() {
   const { search } = useLocation();
   const navigate = useNavigate();
-  const { user } = UserStore.use();
+  const { user, isInitialized } = UserStore.use();
   const { currency = '₹' } = PageStore.use() || {};
 
   // Parse URL search params
@@ -95,12 +95,15 @@ export default function AIPage() {
   const queryParam = urlParams.get('query') || urlParams.get('product') || urlParams.get('s') || '';
   const chatParam = urlParams.get('chat') || urlParams.get('id') || '';
 
-  // Auth gate check
+  // Auth gate check - only trigger once UserStore has initialized
   useEffect(() => {
-    if (UserStore.get().user && !UserStore.get().user.is_logged_in) {
-      navigate({ to: loginRoute, state: { from: '/ai' } });
+    if (isInitialized && !user?.is_logged_in) {
+      const currentDest = typeof window !== 'undefined'
+        ? (window.location.pathname + window.location.search)
+        : '/ai';
+      navigate({ to: loginRoute, state: { from: currentDest } });
     }
-  }, [user?.is_logged_in, navigate]);
+  }, [isInitialized, user?.is_logged_in, navigate]);
 
   const [conversations, setConversations] = useState([]);
   const [activeConversationId, setActiveConversationId] = useState(() => chatParam || generateNewConvId());
@@ -491,8 +494,26 @@ export default function AIPage() {
     }
   };
 
+  // If user session is initializing, show sleek loading state
+  if (!isInitialized) {
+    return (
+      <div className="flex-1 flex items-center justify-center min-h-[70vh]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-12 h-12 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center text-accent animate-pulse">
+            <Bot className="w-6 h-6" />
+          </div>
+          <span className="text-xs text-muted">Checking authentication...</span>
+        </div>
+      </div>
+    );
+  }
+
   // If user is not authenticated, show authentication prompt
-  if (user && !user.is_logged_in) {
+  if (isInitialized && !user?.is_logged_in) {
+    const currentDest = typeof window !== 'undefined'
+      ? (window.location.pathname + window.location.search)
+      : '/ai';
+
     return (
       <div className="flex-1 flex flex-col items-center justify-center min-h-[70vh] p-6 text-center">
         <div className="max-w-md p-8 rounded-3xl bg-surface border border-border shadow-2xl space-y-5">
@@ -507,7 +528,7 @@ export default function AIPage() {
           </div>
           <div className="pt-2 flex flex-col gap-2.5">
             <button
-              onClick={() => navigate({ to: loginRoute, state: { from: '/ai' } })}
+              onClick={() => navigate({ to: loginRoute, state: { from: currentDest } })}
               className="w-full py-3 rounded-xl bg-accent text-white font-semibold text-xs tracking-wider uppercase shadow-md hover:opacity-90 transition-all cursor-pointer"
             >
               Log in / Sign up
