@@ -23,7 +23,7 @@ import {
 import { UserStore } from '../../stores/UserStore';
 import { CartStore } from '../../stores/CartStore';
 import { PageStore } from '../../stores/PageStore';
-import { login as loginRoute, home as homeRoute, product as productRoute } from '../../routes';
+import { login as loginRoute, home as homeRoute, product as productRoute, ai as aiRoute } from '../../routes';
 
 import {
   sendChatMessageStream,
@@ -131,7 +131,13 @@ export default function AIPage() {
   const { currency = '₹' } = PageStore.use() || {};
 
   // Parse URL search params
-  const urlParams = new URLSearchParams(search || (typeof window !== 'undefined' ? window.location.search : ''));
+  const urlParams = new URLSearchParams(
+    typeof search === 'string'
+      ? search
+      : (search && Object.keys(search).length > 0)
+        ? search
+        : (typeof window !== 'undefined' ? window.location.search : '')
+  );
   const queryParam = urlParams.get('query') || urlParams.get('s') || '';
   const productParam = urlParams.get('product') || '';
   const chatParam = urlParams.get('chat') || urlParams.get('id') || '';
@@ -151,7 +157,7 @@ export default function AIPage() {
       try {
         const cached = window.sessionStorage.getItem(`digicomp_product_context_${productParam}`);
         if (cached) return JSON.parse(cached);
-      } catch (_e) {}
+      } catch {}
     }
     return null;
   });
@@ -168,7 +174,7 @@ export default function AIPage() {
             const p = JSON.parse(cached);
             if (p?.name) return `${p.name} — Product Questions`;
           }
-        } catch (_e) {}
+        } catch {}
       }
       return `${productParam} — Product Questions`;
     }
@@ -187,7 +193,7 @@ export default function AIPage() {
             const p = JSON.parse(cached);
             if (p?.name) cachedName = p.name;
           }
-        } catch (_e) {}
+        } catch {}
       }
       return [
         {
@@ -274,16 +280,13 @@ export default function AIPage() {
   // 3. Load specific conversation
   const loadConversationData = useCallback(async (convId) => {
     const conv = await fetchConversationById(convId);
-    if (conv && conv.messages && conv.messages.length > 0) {
-      setMessages(conv.messages);
-      setActiveTitle(conv.title || 'New Chat');
-      setActiveConversationId(conv.id);
-      if (conv.product_context) {
-        setActiveProductContext(conv.product_context);
-      } else {
-        setActiveProductContext(null);
+    if (!conv) {
+      if (convId === activeConversationId && activeProductContext) {
+        return;
       }
-    } else {
+      setActiveConversationId(convId);
+      setActiveTitle('New Chat');
+      setActiveProductContext(null);
       setMessages([
         {
           id: 'welcome-1',
@@ -291,19 +294,67 @@ export default function AIPage() {
           text: generateWelcomeMessage({
             userName: user?.first_name || (user?.email ? user.email.split('@')[0] : null),
             isReturningUser: conversations.length > 0,
-            productParam: queryParam,
           }),
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },
       ]);
-      setActiveTitle('New Chat');
-      setActiveConversationId(convId);
-      setActiveProductContext(null);
+      return;
     }
-  }, [user?.first_name, user?.email, conversations.length, queryParam]);
+
+    setActiveConversationId(conv.id);
+    setActiveTitle(conv.title || 'New Chat');
+
+    // Extract product context if present in conversation record
+    let prodCtx = null;
+    if (conv.product_context) {
+      if (typeof conv.product_context === 'string') {
+        try {
+          prodCtx = JSON.parse(conv.product_context);
+        } catch {}
+      } else if (typeof conv.product_context === 'object') {
+        prodCtx = conv.product_context;
+      }
+    }
+    if (!prodCtx && conv.product_slug && typeof window !== 'undefined' && window.sessionStorage) {
+      try {
+        const cached = window.sessionStorage.getItem(`digicomp_product_context_${conv.product_slug}`);
+        if (cached) prodCtx = JSON.parse(cached);
+      } catch {}
+    }
+
+    setActiveProductContext(prodCtx);
+
+    if (conv.messages && conv.messages.length > 0) {
+      setMessages(conv.messages);
+    } else {
+      if (prodCtx && prodCtx.name) {
+        setMessages([
+          {
+            id: `welcome-prod-${conv.id}`,
+            sender: 'assistant',
+            text: `Hi! I can help you understand the ${prodCtx.name}. Ask me about its specifications, applications, compatibility, or whether it's suitable for your project.`,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          },
+        ]);
+      } else {
+        setMessages([
+          {
+            id: 'welcome-1',
+            sender: 'assistant',
+            text: generateWelcomeMessage({
+              userName: user?.first_name || (user?.email ? user.email.split('@')[0] : null),
+              isReturningUser: conversations.length > 0,
+            }),
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          },
+        ]);
+      }
+    }
+  }, [user?.first_name, user?.email, conversations.length]);
 
   // Product context loader when navigated from product page (?product=slug)
   const lastLoadedProductRef = useRef(null);
+  const loadedChatParamRef = useRef(null);
 
   useEffect(() => {
     if (!productParam) {
@@ -382,9 +433,21 @@ export default function AIPage() {
           },
         ]);
 
+        loadedChatParamRef.current = freshConvId;
         createConversation(freshConvId, prodTitle, productData)
           .then(() => refreshConversationsList())
           .catch((e) => console.warn('Failed to register product conversation:', e));
+
+        // Switch URL to chat id to avoid persistent ?product= trapping
+        if (typeof window !== 'undefined') {
+          const url = new URL(window.location.href);
+          url.searchParams.delete('product');
+          url.searchParams.delete('query');
+          url.searchParams.delete('s');
+          url.searchParams.set('chat', freshConvId);
+          window.history.replaceState({}, '', url.pathname + url.search);
+        }
+        navigate({ to: aiRoute, search: { chat: freshConvId }, replace: true });
       } else {
         setProductLoadingError(true);
         setMessages([
@@ -403,7 +466,7 @@ export default function AIPage() {
     return () => {
       isMounted = false;
     };
-  }, [productParam, activeProductContext, refreshConversationsList]);
+  }, [productParam, activeProductContext, refreshConversationsList, navigate]);
 
   // Update initial greeting when user data updates
   useEffect(() => {
@@ -424,7 +487,8 @@ export default function AIPage() {
   }, [user?.first_name, user?.email, conversations.length, queryParam, chatParam, productParam]);
 
   useEffect(() => {
-    if (chatParam) {
+    if (chatParam && loadedChatParamRef.current !== chatParam) {
+      loadedChatParamRef.current = chatParam;
       loadConversationData(chatParam);
     }
   }, [chatParam, loadConversationData]);
@@ -491,6 +555,10 @@ export default function AIPage() {
     const newId = generateNewConvId();
     setActiveConversationId(newId);
     setActiveTitle('New Chat');
+    setActiveProductContext(null);
+    setProductLoadingError(false);
+    lastLoadedProductRef.current = null;
+    loadedChatParamRef.current = null;
     setMessages([
       {
         id: 'welcome-1',
@@ -503,6 +571,7 @@ export default function AIPage() {
       },
     ]);
     setInputValue('');
+    setActiveQuery('');
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href);
       url.searchParams.delete('chat');
@@ -512,6 +581,7 @@ export default function AIPage() {
       url.searchParams.delete('s');
       window.history.replaceState({}, '', url.pathname);
     }
+    navigate({ to: aiRoute, replace: true });
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollTop = 0;
     }
@@ -521,11 +591,17 @@ export default function AIPage() {
   const handleSelectConversation = async (id) => {
     if (id === activeConversationId || activeRequestRef.current) return;
     setActiveConversationId(id);
+    lastLoadedProductRef.current = null;
+    loadedChatParamRef.current = id;
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href);
+      url.searchParams.delete('product');
+      url.searchParams.delete('query');
+      url.searchParams.delete('s');
       url.searchParams.set('chat', id);
-      window.history.replaceState({}, '', url.toString());
+      window.history.replaceState({}, '', url.pathname + url.search);
     }
+    navigate({ to: aiRoute, search: { chat: id }, replace: true });
     await loadConversationData(id);
     setTimeout(() => scrollToContainerBottom(true), 50);
   };
