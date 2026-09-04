@@ -401,3 +401,138 @@ input[type="range"]::-webkit-slider-thumb:hover, input[type="range"]::-moz-range
     @apply absolute top-0 left-0 overflow-hidden text-warning fill-warning;
   }
 }
+
+/* ===== FLOATING ASK DIGICOMP AI BUTTON — CANONICAL OPTION 3: AI ENERGY PULSE / NEURAL ENERGY TRACE ===== */
+
+/* Clockwise continuous circular orbit: TOP → RIGHT → BOTTOM → LEFT → TOP */
+@keyframes ai-energy-pulse-orbit {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+#floating-ask-ai-button {
+  position: fixed !important;
+  width: auto !important;
+  max-width: max-content !important;
+  overflow: visible;
+  z-index: 40;
+  border-color: rgba(0, 114, 220, 0.22);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.25), 0 0 10px -2px rgba(0, 114, 220, 0.12);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Layer 1 & 2: Concentrated Bright Blue Leading Pulse + Soft Fading Blue Trail */
+#floating-ask-ai-button .ai-energy-trace-border {
+  pointer-events: none;
+  position: absolute;
+  inset: -1px;
+  border-radius: 9999px;
+  padding: 1.5px;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  overflow: hidden;
+  z-index: 1;
+  transition: filter 0.3s ease;
+}
+
+#floating-ask-ai-button .ai-energy-trace-border::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 260%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 305deg,
+    rgba(0, 114, 220, 0) 310deg,
+    rgba(0, 114, 220, 0.25) 324deg,
+    rgba(0, 114, 220, 0.55) 338deg,
+    rgba(14, 165, 233, 0.85) 350deg,
+    rgba(56, 189, 248, 1) 358deg,
+    #38bdf8 360deg,
+    transparent 360.5deg
+  );
+  animation: ai-energy-pulse-orbit 3.5s linear infinite;
+  will-change: transform;
+}
+
+/* Layer 3: Soft Localized Ambient Blue Aura (synchronized with moving pulse) */
+#floating-ask-ai-button .ai-energy-trace-glow {
+  pointer-events: none;
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  overflow: hidden;
+  filter: blur(8px);
+  opacity: 0.65;
+  z-index: 0;
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+#floating-ask-ai-button .ai-energy-trace-glow::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 260%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 295deg,
+    rgba(0, 114, 220, 0) 305deg,
+    rgba(0, 114, 220, 0.25) 325deg,
+    rgba(14, 165, 233, 0.55) 345deg,
+    rgba(56, 189, 248, 0.85) 358deg,
+    rgba(56, 189, 248, 0.95) 360deg,
+    transparent 360.5deg
+  );
+  animation: ai-energy-pulse-orbit 3.5s linear infinite;
+  will-change: transform;
+}
+
+/* Hover: subtly increase pulse brightness and ambient aura while orbit continues smoothly */
+#floating-ask-ai-button:hover .ai-energy-trace-glow {
+  opacity: 0.95;
+  filter: blur(9px) brightness(1.2);
+}
+
+#floating-ask-ai-button:hover .ai-energy-trace-border {
+  filter: brightness(1.25);
+}
+
+#floating-ask-ai-button:hover {
+  border-color: rgba(56, 189, 248, 0.38);
+  box-shadow: 0 8px 25px -4px rgba(0, 0, 0, 0.3), 0 0 16px 0px rgba(0, 114, 220, 0.25);
+}
+
+/* Accessibility: prefers-reduced-motion fallback */
+@media (prefers-reduced-motion: reduce) {
+  #floating-ask-ai-button .ai-energy-trace-border::before,
+  #floating-ask-ai-button .ai-energy-trace-glow::before {
+    animation: none !important;
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  #floating-ask-ai-button .ai-energy-trace-glow {
+    opacity: 0.35;
+    filter: blur(5px);
+  }
+  #floating-ask-ai-button .ai-energy-trace-border {
+    filter: brightness(0.85);
+  }
+  #floating-ask-ai-button {
+    border-color: rgba(56, 189, 248, 0.3);
+  }
+}
+
+
